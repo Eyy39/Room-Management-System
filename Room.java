@@ -1,13 +1,17 @@
 public class Room {
     int roomNumber;
     String roomType;
-    double price;
+    double pricePerNight;
     boolean isAvailable;
 
-    Room(int roomNumber, String roomType, double price) {
+    Room(int roomNumber, String roomType, double pricePerNight) {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
-        this.price = price;
+        if(pricePerNight < 0){
+            this.pricePerNight = 0.0;
+        }else{
+            this.pricePerNight = pricePerNight;
+        }
         this.isAvailable = true;
     }
     void displayRoom(){
