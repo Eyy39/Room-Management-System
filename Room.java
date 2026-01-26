@@ -17,7 +17,7 @@ public class Room {
     void displayRoom(){
         System.out.println("Room Number: " + roomNumber);
         System.out.println("Room Type: " + roomType);
-        System.out.println("Price: $" + price);
+        System.out.println("Price: $" + pricePerNight);
         System.out.println("Available: " + isAvailable + "\n");
     }
 }
