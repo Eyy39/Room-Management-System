@@ -14,5 +14,15 @@ public class Booking {
         this.days= days;
         this.price = price;
     }
-    pu
+    public void showBooking(){
+        System.out.println("Booking ID: " + BookingID);
+        System.out.println("Room Type: " + roomType);
+        System.out.println("CheckIn Date: " + CheckIn);
+        System.out.println("Duration: " + days);
+        System.out.println("Total: " + Total());
+    }
+    public double Total () {
+        return days*price;
+
+    }
 }
