@@ -1,10 +1,10 @@
 public class Room {
-    private int roomNumber;
-    private String roomType;
-    private double price;
-    private boolean isAvailable;
+    int roomNumber;
+    String roomType;
+    double price;
+    boolean isAvailable;
 
-    public Room(int roomNumber, String roomType, double price) {
+    Room(int roomNumber, String roomType, double price) {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
         this.price = price;
