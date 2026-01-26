@@ -33,10 +33,12 @@ public class Main {
                 case 2:
                     System.out.println("\n--- Guest Information ---\n");
                     guest1.displayGuest();
+                    booking1.showBooking();
                     break;
                 case 3:
                     System.out.println("\n--- Booking Room ---\n");
-                    booking1.showBooking();
+                    room1.displayRoom();
+                    
                     break; 
                 case 4:
                     System.out.println("\n--- Staff Information ---\n");
