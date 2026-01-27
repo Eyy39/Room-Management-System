@@ -10,7 +10,7 @@ public class Main {
         Staff staff2 = new Staff(2, "Sok Aliza", "Receptionist", 'F');
         Booking booking1 = new Booking(1005, "Try Dara", "Single", "2024-07-01", 3, 100.0);
 
-        Scanner scanner = new Scanner(System.in); 
+        Scanner scanner = new Scanner(System.in); // Scanner for user input
         int choice;
         boolean exit = false; 
         while(!exit){
@@ -37,7 +37,7 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("\n--- Booking Room ---\n");
-                    room1.displayRoom();
+                    booking1.showBooking();;
                     
                     break; 
                 case 4:
@@ -53,7 +53,7 @@ public class Main {
                     System.out.println("Invalid choice. Please try again.");
                 }
         }
-        scanner.close();
+        scanner.close(); // Close the scanner
     }
     
 }
