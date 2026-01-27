@@ -2,7 +2,6 @@ public class Guest {
     String guestName;
     int guestID;
     String phoneNumber;
-    int roomNumber;
 
     public Guest(String guestName, int guestID, String phoneNumber){
         this.guestName = guestName;
