@@ -5,7 +5,7 @@ public class Main {
 
         Room room1 = new Room(101, "Single", 100.0);
         Room room2 = new Room(102, "Double", 150.0);
-        Guest guest1 = new Guest("Nou Sopleap", 1, "086-456-7890");
+        Guest guest1 = new Guest("Nou Sokleap", 1, "086-456-7890");
         Staff staff1 = new Staff(1, "Chan Sokha", "Manager");
         Staff staff2 = new Staff(2, "Sok Aliza", "Receptionist");
         Booking booking1 = new Booking(1005, "Try Dara", "Single", "2024-07-01", 3, 100.0);
