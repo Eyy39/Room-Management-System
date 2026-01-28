@@ -1,17 +1,17 @@
 public class Booking {
     int BookingID;
     String CheckIn;
-    int days;
-    Room price;
+    int night;
+    double price;
     Guest guest;
     Room  room;
 
-    Booking(int BookingID, String CheckIn, int days, Room price, Guest guest, Room room){
+    Booking(int BookingID, String CheckIn, int night, Guest guest, Room room){
          this.BookingID=BookingID;
         this.BookingID=BookingID;
         this.CheckIn = CheckIn;
-        this.days= days;
-        this.price =price;
+        this.night= night;
+        this.price =room.pricePerNight;
         this.guest = guest;
         this.room = room;
     }
@@ -20,11 +20,15 @@ public class Booking {
         System.out.println("Booking ID: " + BookingID);
         System.out.println("Room Type: " + room.roomType);
         System.out.println("CheckIn Date: " + CheckIn);
-        System.out.println("Duration: " + days);
+        if(night == 1){
+            System.out.println("Duration: " + night + " night");
+        }else{
+            System.out.println("Duration: " + night + " nights");
+        }
+        System.out.println("Price per Night: $" + price);
         System.out.println("Total: " + Total());
     }
     public double Total () {
-        return days* price.pricePerNight;
-
+        return night* price;
     }
 }
