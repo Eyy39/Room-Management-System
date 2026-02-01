@@ -19,32 +19,48 @@ public class Main {
             System.out.println("2. Display Guest Information");
             System.out.println("3. Book a Room");
             System.out.println("4. Show Staff Information");
-            System.out.println("5. Exit");
+            System.out.println("5. Show Booking Schedule");
+            System.out.println("6. Exit");
             System.out.print("Enter your choice: ");
 
             choice = scanner.nextInt(); // Read user input
             switch(choice){
                 case 1:
-                    System.out.println("\n--- Room Details ---\n");
+                    System.out.println("======================================");
+                    System.out.println("      ROOM DETAILS");
+                    System.out.println("======================================");
                     room1.displayRoom();
                     room2.displayRoom();
                     break;
             
                 case 2:
-                    System.out.println("\n--- Guest Information ---\n");
+                    System.out.println("======================================");
+                    System.out.println("      GUEST INFORMATION");
+                    System.out.println("======================================");
                     booking1.showBooking();
                     break;
                 case 3:
-                    System.out.println("\n--- Booking Room ---\n");
+                    System.out.println("======================================");
+                    System.out.println("      BOOKING ROOM");
+                    System.out.println("======================================");
                     booking1.showBooking();;
                     
                     break; 
                 case 4:
-                    System.out.println("\n--- Staff Information ---\n");
+                    System.out.println("======================================");
+                    System.out.println("      STAFF INFORMATION");
+                    System.out.println("======================================");
                     staff1.displayStaff();
                     staff2.displayStaff();
                     break;
                 case 5:
+                    System.out.println("======================================");
+                    System.out.println("      ROOM BOOKING SCHEDULE");
+                    System.out.println("======================================");
+                    BookingSchedule schedule = new BookingSchedule();
+                    schedule.showBookingSchedule();
+                    break;
+                case 6:
                     exit = true; 
                     System.out.println("Exiting the system. Goodbye!");
                     break;
