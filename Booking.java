@@ -5,8 +5,9 @@ public class Booking {
     double price;
     Guest guest;
     Room  room;
+    Staff staff;
 
-    Booking(int BookingID, String CheckIn, int night, Guest guest, Room room){
+    Booking(int BookingID, String CheckIn, int night, Guest guest, Room room, Staff staff){
          this.BookingID=BookingID;
         this.BookingID=BookingID;
         this.CheckIn = CheckIn;
@@ -14,6 +15,7 @@ public class Booking {
         this.price =room.pricePerNight;
         this.guest = guest;
         this.room = room;
+        this.staff = staff;
     }
     public void showBooking(){
         System.out.println("Customer Name: " + guest.guestName);
@@ -27,6 +29,8 @@ public class Booking {
         }
         System.out.println("Price per Night: $" + price);
         System.out.println("Total: " + Total());
+        System.out.println( "======================================" );
+        System.out.println("Staff Assigned: " + staff.name);
     }
     public double Total () {
         return night* price;

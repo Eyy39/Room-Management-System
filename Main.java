@@ -3,12 +3,12 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        Room room1 = new Room(101, "Single", 100.0);
-        Room room2 = new Room(102, "Double", 150.0);
+        Room room1 = new Room("A101", "Single", 100.0);
+        Room room2 = new Room("A102", "Double", 150.0);
         Guest guest1 = new Guest("Nou Sokleap", 1, "086-456-7890");
-        Staff staff1 = new Staff(1, "Chan Sokha", "Manager", 'M');
-        Staff staff2 = new Staff(2, "Sok Aliza", "Receptionist", 'F');
-        Booking booking1 = new Booking(1, "2024-10-01", 3, guest1, room1);
+        Staff staff1 = new Staff("Chan Sokha", "Manager", 'M');
+        Staff staff2 = new Staff("Sok Aliza", "Receptionist", 'F');
+        Booking booking1 = new Booking(1, "2024-10-01", 3, guest1, room1, staff2);
 
         Scanner scanner = new Scanner(System.in); // Scanner for user input
         int choice;

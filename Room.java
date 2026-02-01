@@ -1,10 +1,10 @@
 public class Room {
-    int roomNumber;
+    String roomNumber;
     String roomType;
     double pricePerNight;
-    boolean isAvailable;
+    String status;
 
-    Room(int roomNumber, String roomType, double pricePerNight) {
+    Room(String roomNumber, String roomType, double pricePerNight) {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
         if(pricePerNight < 0){
@@ -12,12 +12,12 @@ public class Room {
         }else{
             this.pricePerNight = pricePerNight;
         }
-        this.isAvailable = true;
+        this.status = "Available";
     }
     void displayRoom(){
         System.out.println("Room Number: " + roomNumber);
         System.out.println("Room Type: " + roomType);
         System.out.println("Price: $" + pricePerNight);
-        System.out.println("Available: " + isAvailable + "\n");
+        System.out.println("Status: " + status + "\n");
     }
 }
