@@ -29,21 +29,21 @@ public class Main {
                     System.out.println("======================================");
                     System.out.println("      ROOM DETAILS");
                     System.out.println("======================================");
-                    room1.displayRoom();
-                    room2.displayRoom();
+                    System.out.println(room1.toString());
+                    System.out.println(room2.toString());
                     break;
             
                 case 2:
                     System.out.println("======================================");
                     System.out.println("      GUEST INFORMATION");
                     System.out.println("======================================");
-                    booking1.showBooking();
+                    System.out.println(booking1.toString());
                     break;
                 case 3:
                     System.out.println("======================================");
                     System.out.println("      BOOKING ROOM");
                     System.out.println("======================================");
-                    booking1.showBooking();
+                    System.out.println(booking1.toString());
                     break; 
                 case 4:
                     System.out.println("======================================");
