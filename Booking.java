@@ -1,16 +1,15 @@
 public class Booking {
-    int bookingCount = 1;
+    Room room;
+    static int bookingCount = 0;
     int BookingID = ++bookingCount;
     String CheckIn;
     int night;
     double price;
     Guest guest;
-    Room  room;
     Staff staff;
 
-    Booking(int BookingID, String CheckIn, int night, Guest guest, Room room, Staff staff){
-         this.BookingID=BookingID;
-        this.BookingID=BookingID;
+    Booking(Guest guest, Room room, String CheckIn, int night, Staff staff){
+        this.BookingID= bookingCount;
         this.CheckIn = CheckIn;
         this.night= night;
         this.price =room.pricePerNight;
@@ -37,7 +36,7 @@ public class Booking {
            "\nPrice per Night: $" + price +
            "\nTotal: $" + Total() +
            "\n======================================" +
-           "\nStaff Assigned: " + staff.name;
+           "\nStaff Assigned: " + staff.name + "\n";
     }
     
 }

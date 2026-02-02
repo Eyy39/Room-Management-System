@@ -8,7 +8,8 @@ public class Main {
         Guest guest1 = new Guest("Nou Sokleap", 1, "086-456-7890");
         Staff staff1 = new Staff("Chan Sokha", "Manager", 'M');
         Staff staff2 = new Staff("Sok Aliza", "Receptionist", 'F');
-        Booking booking1 = new Booking(1, "2024-10-01", 3, guest1, room1, staff2);
+        Booking booking1 = new Booking(guest1, room1, "2024-10-01", 3, staff2);
+        Booking booking2 = new Booking(guest1, room2, "2024-10-05", 2, staff1);
 
         Scanner scanner = new Scanner(System.in); // Scanner for user input
         int choice;
@@ -44,6 +45,7 @@ public class Main {
                     System.out.println("      BOOKING ROOM");
                     System.out.println("======================================");
                     System.out.println(booking1.toString());
+                    System.out.println(booking2.toString());
                     break; 
                 case 4:
                     System.out.println("======================================");
