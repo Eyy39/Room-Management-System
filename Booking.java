@@ -1,5 +1,6 @@
 public class Booking {
-    int BookingID;
+    int bookingCount = 1;
+    int BookingID = ++bookingCount;
     String CheckIn;
     int night;
     double price;
@@ -17,22 +18,26 @@ public class Booking {
         this.room = room;
         this.staff = staff;
     }
-    public void showBooking(){
-        System.out.println("Customer Name: " + guest.guestName);
-        System.out.println("Booking ID: " + BookingID);
-        System.out.println("Room Type: " + room.roomType);
-        System.out.println("CheckIn Date: " + CheckIn);
-        if(night == 1){
-            System.out.println("Duration: " + night + " night");
-        }else{
-            System.out.println("Duration: " + night + " nights");
-        }
-        System.out.println("Price per Night: $" + price);
-        System.out.println("Total: " + Total());
-        System.out.println( "======================================" );
-        System.out.println("Staff Assigned: " + staff.name);
-    }
     public double Total () {
         return night* price;
     }
+    @Override
+    public String toString(){
+        String duration;
+        if(night == 1){
+            duration = night + " night";
+        }else{
+            duration = night + " nights";
+        }
+         return "Customer Name: " + guest.guestName +
+           "\nBooking ID: " + BookingID +
+           "\nRoom Type: " + room.roomType +
+           "\nCheckIn Date: " + CheckIn +
+           "\nDuration: " + duration +
+           "\nPrice per Night: $" + price +
+           "\nTotal: $" + Total() +
+           "\n======================================" +
+           "\nStaff Assigned: " + staff.name;
+    }
+    
 }

@@ -12,7 +12,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in); // Scanner for user input
         int choice;
-        boolean exit = false; 
+        boolean exit = false;
         while(!exit){
             System.out.println("\n=========== Hotel Management System ===========\n");
             System.out.println("1. Display Room Details");
@@ -43,15 +43,14 @@ public class Main {
                     System.out.println("======================================");
                     System.out.println("      BOOKING ROOM");
                     System.out.println("======================================");
-                    booking1.showBooking();;
-                    
+                    booking1.showBooking();
                     break; 
                 case 4:
                     System.out.println("======================================");
                     System.out.println("      STAFF INFORMATION");
                     System.out.println("======================================");
-                    staff1.displayStaff();
-                    staff2.displayStaff();
+                    System.out.println(staff1.toString());
+                    System.out.println(staff2.toString());
                     break;
                 case 5:
                     System.out.println("======================================");
@@ -68,7 +67,6 @@ public class Main {
                     System.out.println("Invalid choice. Please try again.");
                 }
         }
-        scanner.close(); // Close the scanner
     }
     
 }

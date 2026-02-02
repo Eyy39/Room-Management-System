@@ -14,10 +14,19 @@ public class Room {
         }
         this.status = "Available";
     }
-    void displayRoom(){
-        System.out.println("Room Number: " + roomNumber);
-        System.out.println("Room Type: " + roomType);
-        System.out.println("Price: $" + pricePerNight);
-        System.out.println("Status: " + status + "\n");
+    
+    @Override
+    public String toString() {
+        return "Room Number: " + roomNumber + "\nRoom Type: " + roomType
+        + "\nPrice Per Night: $" + pricePerNight + "\nStatus: " + status + "\n";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Room other = (Room) obj;
+        if (!roomType.equals(other.roomType))
+            return false;
+        return true;
+    }
+
 }

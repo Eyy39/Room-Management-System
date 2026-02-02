@@ -8,11 +8,9 @@ public class Guest {
         this.guestID = guestID;
         this.phoneNumber = phoneNumber;
     }
-
-    void  displayGuest(){
-        System.out.println("Guest Name: " + guestName);
-        System.out.println("Guest ID: " + guestID);
-        System.out.println("Phone Number: " + phoneNumber);
+    @Override
+    public String toString() {
+        return "Guest Name: " + guestName + "\nGuest ID: " + guestID
+        + "\nPhone Number: " +phoneNumber + "\n";
     }
-
 }

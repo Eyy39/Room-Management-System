@@ -12,15 +12,15 @@ public class Staff {
         this.position = position;
         this.gender = gender;
     }
-    private String generateStaffId() {
+    String generateStaffId() {
         Random random = new Random(); // Random number generator
         int id = 1000 + random.nextInt(9000); // Generate a 4-digit ID
         return String.valueOf(id); // Convert to string and return
     }
-    void displayStaff(){
-        System.out.println("Staff ID: " + staffId);
-        System.out.println("Name: " + name);
-        System.out.println("Position: " + position);
-        System.out.println("Gender: " + gender + "\n");
+    @Override
+    public String toString() {
+        return "Staff ID: " + staffId + "\nName: " + name + "\nPosition: " + position + 
+        "\nGender: " + gender + "\n";
     }
+
 }
