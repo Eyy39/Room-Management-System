@@ -21,7 +21,6 @@ public class RoomManagement {
     void addRoom(Room room) {
         if (countRooms < rooms.length) {
             rooms[countRooms++] = room;
-            System.out.println("Room added successfully.");
         } else {
             System.out.println("Cannot add more rooms. Maximum capacity reached.");
         }
