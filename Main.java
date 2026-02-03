@@ -2,14 +2,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-
-        Room room1 = new Room("A101", "Single", 100.0);
-        Room room2 = new Room("A102", "Double", 150.0);
+        RoomManagement roomManagement = new RoomManagement(10); // Initialize RoomManagement with max 10 rooms
         Guest guest1 = new Guest("Nou Sokleap", 1, "086-456-7890");
         Staff staff1 = new Staff("Chan Sokha", "Manager", 'M');
         Staff staff2 = new Staff("Sok Aliza", "Receptionist", 'F');
-        Booking booking1 = new Booking(guest1, room1, "2024-10-01", 3, staff2);
-        Booking booking2 = new Booking(guest1, room2, "2024-10-05", 2, staff1);
+        Booking booking1 = new Booking(guest1, roomManagement.rooms[0], "2024-10-01", 3, staff2,0);
+        Booking booking2 = new Booking(guest1, roomManagement.rooms[1], "2024-10-05", 2, staff1,10.0);
 
         Scanner scanner = new Scanner(System.in); // Scanner for user input
         int choice;
@@ -30,8 +28,7 @@ public class Main {
                     System.out.println("======================================");
                     System.out.println("      ROOM DETAILS");
                     System.out.println("======================================");
-                    System.out.println(room1.toString());
-                    System.out.println(room2.toString());
+                    roomManagement.displayAllRooms();
                     break;
             
                 case 2:
@@ -39,13 +36,16 @@ public class Main {
                     System.out.println("      GUEST INFORMATION");
                     System.out.println("======================================");
                     System.out.println(booking1.toString());
+                    System.out.println(booking2.toString());
                     break;
                 case 3:
                     System.out.println("======================================");
                     System.out.println("      BOOKING ROOM");
                     System.out.println("======================================");
-                    System.out.println(booking1.toString());
-                    System.out.println(booking2.toString());
+                    scanner.nextLine(); // clear buffer
+                    System.out.print("Enter room type to search: ");
+                    String type = scanner.nextLine();
+                    roomManagement.findRoomsByType(roomManagement.rooms, roomManagement.countRooms, type);
                     break; 
                 case 4:
                     System.out.println("======================================");
