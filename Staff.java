@@ -1,10 +1,10 @@
-import java.util.Random;
 
 public class Staff {
     String staffId;
     String name;
     String position;
     char gender;
+    static int staffCounter = 1000;
 
     Staff(String name, String position, char gender) {
         this.staffId = generateStaffId(); // Generate a unique staff ID
@@ -13,9 +13,7 @@ public class Staff {
         this.gender = gender;
     }
     String generateStaffId() {
-        Random random = new Random(); // Random number generator
-        int id = 1000 + random.nextInt(9000); // Generate a 4-digit ID
-        return String.valueOf(id); // Convert to string and return
+        return "ST" + (++staffCounter);
     }
     @Override
     public String toString() {
