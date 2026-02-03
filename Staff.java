@@ -4,7 +4,7 @@ public class Staff {
     String name;
     String position;
     char gender;
-    static int staffCounter = 1000;
+    static int staffCounter = 0;
 
     Staff(String name, String position, char gender) {
         this.staffId = generateStaffId(); // Generate a unique staff ID

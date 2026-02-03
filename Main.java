@@ -3,7 +3,8 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         RoomManagement roomManagement = new RoomManagement(10); // Initialize RoomManagement with max 10 rooms
-        Guest guest1 = new Guest("Nou Sokleap", 1, "086-456-7890");
+        Guest guest1 = new Guest("Nou Sokleap", "086-456-7890", "nou.sokleap@gmail.com");
+        Guest guest2 = new Guest("Lim Dara", "089-123-4567", "lim.dara@gmail.com");
         Staff staff1 = new Staff("Chan Sokha", "Manager", 'M');
         Staff staff2 = new Staff("Sok Aliza", "Receptionist", 'F');
         Booking booking1 = new Booking(guest1, roomManagement.rooms[0], "2024-10-01", 3, staff2,0);
@@ -35,8 +36,8 @@ public class Main {
                     System.out.println("======================================");
                     System.out.println("      GUEST INFORMATION");
                     System.out.println("======================================");
-                    System.out.println(booking1.toString());
-                    System.out.println(booking2.toString());
+                    System.out.println(guest1.toString());
+                    System.out.println(guest2.toString());
                     break;
                 case 3:
                     System.out.println("======================================");
