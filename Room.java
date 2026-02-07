@@ -2,7 +2,8 @@ public class Room {
     String roomNumber;
     String roomType;
     double pricePerNight;
-    String status;
+    int roomID;
+    static int roomCounter = 0;
 
     Room(String roomNumber, String roomType, double pricePerNight) {
         this.roomNumber = roomNumber;
@@ -12,13 +13,13 @@ public class Room {
         }else{
             this.pricePerNight = pricePerNight;
         }
-        this.status = "Available";
+        this.roomID = ++roomCounter;
     }
     
     @Override
     public String toString() {
-        return "Room Number: " + roomNumber + "\nRoom Type: " + roomType
-        + "\nPrice Per Night: $" + pricePerNight + "\nStatus: " + status + "\n";
+        return "Room Number: " + roomNumber + "\nRoom Type: " + roomType 
+        + "\nRoom ID: " + roomID + "\nPrice Per Night: $" + pricePerNight + "\n";
     }
 
     @Override

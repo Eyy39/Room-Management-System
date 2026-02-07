@@ -19,4 +19,9 @@ public class Guest {
         return "Guest Name: " + guestName + "\nGuest ID: " + guestID
         + "\nPhone Number: " +phoneNumber + "\nEmail: " + email + "\n";
     }
+    @Override
+    public boolean equals(Object obj) {
+        // TODO Auto-generated method stub
+        return super.equals(obj);
+    }
 }

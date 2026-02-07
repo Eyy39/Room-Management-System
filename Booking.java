@@ -8,6 +8,7 @@ public class Booking {
     double discountPrice;
     Guest guest;
     Staff staff;
+    String status;
 
     Booking(Guest guest, Room room, String CheckIn, int night, Staff staff, double discountPercent){
         this.BookingID= ++bookingCount; // Increment booking count for unique ID
@@ -18,6 +19,7 @@ public class Booking {
         this.guest = guest;
         this.room = room;
         this.staff = staff;
+        this.status = "Available";
     }
     public double Total () {
         return night* (originalPrice - discountPrice);

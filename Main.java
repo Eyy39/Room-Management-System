@@ -2,13 +2,13 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        RoomManagement roomManagement = new RoomManagement(10); // Initialize RoomManagement with max 10 rooms
+        Hotel hotel = new Hotel(10); // Initialize RoomManagement with max 10 rooms
         Guest guest1 = new Guest("Nou Sokleap", "086-456-7890", "nou.sokleap@gmail.com");
         Guest guest2 = new Guest("Lim Dara", "089-123-4567", "lim.dara@gmail.com");
         Staff staff1 = new Staff("Chan Sokha", "Manager", 'M');
         Staff staff2 = new Staff("Sok Aliza", "Receptionist", 'F');
-        Booking booking1 = new Booking(guest1, roomManagement.rooms[0], "2024-10-01", 3, staff2,0);
-        Booking booking2 = new Booking(guest1, roomManagement.rooms[1], "2024-10-05", 2, staff1,10.0);
+        Booking booking1 = new Booking(guest1, hotel.rooms[0], "2024-10-01", 3, staff2,0);
+        Booking booking2 = new Booking(guest1, hotel.rooms[1], "2024-10-05", 2, staff1,10.0);
 
         Scanner scanner = new Scanner(System.in); // Scanner for user input
         int choice;
@@ -29,7 +29,7 @@ public class Main {
                     System.out.println("======================================");
                     System.out.println("      ROOM DETAILS");
                     System.out.println("======================================");
-                    roomManagement.displayAllRooms();
+                    hotel.displayAllRooms();
                     break;
             
                 case 2:
@@ -46,7 +46,7 @@ public class Main {
                     scanner.nextLine(); // clear buffer
                     System.out.print("Enter room type to search: ");
                     String type = scanner.nextLine();
-                    roomManagement.findRoomsByType(roomManagement.rooms, roomManagement.countRooms, type);
+                    hotel.findRoomsByType(hotel.rooms, hotel.countRooms, type);
                     break; 
                 case 4:
                     System.out.println("======================================");

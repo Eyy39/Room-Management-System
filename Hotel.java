@@ -1,8 +1,8 @@
-public class RoomManagement {
+public class Hotel {
     Room[] rooms;
     int countRooms;
 
-    RoomManagement(int maxRooms) {
+    Hotel(int maxRooms) {
         rooms = new Room[maxRooms]; // Initialize the array with maximum capacity
         countRooms = 0;
 
