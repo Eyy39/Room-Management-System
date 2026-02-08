@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Hotel {
     Room[] rooms;
     int countRooms;
@@ -43,4 +45,18 @@ public class Hotel {
             System.out.println(rooms[i].toString());
         }
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass()) 
+            return false;
+        Hotel other = (Hotel) obj;
+        if (!Arrays.equals(rooms, other.rooms))
+            return false;
+        return true;
+    }
+    
 }

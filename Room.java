@@ -1,9 +1,12 @@
+import java.util.Objects;
+
 public class Room {
     String roomNumber;
     String roomType;
     double pricePerNight;
     int roomID;
     static int roomCounter = 0;
+
 
     Room(String roomNumber, String roomType, double pricePerNight) {
         this.roomNumber = roomNumber;
@@ -24,10 +27,10 @@ public class Room {
 
     @Override
     public boolean equals(Object obj) {
-        Room other = (Room) obj;
-        if (!roomType.equals(other.roomType))
-            return false;
-        return true;
+        if (this == obj) return true; // Check if the objects are the same
+        if (!(obj instanceof Room)) return false; // Check if the object is an instance of Room
+        Room other = (Room) obj; 
+        return Objects.equals(this.roomType, other.roomType);
     }
 
 }

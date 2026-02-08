@@ -7,8 +7,8 @@ public class Main {
         Guest guest2 = new Guest("Lim Dara", "089-123-4567", "lim.dara@gmail.com");
         Staff staff1 = new Staff("Chan Sokha", "Manager", 'M');
         Staff staff2 = new Staff("Sok Aliza", "Receptionist", 'F');
-        Booking booking1 = new Booking(guest1, hotel.rooms[0], "2024-10-01", 3, staff2,0);
-        Booking booking2 = new Booking(guest1, hotel.rooms[1], "2024-10-05", 2, staff1,10.0);
+        checkIn booking1 = new checkIn(guest1, hotel.rooms[0], "2024-10-01", 3, staff2,0);
+        checkIn booking2 = new checkIn(guest1, hotel.rooms[1], "2024-10-05", 2, staff1,10.0);
 
         Scanner scanner = new Scanner(System.in); // Scanner for user input
         int choice;
@@ -59,7 +59,7 @@ public class Main {
                     System.out.println("======================================");
                     System.out.println("      ROOM BOOKING SCHEDULE");
                     System.out.println("======================================");
-                    BookingSchedule schedule = new BookingSchedule();
+                    checkIn.BookingSchedule schedule = booking1.getBookingSchedule();
                     schedule.showBookingSchedule();
                     break;
                 case 6:
