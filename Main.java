@@ -7,8 +7,8 @@ public class Main {
         Guest guest2 = new Guest("Lim Dara", "089-123-4567", "lim.dara@gmail.com");
         Staff staff1 = new Staff("Chan Sokha", "Manager", 'M');
         Staff staff2 = new Staff("Sok Aliza", "Receptionist", 'F');
-        checkIn booking1 = new checkIn(guest1, hotel.getRoom(0), "2024-10-01", 3, staff2, 0);
-        checkIn booking2 = new checkIn(guest1, hotel.getRoom(1), "2024-10-05", 2, staff1, 10.0);
+        CheckIn booking1 = new CheckIn(guest1, hotel.getRoom(0), "2024-10-01", 3, staff2, 0);
+        CheckIn booking2 = new CheckIn(guest1, hotel.getRoom(1), "2024-10-05", 2, staff1, 10.0);
 
         Scanner scanner = new Scanner(System.in); // Scanner for user input
         int choice;

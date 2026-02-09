@@ -1,7 +1,7 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class CheckIn {
+ class CheckIn {
     private Room room;
     private static int bookingCount = 0;
     private int BookingID;
@@ -43,8 +43,18 @@ public class CheckIn {
     public double getOriginalPrice() {
         return originalPrice;
     }
+    public void setOriginalPrice(Staff staff, double originalPrice) {
+        if(staff.getPosition().equals("Manager") || staff.getPosition().equals("Receptionist")){
+            System.out.println("Original Price: $" + originalPrice);
+        }
+    }
     public double getDiscountPrice() {
         return discountPrice;
+    }
+    public void setDiscountPrice(Staff staff, double discountPercent) {
+        if(staff.getPosition().equals("Manager") || staff.getPosition().equals("Receptionist")){
+            this.discountPrice = originalPrice * (discountPercent / 100);
+        }
     }
     public Guest getGuest() {
         return guest;
@@ -56,7 +66,7 @@ public class CheckIn {
         return staff;
     }
 
-    public String getStatus() {
+    public String getStatus(){
         return status;
     }
     public void setStatus(Staff staff, String status){
