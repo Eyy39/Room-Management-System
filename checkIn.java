@@ -1,7 +1,7 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class checkIn {
+public class CheckIn {
     private Room room;
     private static int bookingCount = 0;
     private int BookingID;
@@ -13,7 +13,7 @@ public class checkIn {
     private Staff staff;
     private String status;
 
-    checkIn(Guest guest, Room room, String CheckIn, int night, Staff staff, double discountPercent){
+    public CheckIn(Guest guest, Room room, String CheckIn, int night, Staff staff, double discountPercent){
         this.BookingID= ++bookingCount; // Increment booking count for unique ID
         this.CheckIn = CheckIn;
         this.night= night;
@@ -26,10 +26,34 @@ public class checkIn {
     }
 
     // Login
-    checkIn(Guest guest, String checkInDate){
+    public CheckIn(Guest guest, String checkInDate){
         this.guest = guest;
         this.CheckIn = checkInDate;
         this.status = "Checked In";
+    }
+    public int getBookingID() {
+        return BookingID;
+    }
+    public String getCheckIn() {
+        return CheckIn;
+    }
+    public int getNight() {
+        return night;
+    }
+    public double getOriginalPrice() {
+        return originalPrice;
+    }
+    public double getDiscountPrice() {
+        return discountPrice;
+    }
+    public Guest getGuest() {
+        return guest;
+    }
+    public Room getRoom() {
+        return room;
+    }
+    public Staff getStaff() {
+        return staff;
     }
 
     public String getStatus() {
@@ -45,13 +69,16 @@ public class checkIn {
     }
 
         static final int LIMIT_DAYS = 10; // Maximum booking days allowed
+        public static int getBookingCount() {
+            return bookingCount;
+        }
         
          public boolean isBookingDateValid(LocalDate bookingDate) {
             LocalDate today = LocalDate.now(); // Current date
             LocalDate maxBookingDate = today.plusDays(LIMIT_DAYS); // Maximum booking date allowed
             return !bookingDate.isAfter(maxBookingDate); // Check if booking date is within limit
         }
-        void showBookingSchedule(){
+        public void showBookingSchedule(){
             LocalDate today = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy"); // Date format
 
@@ -70,7 +97,7 @@ public class checkIn {
         }else{
             duration = night + " nights";
         }
-         return "Customer Name: " + guest.guestName +
+         return "Customer Name: " + guest.getGuestName() +
            "\nBooking ID: " + BookingID +
            "\nRoom Type: " + room.getRoomType() +
            "\nCheckIn Date: " + CheckIn +

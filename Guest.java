@@ -1,9 +1,9 @@
 public class Guest {
-    String guestName;
-    String guestID;
-    String phoneNumber;
-    String email;
-    static int guestCounter = 0;
+    private String guestName;
+    private String guestID;
+    private String phoneNumber;
+    private String email;
+    private static int guestCounter = 0;
 
     public Guest(String guestName, String phoneNumber, String email){
         this.guestName = guestName;
@@ -19,13 +19,56 @@ public class Guest {
             return "Invalid email address.";
         }
     }
-    String generateGuestID(){
+    private String generateGuestID(){
         return "G" + (++guestCounter);
+    }
+    public String getGuestName() {
+        return guestName;
+    }
+    public void setGuestName(String guestName) {
+        if (guestName == null || guestName.trim().isEmpty()) {
+            System.out.println("Invalid guest name. Name not updated.");
+            return;
+        }
+        this.guestName = guestName.trim();
+    }
+    public String getGuestID() {
+        return guestID;
+    }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+    public void setPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            System.out.println("Invalid phone number. Phone not updated.");
+            return;
+        }
+        this.phoneNumber = phoneNumber.trim();
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        if (!isEmailValid(email)) {
+            System.out.println("Invalid email address. Email not updated.");
+            return;
+        }
+        this.email = email;
+    }
+    private boolean isEmailValid(String email) {
+        if (email == null) {
+            return false;
+        }
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        return email.matches(emailRegex);
+    }
+    public static int getGuestCounter() {
+        return guestCounter;
     }
     @Override
     public String toString() {
         return "Guest Name: " + guestName + "\nGuest ID: " + guestID
-        + "\nPhone Number: " +phoneNumber + "\nEmail: " + email + "\n";
+        + "\nPhone Number: " + phoneNumber + "\nEmail: " + email + "\n";
     }
     @Override
     public boolean equals(Object obj) {

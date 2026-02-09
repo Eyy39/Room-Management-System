@@ -6,16 +6,19 @@ public class Staff {
     private char gender;
     private static int staffCounter = 0;
 
-    Staff(String name, String position, char gender) {
+    public Staff(String name, String position, char gender) {
         this.staffId = generateStaffId(); // Generate a unique staff ID
         this.name = name;
         this.position = position;
         this.gender = gender;
     }
     // login constructor
-    Staff(String staffId, String name){
+    public Staff(String staffId, String name){
         this.staffId = staffId;
         this.name = name;
+    }
+    public String getStaffId() {
+        return staffId;
     }
     public String getName(){
         return name;
@@ -31,9 +34,25 @@ public class Staff {
     public String getPosition(){
         return position;
     }
+    public void setPosition(String position) {
+        if (position == null || position.trim().isEmpty()) {
+            System.out.println("Invalid position. Position not updated.");
+            return;
+        }
+        this.position = position.trim();
+    }
+    public char getGender() {
+        return gender;
+    }
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
 
-    String generateStaffId() {
+    private String generateStaffId() {
         return "ST" + (++staffCounter);
+    }
+    public static int getStaffCounter() {
+        return staffCounter;
     }
     @Override
     public String toString() {

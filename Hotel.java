@@ -1,10 +1,10 @@
 import java.util.Arrays;
 
 public class Hotel {
-    Room[] rooms;
-    int countRooms;
+    private Room[] rooms;
+    private int countRooms;
 
-    Hotel(int maxRooms) {
+    public Hotel(int maxRooms) {
         rooms = new Room[maxRooms]; // Initialize the array with maximum capacity
         countRooms = 0;
 
@@ -20,19 +20,23 @@ public class Hotel {
         addRoom(new Room("E501", "Single", 100.0));
         addRoom(new Room("E502", "Suite", 250.0));
     }
-    void addRoom(Room room) {
+    public void addRoom(Room room) {
         if (countRooms < rooms.length) {
             rooms[countRooms++] = room;
         } else {
             System.out.println("Cannot add more rooms. Maximum capacity reached.");
         }
     }
-    void findRoomsByType(Room[] rooms, int roomCount, String type){
+    public void findRoomsByType(String type){
         boolean found = false;
+        if (type == null) {
+            System.out.println("Room type cannot be null.");
+            return;
+        }
 
-        for (int i = 0; i < roomCount; i++) {
+        for (int i = 0; i < countRooms; i++) {
             if (rooms[i].getRoomType().equals(type)) {
-                System.out.println(rooms[i]);
+                System.out.println(rooms[i].toString());
                 found = true;
             }
         }
@@ -40,10 +44,21 @@ public class Hotel {
             System.out.println("No rooms available for this type.");
         }
     }
-    void displayAllRooms(){
-        for(int i = 0; i < countRooms; i++){
+    public void displayAllRooms(){
+        for (int i = 0; i < countRooms; i++) {
             System.out.println(rooms[i].toString());
         }
+    }
+
+    public Room getRoom(int index) {
+        if (index < 0 || index >= countRooms) {
+            return null;
+        }
+        return rooms[index];
+    }
+
+    public int getRoomCount() {
+        return countRooms;
     }
     @Override
     public boolean equals(Object obj) {

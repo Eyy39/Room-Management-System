@@ -7,8 +7,7 @@ public class Room {
     private int roomID;
     private static int roomCounter = 0;
 
-
-    Room(String roomNumber, String roomType, double pricePerNight) {
+    public Room(String roomNumber, String roomType, double pricePerNight) {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
         this.pricePerNight = pricePerNight;
@@ -21,7 +20,7 @@ public class Room {
         return roomType;
     }
     public void setRoomType(String roomType){
-        if(roomType != null && roomType.isEmpty()){
+        if (roomType != null && !roomType.trim().isEmpty()) {
             this.roomType = roomType;
         }
     }
@@ -34,6 +33,12 @@ public class Room {
         }else{
             this.pricePerNight = pricePerNight;
         }
+    }
+    public int getRoomId() {
+        return roomID;
+    }
+    public static int getRoomCounter() {
+        return roomCounter;
     }
     
     @Override
