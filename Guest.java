@@ -11,6 +11,14 @@ public class Guest {
         this.phoneNumber = phoneNumber;
         this.email = email;
     }
+    public String Regex(){
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if(email.matches(emailRegex)){
+            return "Valid email address.";
+        }else{
+            return "Invalid email address.";
+        }
+    }
     String generateGuestID(){
         return "G" + (++guestCounter);
     }
