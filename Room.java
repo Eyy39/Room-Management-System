@@ -1,22 +1,39 @@
 import java.util.Objects;
 
 public class Room {
-    String roomNumber;
-    String roomType;
-    double pricePerNight;
-    int roomID;
-    static int roomCounter = 0;
+    private String roomNumber;
+    private String roomType;
+    private double pricePerNight;
+    private int roomID;
+    private static int roomCounter = 0;
 
 
     Room(String roomNumber, String roomType, double pricePerNight) {
         this.roomNumber = roomNumber;
         this.roomType = roomType;
+        this.pricePerNight = pricePerNight;
+        this.roomID = ++roomCounter;
+    }
+    public String getRoomNumber() {
+        return roomNumber;
+    }
+    public String getRoomType() {
+        return roomType;
+    }
+    public void setRoomType(String roomType){
+        if(roomType != null && roomType.isEmpty()){
+            this.roomType = roomType;
+        }
+    }
+    public double getPricePerNight(){
+        return pricePerNight;
+    }
+    public void setPricePerNight(double pricePerNight) {
         if(pricePerNight < 0){
             this.pricePerNight = 0.0;
         }else{
             this.pricePerNight = pricePerNight;
         }
-        this.roomID = ++roomCounter;
     }
     
     @Override

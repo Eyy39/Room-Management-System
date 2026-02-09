@@ -31,7 +31,7 @@ public class Hotel {
         boolean found = false;
 
         for (int i = 0; i < roomCount; i++) {
-            if (rooms[i].roomType.equals(type)) {
+            if (rooms[i].getRoomType().equals(type)) {
                 System.out.println(rooms[i]);
                 found = true;
             }

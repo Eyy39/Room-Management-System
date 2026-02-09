@@ -2,40 +2,51 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class checkIn {
-    Room room;
-    static int bookingCount = 0;
-    int BookingID;
-    String CheckIn;
-    int night;
-    double originalPrice;
-    double discountPrice;
-    Guest guest;
-    Staff staff;
-    String status;
+    private Room room;
+    private static int bookingCount = 0;
+    private int BookingID;
+    private String CheckIn;
+    private int night;
+    private double originalPrice;
+    private double discountPrice;
+    private Guest guest;
+    private Staff staff;
+    private String status;
 
     checkIn(Guest guest, Room room, String CheckIn, int night, Staff staff, double discountPercent){
         this.BookingID= ++bookingCount; // Increment booking count for unique ID
         this.CheckIn = CheckIn;
         this.night= night;
-        this.originalPrice =room.pricePerNight;
+        this.originalPrice = room.getPricePerNight();
         this.discountPrice = originalPrice * (discountPercent / 100);
         this.guest = guest;
-        this.room = room;
+        this.room = room;        
         this.staff = staff;
         this.status = "Available";
+    }
+
+    // Login
+    checkIn(Guest guest, String checkInDate){
+        this.guest = guest;
+        this.CheckIn = checkInDate;
+        this.status = "Checked In";
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(Staff staff, String status){
+        if(staff.getPosition().equals("Manager") || staff.getPosition().equals("Receptionist")){
+             this.status = status;
+        }
     }
     public double Total () {
         return night* (originalPrice - discountPrice);
     }
 
-    
-    public BookingSchedule getBookingSchedule() {
-        return new BookingSchedule();
-    } 
-    static class BookingSchedule {
         static final int LIMIT_DAYS = 10; // Maximum booking days allowed
         
-        boolean isAvailable(LocalDate bookingDate) {
+         public boolean isBookingDateValid(LocalDate bookingDate) {
             LocalDate today = LocalDate.now(); // Current date
             LocalDate maxBookingDate = today.plusDays(LIMIT_DAYS); // Maximum booking date allowed
             return !bookingDate.isAfter(maxBookingDate); // Check if booking date is within limit
@@ -51,8 +62,6 @@ public class checkIn {
             System.out.println("======================================");
         }
 
-
-    }
     @Override
     public String toString(){
         String duration;
@@ -63,14 +72,14 @@ public class checkIn {
         }
          return "Customer Name: " + guest.guestName +
            "\nBooking ID: " + BookingID +
-           "\nRoom Type: " + room.roomType +
+           "\nRoom Type: " + room.getRoomType() +
            "\nCheckIn Date: " + CheckIn +
            "\nDuration: " + duration +
            "\nPrice per Night: $" + originalPrice +
            "\nDiscount: $" + discountPrice +
            "\nTotal: $" + Total() +
            "\n======================================" +
-           "\nStaff Assigned: " + staff.name + "\n";
+           "\nStaff Assigned: " + staff.getName() + "\n";
     }
     
 }
