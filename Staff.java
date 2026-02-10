@@ -8,9 +8,9 @@ public class Staff {
 
     public Staff(String name, String position, char gender) {
         this.staffId = generateStaffId(); // Generate a unique staff ID
-        this.name = getName();
-        this.position = getPosition();
-        this.gender = getGender();
+        this.setName(name);
+        this.setPosition(position);
+        this.setGender(gender);
     }
     // login constructor
     public Staff(String staffId, String name){

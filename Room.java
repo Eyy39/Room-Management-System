@@ -8,16 +8,21 @@ public class Room {
     private static int roomCounter = 0;
 
     public Room(String roomNumber, String roomType, double pricePerNight) {
-        this.roomNumber = getRoomNumber();
-        this.roomType = getRoomType();
-        this.pricePerNight = getPricePerNight();
-        this.roomID = ++roomCounter;
+        this.setRoomNumber(roomNumber);;
+        this.setRoomType(roomType);;
+        this.setPricePerNight(pricePerNight);;
+        this.setRoomId();
     }
     public String getRoomNumber() {
         return roomNumber;
     }
     public String getRoomType() {
         return roomType;
+    }
+    public void setRoomNumber(String roomNumber) {
+        if (roomNumber != null && !roomNumber.trim().isEmpty()) {
+            this.roomNumber = roomNumber;
+        }
     }
     public void setRoomType(String roomType){
         if (roomType != null && !roomType.trim().isEmpty()) {
@@ -39,6 +44,9 @@ public class Room {
     }
     public static int getRoomCounter() {
         return roomCounter;
+    }
+    public void setRoomId() {
+        this.roomID = ++roomCounter;
     }
     
     @Override

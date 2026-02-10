@@ -6,10 +6,10 @@ public class Guest {
     private static int guestCounter = 0;
 
     public Guest(String guestName, String phoneNumber, String email){
-        this.guestName = getGuestName();
+        this.setGuestName(guestName);
         this.guestID = generateGuestID();
-        this.phoneNumber = getPhoneNumber();
-        this.email = getEmail();
+        this.setPhoneNumber(phoneNumber);
+        this.setEmail(email);
     }
     public String Regex(){
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
