@@ -8,9 +8,9 @@ public class Room {
     private static int roomCounter = 0;
 
     public Room(String roomNumber, String roomType, double pricePerNight) {
-        this.setRoomNumber(roomNumber);;
-        this.setRoomType(roomType);;
-        this.setPricePerNight(pricePerNight);;
+        this.setRoomNumber(roomNumber);
+        this.setRoomType(roomType);
+        this.setPricePerNight(pricePerNight);
         this.setRoomId();
     }
     public String getRoomNumber() {
