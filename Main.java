@@ -2,13 +2,35 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Hotel hotel = new Hotel(10); // Initialize RoomManagement with max 10 rooms
-        Guest guest1 = new Guest("Nou Sokleap", "086-456-7890", "nou.sokleap@gmail.com");
-        Guest guest2 = new Guest("Lim Dara", "089-123-4567", "lim.dara@gmail.com");
-        Staff staff1 = new Staff("Chan Sokha", "Manager", 'M');
-        Staff staff2 = new Staff("Sok Aliza", "Receptionist", 'F');
-        CheckIn booking1 = new CheckIn(guest1, hotel.getRoom(0), "2024-10-01", 3, staff2, 0);
-        CheckIn booking2 = new CheckIn(guest1, hotel.getRoom(1), "2024-10-05", 2, staff1, 10.0);
+        Hotel hotel = new Hotel("Sunrise Hotel", "Phnom Penh", "012 345 678",10);
+        
+        Room room1 = new Room("A101", "Single", 100);
+        Room room2 = new Room("B202", "Double", 150);
+
+        Staff staff1 = new Staff("Dara", "Manager", 'M');
+        Staff staff2 = new Staff("Sokha", "Receptionist", 'F');
+
+        Guest guest1 = new Guest( "Vanna", "098 777 666","vanna@gamil.com");
+        Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
+
+        CheckIn booking1 = new CheckIn(guest1, room1, "2024-07-01", 3, staff1, 10);
+        CheckIn booking2 = new CheckIn(guest2, room2, "2024-07-02", 2, staff2, 15);
+
+        // Add rooms, staff, guests, and bookings to the hotel
+        hotel.addRoom(room1);
+        hotel.addRoom(room2);
+
+        hotel.addStaff(staff1);
+        hotel.addStaff(staff2);
+
+        hotel.addGuest(guest1);
+        hotel.addGuest(guest2);
+
+        hotel.addBooking(booking1);
+        hotel.addBooking(booking2);
+
+        // Display hotel information
+        hotel.showHotelInfo();
 
         Scanner scanner = new Scanner(System.in); // Scanner for user input
         int choice;
@@ -38,6 +60,7 @@ public class Main {
                     System.out.println("======================================");
                     System.out.println(guest1.toString());
                     System.out.println(guest2.toString());
+                    System.out.println(booking2.toString());
                     break;
                 case 3:
                     System.out.println("======================================");
