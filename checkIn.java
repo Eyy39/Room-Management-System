@@ -78,26 +78,26 @@ import java.time.format.DateTimeFormatter;
         return night* (originalPrice - discountPrice);
     }
 
-        static final int LIMIT_DAYS = 10; // Maximum booking days allowed
-        public static int getBookingCount() {
-            return bookingCount;
-        }
+    static final int LIMIT_DAYS = 10; // Maximum booking days allowed
+    public static int getBookingCount() {
+        return bookingCount;
+    }
         
-         public boolean isBookingDateValid(LocalDate bookingDate) {
-            LocalDate today = LocalDate.now(); // Current date
-            LocalDate maxBookingDate = today.plusDays(LIMIT_DAYS); // Maximum booking date allowed
-            return !bookingDate.isAfter(maxBookingDate); // Check if booking date is within limit
-        }
-        public void showBookingSchedule(){
-            LocalDate today = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy"); // Date format
+    public boolean isBookingDateValid(LocalDate bookingDate) {
+        LocalDate today = LocalDate.now(); // Current date
+        LocalDate maxBookingDate = today.plusDays(LIMIT_DAYS); // Maximum booking date allowed
+        return !bookingDate.isAfter(maxBookingDate); // Check if booking date is within limit
+    }
+    public void showBookingSchedule(){
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy"); // Date format
 
-            for (int i = 0; i < LIMIT_DAYS; i++) {
-                LocalDate date = today.plusDays(i);
-                System.out.printf("%-3d | %s | Available%n", (i + 1), date.format(formatter));
-            }
-            System.out.println("======================================");
+        for (int i = 0; i < LIMIT_DAYS; i++) {
+            LocalDate date = today.plusDays(i);
+            System.out.printf("%-3d | %s | Available%n", (i + 1), date.format(formatter));
         }
+        System.out.println("======================================");
+    }
 
     @Override
     public String toString(){

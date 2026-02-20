@@ -65,7 +65,7 @@ public class Hotel {
         System.out.println("Total Staff: " + staffCount);
         System.out.println("Total Bookings: " + bookingCount);
     }
-       // ================= ROOM METHODS =================
+       // ROOM METHODS
     public void addRoom(Room room) {
         if (roomCount < rooms.length) {
             rooms[roomCount++] = room;
@@ -114,7 +114,7 @@ public class Hotel {
         }
     }
 
-    // ================= GUEST METHODS =================
+    // GUEST METHODS
     public void addGuest(Guest guest) {
         guests[guestCount++] = guest;
     }
@@ -146,7 +146,7 @@ public class Hotel {
         return null;
     }
 
-    // ================= STAFF METHODS =================
+    // STAFF METHODS 
     public void addStaff(Staff staff) {
         staffMembers[staffCount++] = staff;
     }
@@ -178,7 +178,7 @@ public class Hotel {
         return null;
     }
 
-    // ================= BOOKING METHODS =================
+    //  BOOKING METHODS
     public void bookRoom(int guestIndex, int roomIndex, int nights,
                          int staffIndex, double discount) {
 

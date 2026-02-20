@@ -70,9 +70,21 @@ public class Guest {
         return "Guest Name: " + guestName + "\nGuest ID: " + guestID
         + "\nPhone Number: " + phoneNumber + "\nEmail: " + email + "\n";
     }
+    
     @Override
     public boolean equals(Object obj) {
-        
-        return super.equals(obj);
+        Guest other = (Guest) obj;
+        if (guestName == null) {
+            if (other.guestName != null)
+                return false;
+        } else if (!guestName.equals(other.guestName))
+            return false;
+        if (guestID == null) {
+            if (other.guestID != null)
+                return false;
+        } else if (!guestID.equals(other.guestID))
+            return false;
+        return true;
     }
+    
 }

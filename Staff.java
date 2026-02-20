@@ -1,4 +1,3 @@
-
 public class Staff {
     private String staffId;
     private String name;
@@ -60,4 +59,26 @@ public class Staff {
         "\nGender: " + gender + "\n";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        Staff other = (Staff) obj;
+        if (staffId == null) {
+            if (other.staffId != null)
+                return false;
+        } else if (!staffId.equals(other.staffId))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (position == null) {
+            if (other.position != null)
+                return false;
+        } else if (!position.equals(other.position))
+            return false;
+        return true;
+    }
+
+    
 }

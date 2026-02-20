@@ -1,4 +1,3 @@
-import java.util.Objects;
 
 public class Room {
     private String roomNumber;
@@ -57,10 +56,19 @@ public class Room {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true; // Check if the objects are the same
-        if (!(obj instanceof Room)) return false; // Check if the object is an instance of Room
-        Room other = (Room) obj; 
-        return Objects.equals(this.roomType, other.roomType);
+        Room other = (Room) obj;
+        if (roomNumber == null) {
+            if (other.roomNumber != null)
+                return false;
+        } else if (!roomNumber.equals(other.roomNumber))
+            return false;
+        if (roomType == null) {
+            if (other.roomType != null)
+                return false;
+        } else if (!roomType.equals(other.roomType))
+            return false;
+        if (roomID != other.roomID)
+            return false;
+        return true;
     }
-
 }
