@@ -29,6 +29,10 @@ public class Main {
         hotel.addBooking(booking1);
         hotel.addBooking(booking2);
 
+        hotel.addUser(new ManagerUser("U001", "manager", "123"));
+        hotel.addUser(new ReceptionistUser("U002", "reception", "123"));
+        hotel.addUser(new AuditorUser("U003", "auditor", "123"));
+
         // Display hotel information
         hotel.showHotelInfo();
 
@@ -37,30 +41,39 @@ public class Main {
         boolean exit = false;
         while(!exit){
             System.out.println("\n=========== Hotel Management System ===========\n");
+            System.out.println("Current role: " + hotel.currentUserRole());
+            System.out.println("0. Login");
             System.out.println("1. Display Room Details");
             System.out.println("2. Display Guest Information");
             System.out.println("3. Book a Room");
             System.out.println("4. Show Staff Information");
             System.out.println("5. Show Booking Schedule");
-            System.out.println("6. Exit");
+            System.out.println("6. Logout");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
 
             choice = scanner.nextInt(); // Read user input
             switch(choice){
+                case 0:
+                    scanner.nextLine();
+                    System.out.print("Username: ");
+                    String username = scanner.nextLine();
+                    System.out.print("Password: ");
+                    String password = scanner.nextLine();
+                    hotel.login(username, password);
+                    break;
                 case 1:
                     System.out.println("======================================");
                     System.out.println("      ROOM DETAILS");
                     System.out.println("======================================");
-                    hotel.displayAllRooms();
+                    hotel.actionViewRooms();
                     break;
             
                 case 2:
                     System.out.println("======================================");
                     System.out.println("      GUEST INFORMATION");
                     System.out.println("======================================");
-                    System.out.println(guest1.toString());
-                    System.out.println(guest2.toString());
-                    System.out.println(booking2.toString());
+                    hotel.actionViewGuests();
                     break;
                 case 3:
                     System.out.println("======================================");
@@ -69,22 +82,24 @@ public class Main {
                     scanner.nextLine(); // clear buffer
                     System.out.print("Enter room type to search: ");
                     String type = scanner.nextLine();
-                    hotel.findRoomsByType(type);
+                    hotel.actionCreateBooking(type);
                     break; 
                 case 4:
                     System.out.println("======================================");
                     System.out.println("      STAFF INFORMATION");
                     System.out.println("======================================");
-                    System.out.println(staff1.toString());
-                    System.out.println(staff2.toString());
+                    hotel.actionViewStaff();
                     break;
                 case 5:
                     System.out.println("======================================");
                     System.out.println("      ROOM BOOKING SCHEDULE");
                     System.out.println("======================================");
-                    booking1.showBookingSchedule();
+                    hotel.actionViewBookingSchedule();
                     break;
                 case 6:
+                    hotel.logout();
+                    break;
+                case 7:
                     exit = true; 
                     System.out.println("Exiting the system. Goodbye!");
                     break;

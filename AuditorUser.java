@@ -1,0 +1,44 @@
+public class AuditorUser implements IStaff {
+    private String id;
+    private String username;
+    private String password;
+
+    public AuditorUser(String id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getRole() {
+        return "Auditor";
+    }
+
+    @Override
+    public boolean can(String action) {
+        switch (action) {
+            case "VIEW_ROOMS":
+            case "VIEW_GUESTS":
+            case "VIEW_STAFF":
+            case "VIEW_BOOKING_SCHEDULE":
+                return true;
+            default:
+                return false;
+        }
+    }
+}

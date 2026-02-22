@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Hotel {
@@ -10,6 +11,8 @@ public class Hotel {
     private Guest[] guests;
     private Staff[] staffMembers;
     private CheckIn[] bookings;
+    private ArrayList<IStaff> users;
+    private IStaff loggedInUser;
 
     private int roomCount;
     private int guestCount;
@@ -26,6 +29,8 @@ public class Hotel {
         guests = new Guest[50];
         staffMembers = new Staff[20];
         bookings = new CheckIn[100];
+        users = new ArrayList<>();
+        loggedInUser = null;
 
         roomCount = 0;
         guestCount = 0;
@@ -64,6 +69,85 @@ public class Hotel {
         System.out.println("Total Guests: " + guestCount);
         System.out.println("Total Staff: " + staffCount);
         System.out.println("Total Bookings: " + bookingCount);
+    }
+
+    public void addUser(IStaff user) {
+        users.add(user);
+    }
+
+    public boolean login(String username, String password) {
+        for (IStaff user : users) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                loggedInUser = user;
+                System.out.println("Login success as " + user.getRole());
+                return true;
+            }
+        }
+        System.out.println("Invalid username or password.");
+        return false;
+    }
+
+    public void logout() {
+        loggedInUser = null;
+        System.out.println("Logged out successfully.");
+    }
+
+    public boolean requirePermission(String action) {
+        if (loggedInUser == null) {
+            System.out.println("Please login first.");
+            return false;
+        }
+        if (!loggedInUser.can(action)) {
+            System.out.println("Access denied for action: " + action);
+            return false;
+        }
+        return true;
+    }
+
+    public void actionViewRooms() {
+        if (!requirePermission("VIEW_ROOMS")) {
+            return;
+        }
+        displayAllRooms();
+    }
+
+    public void actionViewGuests() {
+        if (!requirePermission("VIEW_GUESTS")) {
+            return;
+        }
+        showGuests();
+    }
+
+    public void actionCreateBooking(String roomType) {
+        if (!requirePermission("CREATE_BOOKING")) {
+            return;
+        }
+        findRoomsByType(roomType);
+    }
+
+    public void actionViewStaff() {
+        if (!requirePermission("VIEW_STAFF")) {
+            return;
+        }
+        showStaff();
+    }
+
+    public void actionViewBookingSchedule() {
+        if (!requirePermission("VIEW_BOOKING_SCHEDULE")) {
+            return;
+        }
+        if (bookingCount == 0) {
+            System.out.println("No booking schedule available.");
+            return;
+        }
+        bookings[0].showBookingSchedule();
+    }
+
+    public String currentUserRole() {
+        if (loggedInUser == null) {
+            return "None";
+        }
+        return loggedInUser.getRole();
     }
        // ROOM METHODS
     public void addRoom(Room room) {
