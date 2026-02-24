@@ -42,7 +42,7 @@ public class Hotel {
     public static final String CREATE_STAFF = "CREATE_STAFF";
     public static final String CREATE_BOOKING = "CREATE_BOOKING";
     public static final String VIEW_GUESTS = "VIEW_GUESTS";
-    public static final String VIEW_STAFF = "VIEW_STAFFS";
+    public static final String VIEW_STAFF = "VIEW_STAFF";
     public static final String VIEW_ROOMS = "VIEW_ROOMS";
     public static final String VIEW_BOOKING_SCHEDULE = "VIEW_BOOKING_SCHEDULE";
     public static final String UPDATE_ROOM_STATUS = "UPDATE_ROOM_STATUS";
@@ -102,34 +102,34 @@ public class Hotel {
         System.out.println("Logged out successfully.");
     }
 
-    public boolean requirePermission(String action) {
+    private boolean requirePermission(String action) {
         if (loggedInUser == null) {
-            System.out.println("Please login first.");
+            System.out.println("Access Denied: Login required");
             return false;
         }
         if (!loggedInUser.can(action)) {
-            System.out.println("Access denied for action: " + action);
+            System.out.println("Access Denied: Role " + loggedInUser.getRole() + " cannot perform " + action);
             return false;
         }
         return true;
     }
 
     public void actionViewRooms() {
-        if (!requirePermission("VIEW_ROOMS")) {
+        if (!requirePermission(VIEW_ROOMS)) {
             return;
         }
         displayAllRooms();
     }
 
     public void actionViewGuests() {
-        if (!requirePermission("VIEW_GUESTS")) {
+        if (!requirePermission(VIEW_GUESTS)) {
             return;
         }
         showGuests();
     }
 
     public void actionCreateBooking(String roomType) {
-        if (!requirePermission("CREATE_BOOKING")) {
+        if (!requirePermission(CREATE_BOOKING)) {
             return;
         }
         findRoomsByType(roomType);
@@ -143,7 +143,7 @@ public class Hotel {
     }
 
     public void actionViewBookingSchedule() {
-        if (!requirePermission("VIEW_BOOKING_SCHEDULE")) {
+        if (!requirePermission(VIEW_BOOKING_SCHEDULE)) {
             return;
         }
         if (bookingCount == 0) {
