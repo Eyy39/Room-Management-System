@@ -8,10 +8,11 @@ public class Hotel {
     private String hotelContact;
 
     private Room[] rooms;
-    private Guest[] guests;
-    private Staff[] staffMembers;
-    private CheckIn[] bookings;
-    private ArrayList<IStaff> users;
+    private ArrayList<Guest> guests;
+    // private ArrayList<Staff> staffMembers;
+    private ArrayList<CheckIn> bookings;
+    private ArrayList<IStaff> users;             // login/permission users
+    private ArrayList<Staff> staffMembers;        // actual hotel employees
     private IStaff loggedInUser;
 
     private int roomCount;
@@ -26,10 +27,10 @@ public class Hotel {
         this.hotelContact = hotelContact;
 
         rooms = new Room[maxRooms];
-        guests = new Guest[50];
-        staffMembers = new Staff[20];
-        bookings = new CheckIn[100];
+        guests = new ArrayList<>();
+        bookings = new ArrayList<>();
         users = new ArrayList<>(); 
+        staffMembers = new ArrayList<>();
         loggedInUser = null;
 
         roomCount = 0;
@@ -37,6 +38,15 @@ public class Hotel {
         staffCount = 0;
         bookingCount = 0;
     }
+
+    public static final String CREATE_STAFF = "CREATE_STAFF";
+    public static final String CREATE_BOOKING = "CREATE_BOOKING";
+    public static final String VIEW_GUESTS = "VIEW_GUESTS";
+    public static final String VIEW_STAFF = "VIEW_STAFFS";
+    public static final String VIEW_ROOMS = "VIEW_ROOMS";
+    public static final String VIEW_BOOKING_SCHEDULE = "VIEW_BOOKING_SCHEDULE";
+    public static final String UPDATE_ROOM_STATUS = "UPDATE_ROOM_STATUS";
+
     public void setHotelName(String hotelName) {
         if (hotelName != null && !hotelName.trim().isEmpty()) {
             this.hotelName = hotelName;
@@ -140,7 +150,7 @@ public class Hotel {
             System.out.println("No booking schedule available.");
             return;
         }
-        bookings[0].showBookingSchedule();
+        bookings.get(0).showBookingSchedule();
     }
 
     public String currentUserRole() {
@@ -176,7 +186,7 @@ public class Hotel {
         // for (int i = 0; i < roomCount; i++) {
         //     System.out.println(rooms[i]);
         // }
-        System.err.println(Arrays.toString(rooms));
+        System.err.println(Arrays.toString(rooms)); 
     }
 
     public Room getRoomByIndex(int index) {
@@ -200,16 +210,15 @@ public class Hotel {
 
     // GUEST METHODS
     public void addGuest(Guest guest) {
-        guests[guestCount++] = guest;
+        guests.add(guest);
+        guestCount++;
     }
 
     public void deleteGuest(String guestId) {
         for (int i = 0; i < guestCount; i++) {
-            if (guests[i].getGuestID().equals(guestId)) {
-                for (int j = i; j < guestCount - 1; j++) {
-                    guests[j] = guests[j + 1];
-                }
-                guests[--guestCount] = null;
+            if (guests.get(i).getGuestID().equals(guestId)) { 
+                guests.remove(i);
+                guestCount--;
                 System.out.println("Guest deleted.");
                 return;
             }
@@ -219,29 +228,28 @@ public class Hotel {
 
     public void showGuests() {
         for (int i = 0; i < guestCount; i++) {
-            System.out.println(guests[i]);
+            System.out.println(guests.get(i));
         }
     }
 
     public Guest getGuestByIndex(int index) {
         if (index >= 0 && index < guestCount) {
-            return guests[index];
+            return guests.get(index);
         }
         return null;
     }
 
     // STAFF METHODS 
     public void addStaff(Staff staff) {
-        staffMembers[staffCount++] = staff;
+        staffMembers.add(staff);
+        staffCount++;
     }
 
     public void deleteStaff(String staffId) {
         for (int i = 0; i < staffCount; i++) {
-            if (staffMembers[i].getStaffId().equals(staffId)) {
-                for (int j = i; j < staffCount - 1; j++) {
-                    staffMembers[j] = staffMembers[j + 1];
-                }
-                staffMembers[--staffCount] = null;
+            if (staffMembers.get(i).getStaffId().equals(staffId)) {
+                staffMembers.remove(i);
+                staffCount--;
                 System.out.println("Staff deleted.");
                 return;
             }
@@ -251,13 +259,13 @@ public class Hotel {
 
     public void showStaff() {
         for (int i = 0; i < staffCount; i++) {
-            System.out.println(staffMembers[i]);
+            System.out.println(staffMembers.get(i));
         }
     }
 
     public Staff getStaffByIndex(int index) {
         if (index >= 0 && index < staffCount) {
-            return staffMembers[index];
+            return staffMembers.get(index);
         }
         return null;
     }
@@ -284,25 +292,22 @@ public class Hotel {
                 discount
         );
 
-        bookings[bookingCount++] = booking;
+        bookings.add(booking);
+        bookingCount++;
         System.out.println("Booking successful.");
         System.out.println(booking);
     }
 
     public void addBooking(CheckIn booking) {
-        if (bookingCount < bookings.length) {
-            bookings[bookingCount++] = booking;
-        } else {
-            System.out.println("Booking list is full.");
-        }
+        bookings.add(booking);
+        bookingCount++;
     }
     public void deleteBooking(int bookingId) {
         for (int i = 0; i < bookingCount; i++) {
-            if (bookings[i].getBookingID() == bookingId) {
-                for (int j = i; j < bookingCount - 1; j++) {
-                    bookings[j] = bookings[j + 1];
-                }
-                bookings[--bookingCount] = null;
+            if (bookings.get(i).getBookingID() == bookingId) {
+                bookings.remove(i);
+                bookingCount--;
+                bookings.set(bookingCount, null);
                 System.out.println("Booking deleted.");
                 return;
             }
@@ -312,7 +317,7 @@ public class Hotel {
 
     public void showBookings() {
         for (int i = 0; i < bookingCount; i++) {
-            System.out.println(bookings[i]);
+            System.out.println(bookings.get(i));
         }
     }
     

@@ -31,14 +31,13 @@ public class AuditorUser implements IStaff {
 
     @Override
     public boolean can(String action) {
-        switch (action) {
-            case "VIEW_ROOMS":
-            case "VIEW_GUESTS":
-            case "VIEW_STAFF":
-            case "VIEW_BOOKING_SCHEDULE":
-                return true;
-            default:
-                return false;
+        if (action.equals("VIEW_ROOMS") ||
+            action.equals("VIEW_GUESTS") ||
+            action.equals("VIEW_STAFF") ||
+            action.equals("VIEW_BOOKING_SCHEDULE")) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

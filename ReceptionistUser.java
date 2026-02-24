@@ -31,14 +31,14 @@ public class ReceptionistUser implements IStaff {
 
     @Override
     public boolean can(String action) {
-        switch (action) {
-            case "VIEW_ROOMS":
-            case "VIEW_GUESTS":
-            case "CREATE_BOOKING":
-            case "VIEW_BOOKING_SCHEDULE":
-                return true;
-            default:
-                return false;
+        if (action.equals("VIEW_ROOMS") ||
+            action.equals("VIEW_GUESTS") ||
+            action.equals("CREATE_BOOKING") ||
+            action.equals("VIEW_BOOKING_SCHEDULE") ||
+            action.equals("UPDATE_ROOMS_STATUS")) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
