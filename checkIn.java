@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
     private Room room;
     private static int bookingCount = 0;
     private int BookingID;
-    private String CheckIn;
+    private String checkIn;
     private int night;
     private double originalPrice;
     private double discountPrice;
@@ -13,9 +13,9 @@ import java.time.format.DateTimeFormatter;
     private Staff staff;
     private String status;
 
-    public CheckIn(Guest guest, Room room, String CheckIn, int night, Staff staff, double discountPercent){
+    public CheckIn(Guest guest, Room room, String checkIn, int night, Staff staff, double discountPercent){
         this.BookingID= ++bookingCount; // Increment booking count for unique ID
-        this.CheckIn = CheckIn;
+        this.checkIn = checkIn;
         this.night= night;
         this.originalPrice = room.getPricePerNight();
         this.discountPrice = originalPrice * (discountPercent / 100);
@@ -28,14 +28,14 @@ import java.time.format.DateTimeFormatter;
     // Login
     public CheckIn(Guest guest, String checkInDate){
         this.guest = guest;
-        this.CheckIn = checkInDate;
+        this.checkIn = checkInDate;
         this.status = "Checked In";
     }
     public int getBookingID() {
         return BookingID;
     }
     public String getCheckIn() {
-        return CheckIn;
+        return checkIn;
     }
     public int getNight() {
         return night;
@@ -110,7 +110,7 @@ import java.time.format.DateTimeFormatter;
          return "Customer Name: " + guest.getGuestName() +
            "\nBooking ID: " + BookingID +
            "\nRoom Type: " + room.getRoomType() +
-           "\nCheckIn Date: " + CheckIn +
+           "\nCheckIn Date: " + checkIn +
            "\nDuration: " + duration +
            "\nPrice per Night: $" + originalPrice +
            "\nDiscount: $" + discountPrice +

@@ -29,7 +29,7 @@ public class Hotel {
         guests = new Guest[50];
         staffMembers = new Staff[20];
         bookings = new CheckIn[100];
-        users = new ArrayList<>();
+        users = new ArrayList<>(); 
         loggedInUser = null;
 
         roomCount = 0;
