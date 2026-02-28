@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Hotel {
 
@@ -7,7 +6,7 @@ public class Hotel {
     private String hotelAddress;
     private String hotelContact;
 
-    private Room[] rooms;
+    private ArrayList<Room> rooms;
     private ArrayList<Guest> guests;
     // private ArrayList<Staff> staffMembers;
     private ArrayList<CheckIn> bookings;
@@ -25,8 +24,7 @@ public class Hotel {
         this.hotelName = hotelName;
         this.hotelAddress = hotelAddress;
         this.hotelContact = hotelContact;
-
-        rooms = new Room[maxRooms];
+        rooms = new ArrayList<>();
         guests = new ArrayList<>();
         bookings = new ArrayList<>();
         users = new ArrayList<>(); 
@@ -136,7 +134,7 @@ public class Hotel {
     }
 
     public void actionViewStaff() {
-        if (!requirePermission("VIEW_STAFF")) {
+        if (!requirePermission(VIEW_STAFF)) {
             return;
         }
         showStaff();
@@ -159,47 +157,47 @@ public class Hotel {
         }
         return loggedInUser.getRole();
     }
-       // ROOM METHODS
+    // ROOM METHODS
     public void addRoom(Room room) {
-        if (roomCount < rooms.length) {
-            rooms[roomCount++] = room;
-        } else {
-            System.out.println("Room list is full.");
-        }
+        rooms.add(room);
+        roomCount++;
     }
 
     public void deleteRoom(int roomId) {
-        for (int i = 0; i < roomCount; i++) {
-            if (rooms[i].getRoomId() == roomId) {
-                for (int j = i; j < roomCount - 1; j++) {
-                    rooms[j] = rooms[j + 1];
-                }
-                rooms[--roomCount] = null;
+        for (int i = 0; i < rooms.size(); i++) {
+            if (rooms.get(i).getRoomId() == roomId) {
+                rooms.remove(i);
+                roomCount--;
                 System.out.println("Room deleted.");
                 return;
             }
         }
         System.out.println("Room not found.");
     }
+        
+    
 
     public void displayAllRooms() {
-        // for (int i = 0; i < roomCount; i++) {
-        //     System.out.println(rooms[i]);
-        // }
-        System.err.println(Arrays.toString(rooms)); 
+        if (roomCount == 0) {
+            System.out.println("No rooms available.");
+            return;
+        }
+        for (Room room : rooms) {
+            System.out.println(room);
+        }
     }
 
     public Room getRoomByIndex(int index) {
         if (index >= 0 && index < roomCount) {
-            return rooms[index];
+            return rooms.get(index);
         }
         return null;
     }
     public void findRoomsByType(String type) {
         boolean found = false;
         for (int i = 0; i < roomCount; i++) {
-            if (rooms[i].getRoomType().equals(type)) {
-                System.out.println(rooms[i]);
+            if (rooms.get(i).getRoomType().equals(type)) {
+                System.out.println(rooms.get(i));
                 found = true;
             }
         }
@@ -227,8 +225,12 @@ public class Hotel {
     }
 
     public void showGuests() {
-        for (int i = 0; i < guestCount; i++) {
-            System.out.println(guests.get(i));
+        if (guestCount == 0) {
+            System.out.println("No guests available.");
+            return;
+        }
+        for (Guest guest : guests) {
+            System.out.println(guest);
         }
     }
 
@@ -258,8 +260,12 @@ public class Hotel {
     }
 
     public void showStaff() {
-        for (int i = 0; i < staffCount; i++) {
-            System.out.println(staffMembers.get(i));
+        if (staffCount == 0) {
+            System.out.println("No staff available.");
+            return;
+        }
+        for (Staff staff : staffMembers) {
+            System.out.println(staff);
         }
     }
 
