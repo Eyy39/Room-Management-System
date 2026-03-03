@@ -3,6 +3,7 @@ import controller.Hotel;
 
 
 public class ReceptionistUser extends Staff {
+    private float salary;
     public ReceptionistUser(Staff s, float salary) {
         super(s, "Receptionist", salary);
     }
