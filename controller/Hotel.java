@@ -1,4 +1,11 @@
+package controller;
 import java.util.ArrayList;
+
+import hotel.CheckIn;
+import hotel.Guest;
+import hotel.Room;
+import user.IStaff;
+import user.Staff;
 
 public class Hotel {
 
@@ -8,10 +15,9 @@ public class Hotel {
 
     private ArrayList<Room> rooms;
     private ArrayList<Guest> guests;
-    // private ArrayList<Staff> staffMembers;
     private ArrayList<CheckIn> bookings;
-    private ArrayList<IStaff> users;             // login/permission users
-    private ArrayList<Staff> staffMembers;        // actual hotel employees
+    // private ArrayList<IStaff> users;
+    private ArrayList<Staff> users;
     private IStaff loggedInUser;
 
     private int roomCount;
@@ -28,7 +34,6 @@ public class Hotel {
         guests = new ArrayList<>();
         bookings = new ArrayList<>();
         users = new ArrayList<>(); 
-        staffMembers = new ArrayList<>();
         loggedInUser = null;
 
         roomCount = 0;
@@ -79,12 +84,12 @@ public class Hotel {
         System.out.println("Total Bookings: " + bookingCount);
     }
 
-    public void addUser(IStaff user) {
+    public void addUser(Staff user) {
         users.add(user);
     }
 
     public boolean login(String username, String password) {
-        for (IStaff user : users) {
+        for (Staff user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 loggedInUser = user;
                 System.out.println("Login success as " + user.getRole());
@@ -241,16 +246,11 @@ public class Hotel {
         return null;
     }
 
-    // STAFF METHODS 
-    public void addStaff(Staff staff) {
-        staffMembers.add(staff);
-        staffCount++;
-    }
 
     public void deleteStaff(String staffId) {
         for (int i = 0; i < staffCount; i++) {
-            if (staffMembers.get(i).getStaffId().equals(staffId)) {
-                staffMembers.remove(i);
+            if (users.get(i).getStaffId().equals(staffId)) {
+                users.remove(i);
                 staffCount--;
                 System.out.println("Staff deleted.");
                 return;
@@ -264,14 +264,14 @@ public class Hotel {
             System.out.println("No staff available.");
             return;
         }
-        for (Staff staff : staffMembers) {
-            System.out.println(staff);
+        for (Staff user : users) {
+            System.out.println(user);
         }
     }
 
     public Staff getStaffByIndex(int index) {
         if (index >= 0 && index < staffCount) {
-            return staffMembers.get(index);
+            return users.get(index);
         }
         return null;
     }
@@ -313,7 +313,6 @@ public class Hotel {
             if (bookings.get(i).getBookingID() == bookingId) {
                 bookings.remove(i);
                 bookingCount--;
-                bookings.set(bookingCount, null);
                 System.out.println("Booking deleted.");
                 return;
             }

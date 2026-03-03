@@ -1,3 +1,4 @@
+package hotel;
 public class Guest {
     private String guestName;
     private String guestID;

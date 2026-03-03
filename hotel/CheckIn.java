@@ -1,7 +1,10 @@
+package hotel;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
- class CheckIn {
+import user.Staff;
+
+public class CheckIn {
     private Room room;
     private static int bookingCount = 0;
     private int BookingID;

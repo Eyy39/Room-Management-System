@@ -1,4 +1,5 @@
-public class ReceptionistUser implements IStaff {
+package user;
+public class Staff implements IStaff {
     private String staffId;
     private String name;
     private String position;
@@ -6,17 +7,17 @@ public class ReceptionistUser implements IStaff {
     private String password;
     private static int staffCounter = 0;
 
-    public ReceptionistUser(String name, String position, char gender) {
+    public Staff(String name, String position, char gender) {
         this.staffId = generateStaffId(); // Generate a unique staff ID
         this.setName(name);
         this.setPosition(position);
         this.setGender(gender);
     }
     // login constructor
-    public ReceptionistUser(String staffId, String name, String password){
+    public Staff(String staffId, String name, String password){
         this.staffId = staffId;
         this.name = name;
-        this.setPassword(password);
+        this.password = password;
     }
     public String getStaffId() {
         return staffId;
@@ -49,8 +50,14 @@ public class ReceptionistUser implements IStaff {
         this.gender = gender;
     }
 
+    private String generateStaffId() {
+        return "ST" + (++staffCounter);
+    }
+    public static int getStaffCounter() {
+        return staffCounter;
+    }
     public void setPassword(String password) {
-        if(password == null) {
+        if (password == null) {
             System.out.println("Invalid password.");
             return;
         }
@@ -69,21 +76,19 @@ public class ReceptionistUser implements IStaff {
 
     @Override
     public String getPassword() {
-        // return the stored password; might be empty if not set
         return password != null ? password : "";
     }
 
     @Override
     public String getRole() {
-        return position != null ? position : "Receptionist";
+        return position != null ? position : "";
     }
 
-    private String generateStaffId() {
-        return "ST" + (++staffCounter);
+    @Override
+    public boolean can(String action) {
+        return false; // base staff has no special permissions
     }
-    public static int getStaffCounter() {
-        return staffCounter;
-    }
+
     @Override
     public String toString() {
         return "Staff ID: " + staffId + "\nName: " + name + "\nPosition: " + position + 
@@ -92,7 +97,7 @@ public class ReceptionistUser implements IStaff {
 
     @Override
     public boolean equals(Object obj) {
-        ReceptionistUser other = (ReceptionistUser) obj;
+        Staff other = (Staff) obj;
         if (staffId == null) {
             if (other.staffId != null)
                 return false;
@@ -110,17 +115,6 @@ public class ReceptionistUser implements IStaff {
             return false;
         return true;
     }
-    @Override
-    public boolean can(String action) {
-        if (action.equals(Hotel.CREATE_BOOKING) ||
-            action.equals(Hotel.VIEW_GUESTS) ||
-            action.equals(Hotel.CREATE_BOOKING) ||
-            action.equals(Hotel.VIEW_ROOMS) ||
-            action.equals(Hotel.VIEW_BOOKING_SCHEDULE) ||
-            action.equals(Hotel.UPDATE_ROOM_STATUS)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+
+    
 }

@@ -1,3 +1,4 @@
+package hotel;
 
 public class Room {
     private String roomNumber;
