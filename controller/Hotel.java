@@ -93,7 +93,7 @@ public class Hotel {
         for (Staff user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 loggedInUser = user;
-                System.out.println("Login success as " + user.getRole());
+                // System.out.println("Login success as " + user.getRole());
                 return true;
             }
         }
@@ -266,7 +266,7 @@ public class Hotel {
             return;
         }
         for (Staff user : users) {
-            System.out.println(user);
+            System.out.println(user); 
         }
     }
 

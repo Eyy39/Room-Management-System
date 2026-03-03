@@ -4,8 +4,8 @@ public class Staff implements IStaff {
     private String name;
     private String position;
     private char gender;
+    // private float salary;
     private String password;
-    private float salary;
     private static int staffCounter = 0;
 
     public Staff(String name, String position, char gender) {
@@ -15,23 +15,23 @@ public class Staff implements IStaff {
         this.setGender(gender);
     }
 
-    public Staff(String staffId, String name, String position, char gender, String password) {
+    public Staff(String staffId, String name, char gender, String password) {
         this.staffId = staffId;
         this.setName(name);
-        this.setPosition(position);
+        // this.setPosition(position);
         this.setGender(gender);
         this.setPassword(password);
     }
 
-    public Staff(Staff staff, String position, float salary) {
-        this(staff.getStaffId(), staff.getName(), position, staff.getGender(), staff.getPassword());
-        this.setSalary(salary);
-    }
+    // public Staff(Staff staff, String position, float salary) {
+    //     this(staff.getStaffId(), staff.getName(), position, staff.getGender(), staff.getPassword());
+    //     this.setSalary(salary);
+    // }
 
     // login constructor
-    public Staff(String staffId, String name, String password){
-        this(staffId, name, "Staff", '?', password);
-    }
+    // public Staff(String staffId, String name, String password){
+    //     this(staffId, name, "Staff", '?', password); 
+    // }
     public String getStaffId() {
         return staffId;
     }
@@ -63,17 +63,17 @@ public class Staff implements IStaff {
         this.gender = gender;
     }
 
-    public float getSalary() {
-        return salary;
-    }
+    // public float getSalary() {
+    //     return salary;
+    // }
 
-    public void setSalary(float salary) {
-        if (salary < 0) {
-            System.out.println("Invalid salary. Salary not updated.");
-            return;
-        }
-        this.salary = salary;
-    }
+    // public void setSalary(float salary) {
+    //     if (salary < 0) {
+    //         System.out.println("Invalid salary. Salary not updated.");
+    //         return;
+    //     }
+    //     this.salary = salary;
+    // }
 
     private String generateStaffId() {
         return "ST" + (++staffCounter);
@@ -116,8 +116,8 @@ public class Staff implements IStaff {
 
     @Override
     public String toString() {
-        return "Staff ID: " + staffId + "\nName: " + name + "\nPosition: " + position + 
-        "\nGender: " + gender + "\nSalary: " + salary + "\n";
+        return "Staff ID: " + staffId + "\nName: " + name + 
+        "\nGender: " + gender + "\n";
     }
 
     @Override
@@ -145,8 +145,6 @@ public class Staff implements IStaff {
         } else if (!position.equals(other.position))
             return false;
         if (gender != other.gender)
-            return false;
-        if (Float.floatToIntBits(salary) != Float.floatToIntBits(other.salary))
             return false;
         return true;
     }

@@ -15,8 +15,8 @@ public class Main {
         Room room1 = new Room("A101", "Single", 100);
         Room room2 = new Room("B202", "Double", 150);
 
-        Staff staff1 = new Staff("Dara", "Manager", 'M');
-        Staff staff2 = new Staff("Sokha", "Receptionist", 'F');
+        Staff staff1 = new Staff("ST001", "Dara", 'M', "pw123");
+        Staff staff2 = new Staff("ST002", "Sokha", 'F', "pw123");
 
         Guest guest1 = new Guest( "Vanna", "098 777 666","vanna@gamil.com");
         Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
@@ -28,8 +28,8 @@ public class Main {
         hotel.addRoom(room1);
         hotel.addRoom(room2);
 
-        hotel.addUser(staff1);
-        hotel.addUser(staff2);
+        // hotel.addUser(staff1);
+        // hotel.addUser(staff2);
 
         hotel.addGuest(guest1);
         hotel.addGuest(guest2);
@@ -38,9 +38,8 @@ public class Main {
         hotel.addBooking(booking2);
 
         hotel.addUser(new ManagerUser(staff1, 1500.0f));
-        hotel.addUser(new ManagerUser(staff1.getStaffId(), staff1.getName(), "pw123"));
         hotel.addUser(new ReceptionistUser(staff2, 1000.0f));
-        System.out.println(hotel);
+        // System.out.println(hotel);
 
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
@@ -78,7 +77,7 @@ public class Main {
             } else {
                 System.out.println("\n========================================");
                 System.out.println("   HOTEL MANAGEMENT SYSTEM");
-                System.out.println("   Role: " + hotel.currentUserRole());
+                // System.out.println("   Role: " + hotel.currentUserRole());
                 System.out.println("========================================");
                 System.out.println("1. Display Room Details");
                 System.out.println("2. Display Guest Information");
