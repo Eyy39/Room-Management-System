@@ -86,6 +86,7 @@ public class Hotel {
 
     public void addUser(Staff user) {
         users.add(user);
+        staffCount++;
     }
 
     public boolean login(String username, String password) {

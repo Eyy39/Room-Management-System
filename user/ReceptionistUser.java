@@ -33,4 +33,10 @@ public class ReceptionistUser extends Staff {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "ReceptionistUser [salary=" + salary + "]";
+    }
+    
 }

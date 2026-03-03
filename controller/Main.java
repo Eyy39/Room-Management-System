@@ -38,111 +38,112 @@ public class Main {
         hotel.addBooking(booking2);
 
         hotel.addUser(new ManagerUser(staff1, 1500.0f));
+        hotel.addUser(new ManagerUser(staff1.getStaffId(), staff1.getName(), "pw123"));
         hotel.addUser(new ReceptionistUser(staff2, 1000.0f));
         System.out.println(hotel);
 
-        // Scanner scanner = new Scanner(System.in);
-        // boolean exit = false;
-        // boolean loggedIn = false;
+        Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
+        boolean loggedIn = false;
        
-        // while (!exit) {
-        //     if (!loggedIn) {
-        //         // Login screen
-        //         System.out.println("\n========================================");
-        //         System.out.println("   HOTEL MANAGEMENT SYSTEM - LOGIN");
-        //         System.out.println("========================================");
-        //         System.out.println("1. Login");
-        //         System.out.println("2. Exit");
-        //         System.out.print("Enter your choice: ");
+        while (!exit) {
+            if (!loggedIn) {
+                // Login screen
+                System.out.println("\n========================================");
+                System.out.println("   HOTEL MANAGEMENT SYSTEM - LOGIN");
+                System.out.println("========================================");
+                System.out.println("1. Login");
+                System.out.println("2. Exit");
+                System.out.print("Enter your choice: ");
                 
-        //         int loginChoice = scanner.nextInt();
-        //         switch (loginChoice) {
-        //             case 1:
-        //                 scanner.nextLine();
-        //                 System.out.print("Username: ");
-        //                 String username = scanner.nextLine();
-        //                 System.out.print("Password: ");
-        //                 String password = scanner.nextLine();
-        //                 if (hotel.login(username, password)) {
-        //                     loggedIn = true;
-        //                 }
-        //                 break;
-        //             case 2:
-        //                 exit = true;
-        //                 System.out.println("Exiting the system. Goodbye!");
-        //                 break;
-        //             default:
-        //                 System.out.println("Invalid choice. Please try again.");
-        //         }
-        //     } else {
-        //         System.out.println("\n========================================");
-        //         System.out.println("   HOTEL MANAGEMENT SYSTEM");
-        //         System.out.println("   Role: " + hotel.currentUserRole());
-        //         System.out.println("========================================");
-        //         System.out.println("1. Display Room Details");
-        //         System.out.println("2. Display Guest Information");
-        //         System.out.println("3. Book a Room");
-        //         System.out.println("4. Show Staff Information");
-        //         System.out.println("5. Show Booking Schedule");
-        //         System.out.println("6. Logout");
-        //         System.out.println("7. Exit");
-        //         System.out.print("Enter your choice: ");
+                int loginChoice = scanner.nextInt();
+                switch (loginChoice) {
+                    case 1:
+                        scanner.nextLine();
+                        System.out.print("Username: ");
+                        String username = scanner.nextLine();
+                        System.out.print("Password: ");
+                        String password = scanner.nextLine();
+                        if (hotel.login(username, password)) {
+                            loggedIn = true;
+                        }
+                        break;
+                    case 2:
+                        exit = true;
+                        System.out.println("Exiting the system. Goodbye!");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } else {
+                System.out.println("\n========================================");
+                System.out.println("   HOTEL MANAGEMENT SYSTEM");
+                System.out.println("   Role: " + hotel.currentUserRole());
+                System.out.println("========================================");
+                System.out.println("1. Display Room Details");
+                System.out.println("2. Display Guest Information");
+                System.out.println("3. Book a Room");
+                System.out.println("4. Show Staff Information");
+                System.out.println("5. Show Booking Schedule");
+                System.out.println("6. Logout");
+                System.out.println("7. Exit");
+                System.out.print("Enter your choice: ");
 
-        //         int choice = scanner.nextInt();
-        //         switch (choice) {
-        //             case 1:
-        //                 System.out.println("\n======================================");
-        //                 System.out.println("      ROOM DETAILS");
-        //                 System.out.println("======================================");
-        //                 hotel.actionViewRooms();
-        //                 break;
+                int choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        System.out.println("\n======================================");
+                        System.out.println("      ROOM DETAILS");
+                        System.out.println("======================================");
+                        hotel.actionViewRooms();
+                        break;
 
-        //             case 2:
-        //                 System.out.println("\n======================================");
-        //                 System.out.println("      GUEST INFORMATION");
-        //                 System.out.println("======================================");
-        //                 hotel.actionViewGuests();
-        //                 break;
+                    case 2:
+                        System.out.println("\n======================================");
+                        System.out.println("      GUEST INFORMATION");
+                        System.out.println("======================================");
+                        hotel.actionViewGuests();
+                        break;
                         
-        //             case 3:
-        //                 System.out.println("\n======================================");
-        //                 System.out.println("      BOOK A ROOM");
-        //                 System.out.println("======================================");
-        //                 scanner.nextLine();
-        //                 System.out.print("Enter room type to search: ");
-        //                 String type = scanner.nextLine();
-        //                 hotel.actionCreateBooking(type);
-        //                 break;
+                    case 3:
+                        System.out.println("\n======================================");
+                        System.out.println("      BOOK A ROOM");
+                        System.out.println("======================================");
+                        scanner.nextLine();
+                        System.out.print("Enter room type to search: ");
+                        String type = scanner.nextLine();
+                        hotel.actionCreateBooking(type);
+                        break;
 
-        //             case 4:
-        //                 System.out.println("\n======================================");
-        //                 System.out.println("      STAFF INFORMATION");
-        //                 System.out.println("======================================");
-        //                 hotel.actionViewStaff();
-        //                 break;
+                    case 4:
+                        System.out.println("\n======================================");
+                        System.out.println("      STAFF INFORMATION");
+                        System.out.println("======================================");
+                        hotel.actionViewStaff();
+                        break;
 
-        //             case 5:
-        //                 System.out.println("\n======================================");
-        //                 System.out.println("      BOOKING SCHEDULE");
-        //                 System.out.println("======================================");
-        //                 hotel.actionViewBookingSchedule();
-        //                 break;
+                    case 5:
+                        System.out.println("\n======================================");
+                        System.out.println("      BOOKING SCHEDULE");
+                        System.out.println("======================================");
+                        hotel.actionViewBookingSchedule();
+                        break;
 
-        //             case 6:
-        //                 hotel.logout();
-        //                 loggedIn = false;
-        //                 break;
+                    case 6:
+                        hotel.logout();
+                        loggedIn = false;
+                        break;
 
-        //             case 7:
-        //                 exit = true;
-        //                 System.out.println("\nExiting the system. Goodbye!");
-        //                 break;
+                    case 7:
+                        exit = true;
+                        System.out.println("\nExiting the system. Goodbye!");
+                        break;
 
-        //             default:
-        //                 System.out.println("Invalid choice. Please try again.");
-        //         }
-        //     }
-        // }
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            }
+        }
     }
     
 }

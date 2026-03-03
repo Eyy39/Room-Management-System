@@ -86,7 +86,7 @@ public class Staff implements IStaff {
 
     @Override
     public boolean can(String action) {
-        return false; // base staff has no special permissions
+        return false;
     }
 
     @Override
