@@ -5,6 +5,7 @@ public class Staff implements IStaff {
     private String position;
     private char gender;
     private String password;
+    private float salary;
     private static int staffCounter = 0;
 
     public Staff(String name, String position, char gender) {
@@ -13,11 +14,23 @@ public class Staff implements IStaff {
         this.setPosition(position);
         this.setGender(gender);
     }
+
+    public Staff(String staffId, String name, String position, char gender, String password) {
+        this.staffId = staffId;
+        this.setName(name);
+        this.setPosition(position);
+        this.setGender(gender);
+        this.setPassword(password);
+    }
+
+    public Staff(Staff staff, String position, float salary) {
+        this(staff.getStaffId(), staff.getName(), position, staff.getGender(), staff.getPassword());
+        this.setSalary(salary);
+    }
+
     // login constructor
     public Staff(String staffId, String name, String password){
-        this.staffId = staffId;
-        this.name = name;
-        this.password = password;
+        this(staffId, name, "Staff", '?', password);
     }
     public String getStaffId() {
         return staffId;
@@ -50,6 +63,18 @@ public class Staff implements IStaff {
         this.gender = gender;
     }
 
+    public float getSalary() {
+        return salary;
+    }
+
+    public void setSalary(float salary) {
+        if (salary < 0) {
+            System.out.println("Invalid salary. Salary not updated.");
+            return;
+        }
+        this.salary = salary;
+    }
+
     private String generateStaffId() {
         return "ST" + (++staffCounter);
     }
@@ -57,7 +82,7 @@ public class Staff implements IStaff {
         return staffCounter;
     }
     public void setPassword(String password) {
-        if (password == null) {
+        if (password == null || password.trim().isEmpty()) {
             System.out.println("Invalid password.");
             return;
         }
@@ -92,11 +117,17 @@ public class Staff implements IStaff {
     @Override
     public String toString() {
         return "Staff ID: " + staffId + "\nName: " + name + "\nPosition: " + position + 
-        "\nGender: " + gender + "\n";
+        "\nGender: " + gender + "\nSalary: " + salary + "\n";
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         Staff other = (Staff) obj;
         if (staffId == null) {
             if (other.staffId != null)
@@ -112,6 +143,10 @@ public class Staff implements IStaff {
             if (other.position != null)
                 return false;
         } else if (!position.equals(other.position))
+            return false;
+        if (gender != other.gender)
+            return false;
+        if (Float.floatToIntBits(salary) != Float.floatToIntBits(other.salary))
             return false;
         return true;
     }
