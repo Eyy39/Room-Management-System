@@ -5,7 +5,7 @@ import controller.Hotel;
 public class ReceptionistUser extends Staff {
     private float salary;
     public ReceptionistUser(Staff s, float salary) {
-        super(s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
+        super(s.getStaffId(),s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
         this.setSalary(salary);
     }
 

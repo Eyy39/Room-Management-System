@@ -3,7 +3,7 @@ package user;
 public class ManagerUser extends Staff {
     private float salary;
     public ManagerUser(Staff s, float salary) {
-        super(s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
+        super(s.getStaffId(), s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
         this.setSalary(salary);
     }
 

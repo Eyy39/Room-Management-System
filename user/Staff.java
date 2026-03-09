@@ -22,6 +22,14 @@ public class Staff implements IStaff {
         this.setPassword(password);
     }
 
+    public Staff(String id, String name, char gender, String phoneNumber, String password) {
+        this.staffId = id;
+        this.name = name;
+        this.gender = gender;
+        this.phoneNubmer = phoneNumber;
+        this.password = password;
+    }
+
     // public Staff(Staff staff, String position, float salary) {
     //     this(staff.getStaffId(), staff.getName(), position, staff.getGender(), staff.getPassword());
     //     this.setSalary(salary);
