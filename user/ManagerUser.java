@@ -3,7 +3,7 @@ package user;
 public class ManagerUser extends Staff {
     private float salary;
     public ManagerUser(Staff s, float salary) {
-        super(s.getStaffId(), s.getName(), s.getGender(), s.getPassword());
+        super(s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
         this.setSalary(salary);
     }
 
@@ -12,6 +12,11 @@ public class ManagerUser extends Staff {
     //     super(staffId, name, "Manager", '?', password);
     // }
     
+
+    @Override
+    public String getRole() {
+        return "Manager";
+    }
 
     @Override
     public boolean can(String action) {
@@ -33,7 +38,16 @@ public class ManagerUser extends Staff {
 
     @Override
     public String toString() {
-        return super.toString() + "Position: Manager\nSalary: " + salary + "\n";
+        return super.toString() + "Position: Manager\nSalary: " + getSalary() + "\n";
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+
+        if (!(obj instanceof ManagerUser)) return false;
+
+        ManagerUser other = (ManagerUser) obj;
+        return Float.compare(this.salary, other.salary) == 0;
+    }    
     
 }

@@ -5,13 +5,18 @@ import controller.Hotel;
 public class ReceptionistUser extends Staff {
     private float salary;
     public ReceptionistUser(Staff s, float salary) {
-        super(s.getStaffId(), s.getName(), s.getGender(), s.getPassword());
+        super(s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
         this.setSalary(salary);
     }
 
     // public ReceptionistUser(String staffId, String name, String password) {
     //     super(staffId, name, '?', password);
     // }
+    @Override
+    public String getRole() {
+        return "Receptionist";
+    }
+
     @Override
     public boolean can(String action) {
         if (action.equals(Hotel.CREATE_BOOKING) ||
@@ -41,7 +46,16 @@ public class ReceptionistUser extends Staff {
 
     @Override
     public String toString() {
-        return super.toString() + "Position: Receptionist\nSalary: " + salary + "\n";
+        return super.toString() + "Position: Receptionist\nSalary: " + getSalary() + "\n";
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+
+        if (!(obj instanceof ReceptionistUser)) return false;
+
+        ReceptionistUser other = (ReceptionistUser) obj;
+        return Float.compare(this.salary, other.salary) == 0;
     }
     
 }

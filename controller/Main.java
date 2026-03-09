@@ -10,13 +10,14 @@ import user.Staff;
 
 public class Main {
     public static void main(String[] args) {
+        
         Hotel hotel = new Hotel("Sunrise Hotel", "Phnom Penh", "012 345 678",10);
         
         Room room1 = new Room("A101", "Single", 100);
         Room room2 = new Room("B202", "Double", 150);
 
-        Staff staff1 = new Staff("ST001", "Dara", 'M', "pw123");
-        Staff staff2 = new Staff("ST002", "Sokha", 'F', "pw123");
+        Staff staff1 = new Staff( "Dara", 'M', "086 256 034", "pw123");
+        Staff staff2 = new Staff( "Sokha", 'F', "098 765 432", "pw456");
 
         Guest guest1 = new Guest( "Vanna", "098 777 666","vanna@gamil.com");
         Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
@@ -37,9 +38,8 @@ public class Main {
         hotel.addBooking(booking1);
         hotel.addBooking(booking2);
 
-        hotel.addUser(new ManagerUser(staff1, 1500.0f));
-        hotel.addUser(new ReceptionistUser(staff2, 1000.0f));
-        // System.out.println(hotel);
+        hotel.addUser(new ManagerUser(staff1, 1200.0f));
+        hotel.addUser(new ReceptionistUser(staff2, 800.0f));
 
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;

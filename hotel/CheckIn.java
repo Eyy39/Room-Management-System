@@ -3,6 +3,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import user.Staff;
+import user.ManagerUser;
+import user.ReceptionistUser;
 
 public class CheckIn {
     private Room room;
@@ -47,7 +49,7 @@ public class CheckIn {
         return originalPrice;
     }
     public void setOriginalPrice(Staff staff, double originalPrice) {
-        if(staff.getPosition().equals("Manager") || staff.getPosition().equals("Receptionist")){
+        if(staff instanceof ManagerUser || staff instanceof ReceptionistUser){
             System.out.println("Original Price: $" + originalPrice);
         }
     }
@@ -55,7 +57,7 @@ public class CheckIn {
         return discountPrice;
     }
     public void setDiscountPrice(Staff staff, double discountPercent) {
-        if(staff.getPosition().equals("Manager") || staff.getPosition().equals("Receptionist")){
+        if(staff instanceof ManagerUser || staff instanceof ReceptionistUser){
             this.discountPrice = originalPrice * (discountPercent / 100);
         }
     }
@@ -73,7 +75,7 @@ public class CheckIn {
         return status;
     }
     public void setStatus(Staff staff, String status){
-        if(staff.getPosition().equals("Manager") || staff.getPosition().equals("Receptionist")){
+        if(staff instanceof ManagerUser || staff instanceof ReceptionistUser){
              this.status = status;
         }
     }
@@ -115,8 +117,8 @@ public class CheckIn {
            "\nRoom Type: " + room.getRoomType() +
            "\nCheckIn Date: " + checkIn +
            "\nDuration: " + duration +
-           "\nPrice per Night: $" + originalPrice +
-           "\nDiscount: $" + discountPrice +
+           "\nPrice per Night: $" + getOriginalPrice() +
+           "\nDiscount: $" + getDiscountPrice() +
            "\nTotal: $" + Total() +
            "\n======================================" +
            "\nStaff Assigned: " + staff.getName() + "\n";

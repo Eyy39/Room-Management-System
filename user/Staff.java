@@ -2,24 +2,23 @@ package user;
 public class Staff implements IStaff {
     private String staffId;
     private String name;
-    private String position;
     private char gender;
+    private String phoneNubmer;
     // private float salary;
     private String password;
     private static int staffCounter = 0;
 
-    public Staff(String name, String position, char gender) {
-        this.staffId = generateStaffId(); // Generate a unique staff ID
-        this.setName(name);
-        this.setPosition(position);
-        this.setGender(gender);
-    }
+    // public Staff(String name, char gender) {
+    //     this.staffId = generateStaffId(); // Generate a unique staff ID
+    //     this.setName(name);
+    //     this.setGender(gender);
+    // }
 
-    public Staff(String staffId, String name, char gender, String password) {
-        this.staffId = staffId;
+    public Staff(String name, char gender, String phoneNumber, String password) {
+        this.staffId = generateStaffId();
         this.setName(name);
-        // this.setPosition(position);
         this.setGender(gender);
+        this.setPhoneNumber(phoneNumber);
         this.setPassword(password);
     }
 
@@ -45,17 +44,6 @@ public class Staff implements IStaff {
         }
         this.name = name.trim();
     }
-
-    public String getPosition(){
-        return position;
-    }
-    public void setPosition(String position) {
-        if (position == null || position.trim().isEmpty()) {
-            System.out.println("Invalid position. Position not updated.");
-            return;
-        }
-        this.position = position.trim();
-    }
     public char getGender() {
         return gender;
     }
@@ -76,7 +64,7 @@ public class Staff implements IStaff {
     // }
 
     private String generateStaffId() {
-        return "ST" + (++staffCounter);
+        return String.format("ST%03d", (++staffCounter));
     }
     public static int getStaffCounter() {
         return staffCounter;
@@ -87,6 +75,16 @@ public class Staff implements IStaff {
             return;
         }
         this.password = password;
+    }
+    public String getPhoneNumber() {
+        return phoneNubmer;
+    }
+    public void setPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            System.out.println("Invalid phone number. Phone number not updated.");
+            return;
+        }
+        this.phoneNubmer = phoneNumber.trim();
     }
 
     @Override
@@ -106,7 +104,7 @@ public class Staff implements IStaff {
 
     @Override
     public String getRole() {
-        return position != null ? position : "";
+        return "Staff";
     }
 
     @Override
@@ -138,11 +136,6 @@ public class Staff implements IStaff {
             if (other.name != null)
                 return false;
         } else if (!name.equals(other.name))
-            return false;
-        if (position == null) {
-            if (other.position != null)
-                return false;
-        } else if (!position.equals(other.position))
             return false;
         if (gender != other.gender)
             return false;
