@@ -1,4 +1,7 @@
 package user;
+
+import java.util.Objects;
+
 public class Staff implements IStaff {
     private String staffId;
     private String name;
@@ -16,10 +19,20 @@ public class Staff implements IStaff {
 
     public Staff(String name, char gender, String phoneNumber, String password) {
         this.staffId = generateStaffId();
-        this.setName(name);
-        this.setGender(gender);
-        this.setPhoneNumber(phoneNumber);
-        this.setPassword(password);
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invalid name");
+        }
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invalid phone number");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+
+        this.name = name.trim();
+        this.gender = gender;
+        this.phoneNubmer = phoneNumber.trim();
+        this.password = password;
     }
 
     public Staff(String id, String name, char gender, String phoneNumber, String password) {
@@ -111,19 +124,18 @@ public class Staff implements IStaff {
     }
 
     @Override
-    public String getRole() {
-        return "Staff";
-    }
-
-    @Override
     public boolean can(String action) {
         return false;
     }
 
     @Override
+    public String getSignature() {
+        return "[Staff] " + name;
+    }
+
+    @Override
     public String toString() {
-        return "Staff ID: " + staffId + "\nName: " + name + 
-        "\nGender: " + gender + "\n";
+        return getSignature() + " (ID: " + staffId + ")";
     }
 
     @Override
@@ -135,19 +147,14 @@ public class Staff implements IStaff {
             return false;
         }
         Staff other = (Staff) obj;
-        if (staffId == null) {
-            if (other.staffId != null)
-                return false;
-        } else if (!staffId.equals(other.staffId))
-            return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        if (gender != other.gender)
-            return false;
-        return true;
+        return gender == other.gender
+            && Objects.equals(staffId, other.staffId)
+            && Objects.equals(name, other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(staffId, name, gender);
     }
 
     

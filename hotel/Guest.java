@@ -1,4 +1,7 @@
 package hotel;
+
+import java.util.Objects;
+
 public class Guest {
     private String guestName;
     private String guestID;
@@ -7,10 +10,20 @@ public class Guest {
     private static int guestCounter = 0;
 
     public Guest(String guestName, String phoneNumber, String email){
-        this.setGuestName(guestName);
+        if (guestName == null || guestName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Guest name cannot be empty");
+        }
+        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("Phone number cannot be empty");
+        }
+        if (!isEmailValid(email)) {
+            throw new IllegalArgumentException("Invalid email address");
+        }
+
+        this.guestName = guestName.trim();
         this.guestID = generateGuestID();
-        this.setPhoneNumber(phoneNumber);
-        this.setEmail(email);
+        this.phoneNumber = phoneNumber.trim();
+        this.email = email;
     }
     public String Regex(){
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
@@ -74,18 +87,20 @@ public class Guest {
     
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Guest)) {
+            return false;
+        }
         Guest other = (Guest) obj;
-        if (guestName == null) {
-            if (other.guestName != null)
-                return false;
-        } else if (!guestName.equals(other.guestName))
-            return false;
-        if (guestID == null) {
-            if (other.guestID != null)
-                return false;
-        } else if (!guestID.equals(other.guestID))
-            return false;
-        return true;
+        return Objects.equals(guestName, other.guestName)
+            && Objects.equals(guestID, other.guestID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(guestName, guestID);
     }
     
 }

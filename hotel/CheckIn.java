@@ -1,13 +1,11 @@
 package hotel;
+import controller.Hotel;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
-import user.Staff;
-import user.ManagerUser;
-import user.ReceptionistUser;
+import user.IStaff;
 
 public class CheckIn {
-    private Room room;
+    private IRoom room;
     private static int bookingCount = 0;
     private int BookingID;
     private String checkIn;
@@ -15,10 +13,10 @@ public class CheckIn {
     private double originalPrice;
     private double discountPrice;
     private Guest guest;
-    private Staff staff;
+    private IStaff staff;
     private String status;
 
-    public CheckIn(Guest guest, Room room, String checkIn, int night, Staff staff, double discountPercent){
+    public CheckIn(Guest guest, IRoom room, String checkIn, int night, IStaff staff, double discountPercent){
         this.BookingID= ++bookingCount; // Increment booking count for unique ID
         this.checkIn = checkIn;
         this.night= night;
@@ -45,40 +43,49 @@ public class CheckIn {
     public int getNight() {
         return night;
     }
+
     public double getOriginalPrice() {
         return originalPrice;
     }
-    public void setOriginalPrice(Staff staff, double originalPrice) {
-        if(staff instanceof ManagerUser || staff instanceof ReceptionistUser){
-            System.out.println("Original Price: $" + originalPrice);
+
+    public void setOriginalPrice(IStaff staff, double originalPrice) {
+        if (staff != null && staff.can(Hotel.UPDATE_ROOM_STATUS)) {
+            this.originalPrice = Math.max(0, originalPrice);
         }
     }
+
     public double getDiscountPrice() {
         return discountPrice;
     }
-    public void setDiscountPrice(Staff staff, double discountPercent) {
-        if(staff instanceof ManagerUser || staff instanceof ReceptionistUser){
+
+    public void setDiscountPrice(IStaff staff, double discountPercent) {
+        if (staff != null && staff.can(Hotel.UPDATE_ROOM_STATUS)) {
             this.discountPrice = originalPrice * (discountPercent / 100);
         }
     }
+
     public Guest getGuest() {
         return guest;
     }
-    public Room getRoom() {
+
+    public IRoom getRoom() {
         return room;
     }
-    public Staff getStaff() {
+
+    public IStaff getStaff() {
         return staff;
     }
 
     public String getStatus(){
         return status;
     }
-    public void setStatus(Staff staff, String status){
-        if(staff instanceof ManagerUser || staff instanceof ReceptionistUser){
+
+    public void setStatus(IStaff staff, String status){
+        if (staff != null && staff.can(Hotel.UPDATE_ROOM_STATUS)) {
              this.status = status;
         }
     }
+
     public double Total () {
         return night* (originalPrice - discountPrice);
     }
@@ -121,7 +128,7 @@ public class CheckIn {
            "\nDiscount: $" + getDiscountPrice() +
            "\nTotal: $" + Total() +
            "\n======================================" +
-           "\nStaff Assigned: " + staff.getName() + "\n";
+            "\nStaff Assigned: " + staff.getSignature() + "\n";
     }
     
 }

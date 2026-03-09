@@ -1,6 +1,8 @@
 package hotel;
 
-public class Room {
+import java.util.Objects;
+
+public class Room implements IRoom {
     private String roomNumber;
     private String roomType;
     private double pricePerNight;
@@ -8,14 +10,25 @@ public class Room {
     private static int roomCounter = 0;
 
     public Room(String roomNumber, String roomType, double pricePerNight) {
-        this.setRoomNumber(roomNumber);
-        this.setRoomType(roomType);
-        this.setPricePerNight(pricePerNight);
-        this.setRoomId();
+        if (roomNumber == null || roomNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("Room number cannot be empty");
+        }
+        if (roomType == null || roomType.trim().isEmpty()) {
+            throw new IllegalArgumentException("Room type cannot be empty");
+        }
+
+        this.roomNumber = roomNumber.trim();
+        this.roomType = roomType.trim();
+        this.pricePerNight = Math.max(0, pricePerNight);
+        this.roomID = ++roomCounter;
     }
+
+    @Override
     public String getRoomNumber() {
         return roomNumber;
     }
+
+    @Override
     public String getRoomType() {
         return roomType;
     }
@@ -29,6 +42,7 @@ public class Room {
             this.roomType = roomType;
         }
     }
+    @Override
     public double getPricePerNight(){
         return pricePerNight;
     }
@@ -39,6 +53,7 @@ public class Room {
             this.pricePerNight = pricePerNight;
         }
     }
+    @Override
     public int getRoomId() {
         return roomID;
     }
@@ -57,19 +72,20 @@ public class Room {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Room)) {
+            return false;
+        }
         Room other = (Room) obj;
-        if (roomNumber == null) {
-            if (other.roomNumber != null)
-                return false;
-        } else if (!roomNumber.equals(other.roomNumber))
-            return false;
-        if (roomType == null) {
-            if (other.roomType != null)
-                return false;
-        } else if (!roomType.equals(other.roomType))
-            return false;
-        if (roomID != other.roomID)
-            return false;
-        return true;
+        return roomID == other.roomID
+            && Objects.equals(roomNumber, other.roomNumber)
+            && Objects.equals(roomType, other.roomType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roomNumber, roomType, roomID);
     }
 }

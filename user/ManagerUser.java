@@ -1,10 +1,15 @@
 package user;
 
+import java.util.Objects;
+
 public class ManagerUser extends Staff {
     private float salary;
     public ManagerUser(Staff s, float salary) {
         super(s.getStaffId(), s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
-        this.setSalary(salary);
+        if (salary < 0) {
+            throw new IllegalArgumentException("Invalid salary");
+        }
+        this.salary = salary;
     }
 
     // login constructor used in Main
@@ -12,15 +17,14 @@ public class ManagerUser extends Staff {
     //     super(staffId, name, "Manager", '?', password);
     // }
     
-
-    @Override
-    public String getRole() {
-        return "Manager";
-    }
-
     @Override
     public boolean can(String action) {
         return true; // Manager has all permissions
+    }
+
+    @Override
+    public String getSignature() {
+        return "[Manager] " + getUsername();
     }
 
     public float getSalary() {
@@ -30,8 +34,7 @@ public class ManagerUser extends Staff {
     public void setSalary(float salary) {
         if(salary < 0) {
             System.out.println("Invalid salary. Salary not updated.");
-            return;
-        }else{
+        } else {
             this.salary = salary;
         }
     }
@@ -42,12 +45,19 @@ public class ManagerUser extends Staff {
     }
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-
-        if (!(obj instanceof ManagerUser)) return false;
-
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ManagerUser)) {
+            return false;
+        }
         ManagerUser other = (ManagerUser) obj;
         return Float.compare(this.salary, other.salary) == 0;
-    }    
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(salary);
+    }
     
 }
