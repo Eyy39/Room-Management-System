@@ -135,7 +135,8 @@ public class Staff implements IStaff {
 
     @Override
     public String toString() {
-        return getSignature() + " (ID: " + staffId + ")";
+        return "Staff Id: " + getStaffId() + "\nName: " + getName() + "\nGender: " + getGender() + 
+        "\nPhone Number: " + getPhoneNumber() + "\n";
     }
 
     @Override
@@ -150,11 +151,6 @@ public class Staff implements IStaff {
         return gender == other.gender
             && Objects.equals(staffId, other.staffId)
             && Objects.equals(name, other.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(staffId, name, gender);
     }
 
     

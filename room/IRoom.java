@@ -1,4 +1,4 @@
-package hotel;
+package room;
 
 public interface IRoom {
     String getRoomNumber();

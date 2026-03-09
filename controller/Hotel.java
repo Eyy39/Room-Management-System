@@ -1,7 +1,8 @@
 package controller;
 import hotel.CheckIn;
 import hotel.Guest;
-import hotel.IRoom;
+import room.IRoom;
+
 import java.util.ArrayList;
 import user.IStaff;
 
@@ -262,7 +263,7 @@ public class Hotel {
             return;
         }
         for (IStaff user : users) {
-            System.out.println(user); 
+            System.out.println(user.toString()); 
         }
     }
 

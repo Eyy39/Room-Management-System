@@ -1,15 +1,10 @@
 package user;
 
-import java.util.Objects;
-
 public class ManagerUser extends Staff {
     private float salary;
     public ManagerUser(Staff s, float salary) {
         super(s.getStaffId(), s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
-        if (salary < 0) {
-            throw new IllegalArgumentException("Invalid salary");
-        }
-        this.salary = salary;
+        this.setSalary(salary);
     }
 
     // login constructor used in Main
@@ -24,7 +19,7 @@ public class ManagerUser extends Staff {
 
     @Override
     public String getSignature() {
-        return "[Manager] " + getUsername();
+        return "Manager: " + getUsername();
     }
 
     public float getSalary() {
@@ -41,7 +36,7 @@ public class ManagerUser extends Staff {
 
     @Override
     public String toString() {
-        return super.toString() + "Position: Manager\nSalary: " + getSalary() + "\n";
+        return super.toString() + "Position: Manager\nSalary: $" + getSalary() + "\n";
     }
     @Override
     public boolean equals(Object obj) {
@@ -53,11 +48,6 @@ public class ManagerUser extends Staff {
         }
         ManagerUser other = (ManagerUser) obj;
         return Float.compare(this.salary, other.salary) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(salary);
     }
     
 }

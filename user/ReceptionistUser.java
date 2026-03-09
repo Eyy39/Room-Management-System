@@ -1,17 +1,12 @@
 package user;
 
 import controller.Hotel;
-import java.util.Objects;
-
 
 public class ReceptionistUser extends Staff {
     private float salary;
     public ReceptionistUser(Staff s, float salary) {
         super(s.getStaffId(),s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
-        if (salary < 0) {
-            throw new IllegalArgumentException("Invalid salary");
-        }
-        this.salary = salary;
+        this.setSalary(salary);
     }
 
     // public ReceptionistUser(String staffId, String name, String password) {
@@ -28,7 +23,7 @@ public class ReceptionistUser extends Staff {
 
     @Override
     public String getSignature() {
-        return "[Receptionist] " + getUsername();
+        return "Receptionist: " + getUsername();
     }
 
     public float getSalary() {
@@ -45,7 +40,7 @@ public class ReceptionistUser extends Staff {
 
     @Override
     public String toString() {
-        return super.toString() + "Position: Receptionist\nSalary: " + getSalary() + "\n";
+        return super.toString() + "Position: Receptionist\nSalary: $" + getSalary() + "\n";
     }
     @Override
     public boolean equals(Object obj) {
@@ -58,10 +53,4 @@ public class ReceptionistUser extends Staff {
         ReceptionistUser other = (ReceptionistUser) obj;
         return Float.compare(this.salary, other.salary) == 0;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(salary);
-    }
-    
 }

@@ -1,5 +1,7 @@
 package hotel;
 import controller.Hotel;
+import room.IRoom;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import user.IStaff;

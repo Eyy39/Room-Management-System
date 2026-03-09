@@ -1,9 +1,10 @@
 package controller;
 import hotel.CheckIn;
 import hotel.Guest;
-import hotel.IRoom;
-import hotel.NormalRoom;
-import hotel.VIPRoom;
+import room.NormalRoom;
+import room.Room;
+import room.VIPRoom;
+
 import java.util.Scanner;
 import user.ManagerUser;
 import user.ReceptionistUser;
@@ -14,8 +15,11 @@ public class Main {
         
         Hotel hotel = new Hotel("Sunrise Hotel", "Phnom Penh", "012 345 678",10);
         
-        IRoom room1 = new NormalRoom("A101", 100);
-        IRoom room2 = new VIPRoom("B202", 150);
+        Room room1 = new Room("A101");
+        Room room2 = new Room("B202");
+
+        NormalRoom nRoom1 = new NormalRoom(room1, 70.0);
+        VIPRoom vRoom1 = new VIPRoom(room2, 150.0);
 
         Staff staff1 = new Staff( "Dara", 'M', "086 256 034", "pw123");
         Staff staff2 = new Staff( "Sokha", 'F', "098 765 432", "pw456");
@@ -30,8 +34,8 @@ public class Main {
         CheckIn booking2 = new CheckIn(guest2, room2, "2024-07-02", 2, receptionist, 15);
 
         // Add rooms, staff, guests, and bookings to the hotel
-        hotel.addRoom(room1);
-        hotel.addRoom(room2);
+        hotel.addRoom(nRoom1);
+        hotel.addRoom(vRoom1);
 
         // hotel.addUser(staff1);
         // hotel.addUser(staff2);
@@ -45,23 +49,22 @@ public class Main {
         hotel.addUser(manager);
         hotel.addUser(receptionist);
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            boolean exit = false;
-            boolean loggedIn = false;
+        Scanner scanner = new Scanner(System.in);
+        boolean exit = false;
+        boolean loggedIn = false;
 
-            while (!exit) {
-                if (!loggedIn) {
-                    // Login screen
-                    System.out.println("\n========================================");
-                    System.out.println("   HOTEL MANAGEMENT SYSTEM - LOGIN");
-                    System.out.println("========================================");
-                    System.out.println("1. Login");
-                    System.out.println("2. Exit");
-                    System.out.print("Enter your choice: ");
-
-                    int loginChoice = scanner.nextInt();
+        while (!exit) {
+            if (!loggedIn) {
+                // Login screen
+                System.out.println("\n========================================");
+                System.out.println("   HOTEL MANAGEMENT SYSTEM - LOGIN");
+                System.out.println("========================================");
+                System.out.println("1. Login");
+                System.out.println("2. Exit");
+                System.out.print("Enter your choice: ");
+                    int loginChoice = scanner.nextInt();                    
                     switch (loginChoice) {
-                        case 1 -> {
+                    case 1: {
                             scanner.nextLine();
                             System.out.print("Username: ");
                             String username = scanner.nextLine();
@@ -70,12 +73,14 @@ public class Main {
                             if (hotel.login(username, password)) {
                                 loggedIn = true;
                             }
+                            break;
                         }
-                        case 2 -> {
-                            exit = true;
-                            System.out.println("Exiting the system. Goodbye!");
-                        }
-                        default -> System.out.println("Invalid choice. Please try again.");
+                    case 2: {
+                        exit = true;
+                        System.out.println("Exiting the system. Goodbye!");
+                        break;
+                    }
+                    default: System.out.println("Invalid choice. Please try again.");
                     }
                 } else {
                     System.out.println("\n========================================");
@@ -93,52 +98,58 @@ public class Main {
 
                     int choice = scanner.nextInt();
                     switch (choice) {
-                        case 1 -> {
-                            System.out.println("\n======================================");
-                            System.out.println("      ROOM DETAILS");
-                            System.out.println("======================================");
-                            hotel.actionViewRooms();
-                        }
-                        case 2 -> {
-                            System.out.println("\n======================================");
-                            System.out.println("      GUEST INFORMATION");
-                            System.out.println("======================================");
-                            hotel.actionViewGuests();
-                        }
-                        case 3 -> {
-                            System.out.println("\n======================================");
-                            System.out.println("      BOOK A ROOM");
-                            System.out.println("======================================");
-                            scanner.nextLine();
-                            System.out.print("Enter room type to search: ");
-                            String type = scanner.nextLine();
-                            hotel.actionCreateBooking(type);
-                        }
-                        case 4 -> {
-                            System.out.println("\n======================================");
-                            System.out.println("      STAFF INFORMATION");
-                            System.out.println("======================================");
-                            hotel.actionViewStaff();
-                        }
-                        case 5 -> {
-                            System.out.println("\n======================================");
-                            System.out.println("      BOOKING SCHEDULE");
-                            System.out.println("======================================");
-                            hotel.actionViewBookingSchedule();
-                        }
-                        case 6 -> {
-                            hotel.logout();
-                            loggedIn = false;
-                        }
-                        case 7 -> {
-                            exit = true;
-                            System.out.println("\nExiting the system. Goodbye!");
-                        }
-                        default -> System.out.println("Invalid choice. Please try again.");
+                    case 1: {
+                        System.out.println("\n======================================");
+                        System.out.println("      ROOM DETAILS");
+                        System.out.println("======================================");
+                        hotel.actionViewRooms();
+                        break;
                     }
+                    case 2: {
+                        System.out.println("\n======================================");
+                        System.out.println("      GUEST INFORMATION");
+                        System.out.println("======================================");
+                        hotel.actionViewGuests();
+                        break;
+                    }
+                    case 3: {
+                        System.out.println("\n======================================");
+                        System.out.println("      BOOK A ROOM");
+                        System.out.println("======================================");
+                        scanner.nextLine();
+                        System.out.print("Enter room type to search: ");
+                        String type = scanner.nextLine();
+                        hotel.actionCreateBooking(type);
+                        break;
+                    }
+                    case 4: {
+                        System.out.println("\n======================================");
+                        System.out.println("      STAFF INFORMATION");
+                        System.out.println("======================================");
+                        hotel.actionViewStaff();
+                        break;
+                    }
+                    case 5: {
+                        System.out.println("\n======================================");
+                        System.out.println("      BOOKING SCHEDULE");
+                        System.out.println("======================================");
+                        hotel.actionViewBookingSchedule();
+                        break;
+                    }
+                    case 6: {
+                        hotel.logout();
+                        loggedIn = false;
+                        break;
+                    }
+                    case 7: {
+                        exit = true;
+                        System.out.println("\nExiting the system. Goodbye!");
+                        break;
+                    }
+                    default: System.out.println("Invalid choice. Please try again.");
                 }
             }
         }
     }
-    
 }
+    
