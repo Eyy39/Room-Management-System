@@ -1,13 +1,11 @@
 package room;
 
-import user.ManagerUser;
-
 public class VIPRoom extends Room {
-    private static final double SERVICE_FEE = 100.0;
-    double basePricePerNight;
+    private static final double SERVICE_FEE = 50.0;
+    private double basePricePerNight; // Base price without service fee
     public VIPRoom(Room room, double basePricePerNight) {
         super(room.getRoomId(), room.getRoomNumber());
-        this.basePricePerNight = basePricePerNight;
+        this.setBasePricePerNight(basePricePerNight);
     }
 
     @Override
@@ -15,16 +13,26 @@ public class VIPRoom extends Room {
         return "VIP";
     }
 
+    double getServiceFee() {
+        return SERVICE_FEE;
+    }
     @Override
     public double getPricePerNight() {
-        return super.getPricePerNight() + SERVICE_FEE;
+        return super.getPricePerNight() + getServiceFee();
     }
 
+    void setBasePricePerNight(double basePricePerNight) {
+        if (basePricePerNight < 0) {
+            this.basePricePerNight = 0.0;
+        } else {
+            this.basePricePerNight = basePricePerNight;
+        }
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
 
-        if (!(obj instanceof ManagerUser)) return false;
+        if (!(obj instanceof VIPRoom)) return false;
 
         VIPRoom other = (VIPRoom) obj;
         return Double.compare(this.basePricePerNight, other.basePricePerNight) == 0;
@@ -32,7 +40,7 @@ public class VIPRoom extends Room {
 
     @Override
     public String toString() {
-        return super.toString() + "Room Type: VIP \nPricePerNight: $" + basePricePerNight + "\n";
+        return super.toString() + "Room Type: VIP \nPricePerNight: $" + getPricePerNight() + "\n";
     }
     
 }

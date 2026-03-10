@@ -4,7 +4,6 @@ import hotel.Guest;
 import room.NormalRoom;
 import room.Room;
 import room.VIPRoom;
-
 import java.util.Scanner;
 import user.ManagerUser;
 import user.ReceptionistUser;
