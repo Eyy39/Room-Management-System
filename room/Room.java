@@ -4,21 +4,15 @@ import java.util.Objects;
 
 public class Room implements IRoom {
     private String roomNumber;
-    // private String roomType;
+    private String roomType;
     // private double pricePerNight;
     private int roomID;
     private static int roomCounter = 0;
 
-    public Room(String roomNumber) {
-        if (roomNumber == null || roomNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("Room number cannot be empty");
-        }
-        // if (roomType == null || roomType.trim().isEmpty()) {
-        //     throw new IllegalArgumentException("Room type cannot be empty");
-        // }
+    public Room(String roomNumber, String roomType) {
 
         this.setRoomNumber(roomNumber);
-        // this.setRoomType(roomType);
+        this.setRoomType(roomType);
         // this.setPricePerNight(pricePerNight);
         this.roomID = ++roomCounter;
     }
@@ -34,7 +28,7 @@ public class Room implements IRoom {
 
     @Override
     public String getRoomType() {
-        return "Room";
+        return roomType;
     }
     // Default price (can be overridden)
     @Override
@@ -46,11 +40,11 @@ public class Room implements IRoom {
             this.roomNumber = roomNumber;
         }
     }
-    // public void setRoomType(String roomType){
-    //     if (roomType != null && !roomType.trim().isEmpty()) {
-    //         this.roomType = roomType;
-    //     }
-    // }
+    public void setRoomType(String roomType){
+        if (roomType != null && !roomType.trim().isEmpty()) {
+            this.roomType = roomType;
+        }
+    }
     // @Override
     // public double getPricePerNight(){
     //     return pricePerNight;

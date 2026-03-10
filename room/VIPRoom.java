@@ -4,8 +4,8 @@ public class VIPRoom extends Room {
     private static final double SERVICE_FEE = 50.0;
     private boolean freeBreakfast;
     private double basePricePerNight; // Base price without service fee
-    public VIPRoom(String roomNumber, double basePricePerNight) {
-        super(roomNumber);
+    public VIPRoom(String roomNumber, String roomType, double basePricePerNight) {
+        super(roomNumber, roomType);
         this.setBasePricePerNight(basePricePerNight);
         this.freeBreakfast= true; // VIP rooms include free breakfast by default
     }

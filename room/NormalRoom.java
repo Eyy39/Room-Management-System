@@ -2,8 +2,8 @@ package room;
 
 public class NormalRoom extends Room {
     private double pricePerNight;
-    public NormalRoom(String roomNumber, double pricePerNight) {
-        super(roomNumber);
+    public NormalRoom(String roomNumber, String roomType, double pricePerNight) {
+        super(roomNumber, roomType);
         this.setPricePerNight(pricePerNight);
     }
 

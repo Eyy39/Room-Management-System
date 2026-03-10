@@ -14,8 +14,8 @@ public class Main {
         
         Hotel hotel = new Hotel("Sunrise Hotel", "Phnom Penh", "012 345 678",10);
 
-        Room nRoom1 = new NormalRoom("A101", 70.0);
-        Room vRoom1 = new VIPRoom("B202", 150.0);
+        Room nRoom1 = new NormalRoom("A101","Single", 70.0);
+        Room vRoom1 = new VIPRoom("B202","Double", 150.0);
 
         Staff staff1 = new ManagerUser("ST001", "Dara", 'M', "086 256 034", "pw123", 1200.0f);
         Staff staff2 = new ReceptionistUser("ST002", "Sokha", 'F', "098 765 432", "pw456", 800.0f, "12:00 PM - 12:00 AM");
