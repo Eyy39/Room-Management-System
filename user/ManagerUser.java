@@ -19,7 +19,7 @@ public class ManagerUser extends Staff {
     }
 
     @Override
-    public String getSignature() {
+    public String getSignature() { //
         return "Manager: " + getUsername();
     }
 

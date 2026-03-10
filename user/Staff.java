@@ -43,14 +43,6 @@ public abstract class Staff implements IStaff {
         this.password = password;
     }
 
-    /**
-     * Copy constructor for subclass use (e.g., ManagerUser, ReceptionistUser).
-     * Allows using inheritance/polymorphism without accessing individual getters.
-     */
-    public Staff(Staff other) {
-        this(other.staffId, other.name, other.gender, other.phoneNubmer, other.password);
-    }
-
     // public Staff(Staff staff, String position, float salary) {
     //     this(staff.getStaffId(), staff.getName(), position, staff.getGender(), staff.getPassword());
     //     this.setSalary(salary);

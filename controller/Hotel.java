@@ -167,8 +167,6 @@ public class Hotel {
         System.out.println("Room not found.");
     }
         
-    
-
     public void displayAllRooms() {
         if (rooms.isEmpty()) {
             System.out.println("No rooms available.");
