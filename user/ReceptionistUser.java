@@ -4,9 +4,11 @@ import controller.Hotel;
 
 public class ReceptionistUser extends Staff {
     private float salary;
-    public ReceptionistUser(Staff s, float salary) {
-        super(s.getStaffId(),s.getName(), s.getGender(), s.getPhoneNumber(), s.getPassword());
+    private String workHours;
+    public ReceptionistUser(String staffId, String name, char gender, String phoneNumber, String password, float salary, String workHours) {
+        super(staffId, name, gender, phoneNumber, password);
         this.setSalary(salary);
+        this.setWorkHours(workHours);
     }
 
     // public ReceptionistUser(String staffId, String name, String password) {
@@ -29,6 +31,16 @@ public class ReceptionistUser extends Staff {
     public float getSalary() {
         return salary;
     }
+    public String getWorkHours() {
+        return workHours;
+    }
+    public void setWorkHours(String workHours) {
+        if (workHours == null || workHours.trim().isEmpty()) {
+            System.out.println("Invalid work hours. Work hours not updated.");
+            return;
+        }
+        this.workHours = workHours.trim();
+    }
 
     public void setSalary(float salary) {
         if(salary < 0) {
@@ -40,7 +52,7 @@ public class ReceptionistUser extends Staff {
 
     @Override
     public String toString() {
-        return super.toString() + "Position: Receptionist\nSalary: $" + getSalary() + "\n";
+        return super.toString() + "Position: Receptionist\nSalary: $" + getSalary() + "\nworkHours: " + getWorkHours() + "\n";
     }
     @Override
     public boolean equals(Object obj) {
@@ -51,6 +63,6 @@ public class ReceptionistUser extends Staff {
             return false;
         }
         ReceptionistUser other = (ReceptionistUser) obj;
-        return Float.compare(this.salary, other.salary) == 0;
+        return Float.compare(this.salary, other.salary) == 0 && super.equals(other);
     }
 }

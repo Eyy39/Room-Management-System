@@ -2,10 +2,12 @@ package room;
 
 public class VIPRoom extends Room {
     private static final double SERVICE_FEE = 50.0;
+    private boolean freeBreakfast;
     private double basePricePerNight; // Base price without service fee
-    public VIPRoom(Room room, double basePricePerNight) {
-        super(room.getRoomId(), room.getRoomNumber());
+    public VIPRoom(String roomNumber, double basePricePerNight) {
+        super(roomNumber);
         this.setBasePricePerNight(basePricePerNight);
+        this.freeBreakfast= true; // VIP rooms include free breakfast by default
     }
 
     @Override
@@ -40,7 +42,7 @@ public class VIPRoom extends Room {
 
     @Override
     public String toString() {
-        return super.toString() + "Room Type: VIP \nPricePerNight: $" + getPricePerNight() + "\n";
+        return super.toString() + "Room Type: VIP \nPricePerNight: $" + getPricePerNight() + "\nFree Breakfast: " + freeBreakfast + "\n";
     }
     
 }

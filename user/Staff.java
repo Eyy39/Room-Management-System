@@ -2,7 +2,7 @@ package user;
 
 import java.util.Objects;
 
-public class Staff implements IStaff {
+public abstract class Staff implements IStaff {
     private String staffId;
     private String name;
     private char gender;
@@ -41,6 +41,14 @@ public class Staff implements IStaff {
         this.gender = gender;
         this.phoneNubmer = phoneNumber;
         this.password = password;
+    }
+
+    /**
+     * Copy constructor for subclass use (e.g., ManagerUser, ReceptionistUser).
+     * Allows using inheritance/polymorphism without accessing individual getters.
+     */
+    public Staff(Staff other) {
+        this(other.staffId, other.name, other.gender, other.phoneNubmer, other.password);
     }
 
     // public Staff(Staff staff, String position, float salary) {

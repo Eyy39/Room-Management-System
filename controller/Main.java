@@ -13,24 +13,21 @@ public class Main {
     public static void main(String[] args) {
         
         Hotel hotel = new Hotel("Sunrise Hotel", "Phnom Penh", "012 345 678",10);
-        
-        Room room1 = new Room("A101");
-        Room room2 = new Room("B202");
 
-        NormalRoom nRoom1 = new NormalRoom(room1, 70.0);
-        VIPRoom vRoom1 = new VIPRoom(room2, 150.0);
+        Room nRoom1 = new NormalRoom("A101", 70.0);
+        Room vRoom1 = new VIPRoom("B202", 150.0);
 
-        Staff staff1 = new Staff( "Dara", 'M', "086 256 034", "pw123");
-        Staff staff2 = new Staff( "Sokha", 'F', "098 765 432", "pw456");
+        Staff staff1 = new ManagerUser("ST001", "Dara", 'M', "086 256 034", "pw123", 1200.0f);
+        Staff staff2 = new ReceptionistUser("ST002", "Sokha", 'F', "098 765 432", "pw456", 800.0f, "12:00 PM - 12:00 AM");
+
+        hotel.addUser(staff1);
+        hotel.addUser(staff2);
 
         Guest guest1 = new Guest( "Vanna", "098 777 666","vanna@gamil.com");
         Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
 
-        ManagerUser manager = new ManagerUser(staff1, 1200.0f);
-        ReceptionistUser receptionist = new ReceptionistUser(staff2, 800.0f);
-
-        CheckIn booking1 = new CheckIn(guest1, room1, "2024-07-01", 3, manager, 10);
-        CheckIn booking2 = new CheckIn(guest2, room2, "2024-07-02", 2, receptionist, 15);
+        CheckIn booking1 = new CheckIn(guest1, nRoom1, "2024-07-01", 3, staff1, 10);
+        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2024-07-02", 2, staff2, 15);
 
         // Add rooms, staff, guests, and bookings to the hotel
         hotel.addRoom(nRoom1);
@@ -45,8 +42,7 @@ public class Main {
         hotel.addBooking(booking1);
         hotel.addBooking(booking2);
 
-        hotel.addUser(manager);
-        hotel.addUser(receptionist);
+        
 
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
