@@ -1,9 +1,8 @@
 package controller;
 import hotel.CheckIn;
 import hotel.Guest;
-import room.IRoom;
-
 import java.util.ArrayList;
+import room.IRoom;
 import user.IStaff;
 
 public class Hotel {
@@ -188,15 +187,31 @@ public class Hotel {
     }
 
     public void findRoomsByType(String type) {
+        if (type == null) {
+            System.out.println("Please enter a room type.");
+            return;
+        }
+
+        String normalizedType = type.trim();
+        if (normalizedType.isEmpty()) {
+            System.out.println("Please enter a room type.");
+            return;
+        }
+
+        if (normalizedType.equalsIgnoreCase("all") || normalizedType.equalsIgnoreCase("room")) {
+            displayAllRooms();
+            return;
+        }
+
         boolean found = false;
         for (IRoom room : rooms) {
-            if (room.getRoomType().equalsIgnoreCase(type)) {
+            if (room.getRoomType().equalsIgnoreCase(normalizedType)) {
                 System.out.println(room);
                 found = true;
             }
         }
         if (!found) {
-            System.out.println("No rooms of type " + type + " found.");
+            System.out.println("No rooms of type " + normalizedType + " found.");
         }
     }
 

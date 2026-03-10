@@ -18,7 +18,7 @@ public class VIPRoom extends Room {
     }
     @Override
     public double getPricePerNight() {
-        return super.getPricePerNight() + getServiceFee();
+        return basePricePerNight + getServiceFee();
     }
 
     void setBasePricePerNight(double basePricePerNight) {

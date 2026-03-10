@@ -8,6 +8,11 @@ public class NormalRoom extends Room {
     }
 
     @Override
+    public String getRoomType() {
+        return "Normal";
+    }
+
+    @Override
     public String toString() {
         return super.toString() + "Room Type: Normal \nPricePerNight: $" + pricePerNight + "\n";
     }
