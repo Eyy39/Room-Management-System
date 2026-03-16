@@ -1,15 +1,15 @@
 package hotel;
 
+import common.BaseEntity;
 import java.util.Objects;
 
-public class Guest {
+public class Guest extends BaseEntity {
     private String guestName;
-    private String guestID;
     private String phoneNumber;
     private String email;
-    private static int guestCounter = 0;
 
     public Guest(String guestName, String phoneNumber, String email){
+        super("G");
         if (guestName == null || guestName.trim().isEmpty()) {
             throw new IllegalArgumentException("Guest name cannot be empty");
         }
@@ -21,7 +21,6 @@ public class Guest {
         }
 
         this.guestName = guestName.trim();
-        this.guestID = generateGuestID();
         this.phoneNumber = phoneNumber.trim();
         this.email = email;
     }
@@ -32,9 +31,6 @@ public class Guest {
         }else{
             return "Invalid email address.";
         }
-    }
-    private String generateGuestID(){
-        return "G" + (++guestCounter);
     }
     public String getGuestName() {
         return guestName;
@@ -47,7 +43,7 @@ public class Guest {
         this.guestName = guestName.trim();
     }
     public String getGuestID() {
-        return guestID;
+        return getId();
     }
     public String getPhoneNumber() {
         return phoneNumber;
@@ -76,12 +72,9 @@ public class Guest {
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return email.matches(emailRegex);
     }
-    public static int getGuestCounter() {
-        return guestCounter;
-    }
     @Override
     public String toString() {
-        return "Guest Name: " + guestName + "\nGuest ID: " + guestID
+        return "Guest Name: " + guestName + "\nGuest ID: " + getGuestID()
         + "\nPhone Number: " + phoneNumber + "\nEmail: " + email + "\n";
     }
     
@@ -95,12 +88,12 @@ public class Guest {
         }
         Guest other = (Guest) obj;
         return Objects.equals(guestName, other.guestName)
-            && Objects.equals(guestID, other.guestID);
+            && Objects.equals(getGuestID(), other.getGuestID());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guestName, guestID);
+        return Objects.hash(guestName, getGuestID());
     }
     
 }

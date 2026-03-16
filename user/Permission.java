@@ -1,0 +1,12 @@
+package user;
+
+public enum Permission {
+    CREATE_STAFF,
+    CREATE_BOOKING,
+    VIEW_GUESTS,
+    VIEW_STAFF,
+    VIEW_ROOMS,
+    VIEW_BOOKING_SCHEDULE,
+    UPDATE_ROOM_STATUS,
+    DELETE_STAFF
+}

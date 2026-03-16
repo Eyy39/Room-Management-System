@@ -1,10 +1,11 @@
 package room;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 public class NormalRoom extends Room {
-    private double pricePerNight;
-    public NormalRoom(String roomNumber, String roomType, double pricePerNight) {
-        super(roomNumber, roomType);
-        this.setPricePerNight(pricePerNight);
+    public NormalRoom(String roomNumber, BigDecimal basePricePerNight) {
+        super(roomNumber, basePricePerNight);
     }
 
     @Override
@@ -14,7 +15,7 @@ public class NormalRoom extends Room {
 
     @Override
     public String toString() {
-        return super.toString() + "Room Type: Normal \nPricePerNight: $" + pricePerNight + "\n";
+        return super.toString();
     }
 
     @Override
@@ -24,20 +25,11 @@ public class NormalRoom extends Room {
         if (!(obj instanceof NormalRoom)) return false;
 
         NormalRoom other = (NormalRoom) obj;
-        return Double.compare(this.pricePerNight, other.pricePerNight) == 0;
+        return getPricePerNight().compareTo(other.getPricePerNight()) == 0;
     }
 
-    public double getPricePerNight() {
-        return pricePerNight;
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRoomId(), getPricePerNight());
     }
-
-    public void setPricePerNight(double pricePerNight) {
-        if(pricePerNight < 0){
-            this.pricePerNight = 0.0;
-        }else{
-            this.pricePerNight = pricePerNight;
-        }
-    }
-
-    
 }

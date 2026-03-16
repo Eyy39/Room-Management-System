@@ -1,9 +1,18 @@
 package controller;
+
+import exception.AuthenticationException;
+import exception.AuthorizationException;
+import exception.EntityNotFoundException;
+import exception.ValidationException;
 import hotel.CheckIn;
 import hotel.Guest;
-import java.util.ArrayList;
 import room.IRoom;
 import user.IStaff;
+import user.Permission;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Hotel {
 
@@ -11,65 +20,61 @@ public class Hotel {
     private String hotelAddress;
     private String hotelContact;
 
-    private ArrayList<IRoom> rooms;
-    private ArrayList<Guest> guests;
-    private ArrayList<CheckIn> bookings;
-    private ArrayList<IStaff> users;
+    private final List<IRoom> rooms;
+    private final List<Guest> guests;
+    private final List<CheckIn> bookings;
+    private final List<IStaff> users;
     private IStaff loggedInUser;
 
     public Hotel(String hotelName, String hotelAddress, String hotelContact, int maxRooms) {
-
         this.hotelName = hotelName;
         this.hotelAddress = hotelAddress;
         this.hotelContact = hotelContact;
-        rooms = new ArrayList<>();
-        guests = new ArrayList<>();
-        bookings = new ArrayList<>();
-        users = new ArrayList<>(); 
-        loggedInUser = null;
+        this.rooms = new ArrayList<>();
+        this.guests = new ArrayList<>();
+        this.bookings = new ArrayList<>();
+        this.users = new ArrayList<>();
+        this.loggedInUser = null;
     }
-
-    public static final String CREATE_STAFF = "CREATE_STAFF";
-    public static final String CREATE_BOOKING = "CREATE_BOOKING";
-    public static final String VIEW_GUESTS = "VIEW_GUESTS";
-    public static final String VIEW_STAFF = "VIEW_STAFF";
-    public static final String VIEW_ROOMS = "VIEW_ROOMS";
-    public static final String VIEW_BOOKING_SCHEDULE = "VIEW_BOOKING_SCHEDULE";
-    public static final String UPDATE_ROOM_STATUS = "UPDATE_ROOM_STATUS";
-    public static final String DELETE_STAFF = "DELETE_STAFF";
 
     public void setHotelName(String hotelName) {
         if (hotelName != null && !hotelName.trim().isEmpty()) {
             this.hotelName = hotelName;
         }
     }
+
     public String getHotelName() {
         return hotelName;
     }
-    public void setHotelAddress(String hotelAddress) {  
+
+    public void setHotelAddress(String hotelAddress) {
         if (hotelAddress != null && !hotelAddress.trim().isEmpty()) {
             this.hotelAddress = hotelAddress;
         }
     }
+
     public String getHotelAddress() {
         return hotelAddress;
     }
+
     public void setHotelContact(String hotelContact) {
         if (hotelContact != null && !hotelContact.trim().isEmpty()) {
             this.hotelContact = hotelContact;
         }
     }
+
     public String getHotelContact() {
         return hotelContact;
     }
-    public void showHotelInfo() {
-        System.out.println("Hotel Name: " + hotelName);
-        System.out.println("Address: " + hotelAddress);
-        System.out.println("Contact: " + hotelContact);
-        System.out.println("Total Rooms: " + rooms.size());
-        System.out.println("Total Guests: " + guests.size());
-        System.out.println("Total Staff: " + users.size());
-        System.out.println("Total Bookings: " + bookings.size());
+
+    public String hotelInfo() {
+        return "Hotel Name: " + hotelName
+            + "\nAddress: " + hotelAddress
+            + "\nContact: " + hotelContact
+            + "\nTotal Rooms: " + rooms.size()
+            + "\nTotal Guests: " + guests.size()
+            + "\nTotal Staff: " + users.size()
+            + "\nTotal Bookings: " + bookings.size();
     }
 
     public void addUser(IStaff user) {
@@ -80,68 +85,53 @@ public class Hotel {
         for (IStaff user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 loggedInUser = user;
-                System.out.println("Login success: " + user.getSignature());
                 return true;
             }
         }
-        System.out.println("Invalid username or password.");
-        return false;
+        throw new AuthenticationException("Invalid username or password.");
     }
 
     public void logout() {
         loggedInUser = null;
-        System.out.println("Logged out successfully.");
     }
 
-    private boolean requirePermission(String action) {
+    private void requirePermission(Permission permission) {
         if (loggedInUser == null) {
-            System.out.println("Access Denied: Login required");
-            return false;
+            throw new AuthorizationException("Access denied: login required.");
         }
-        if (!loggedInUser.can(action)) {
-            System.out.println("Access Denied: " + loggedInUser.getSignature() + " cannot perform " + action);
-            return false;
+        if (!loggedInUser.can(permission)) {
+            throw new AuthorizationException(
+                "Access denied: " + loggedInUser.getSignature() + " cannot perform " + permission
+            );
         }
-        return true;
     }
 
-    public void actionViewRooms() {
-        if (!requirePermission(VIEW_ROOMS)) {
-            return;
-        }
-        displayAllRooms();
+    public List<IRoom> actionViewRooms() {
+        requirePermission(Permission.VIEW_ROOMS);
+        return displayAllRooms();
     }
 
-    public void actionViewGuests() {
-        if (!requirePermission(VIEW_GUESTS)) {
-            return;
-        }
-        showGuests();
+    public List<Guest> actionViewGuests() {
+        requirePermission(Permission.VIEW_GUESTS);
+        return showGuests();
     }
 
-    public void actionCreateBooking(String roomType) {
-        if (!requirePermission(CREATE_BOOKING)) {
-            return;
-        }
-        findRoomsByType(roomType);
+    public List<IRoom> actionCreateBooking(String roomType) {
+        requirePermission(Permission.CREATE_BOOKING);
+        return findRoomsByType(roomType);
     }
 
-    public void actionViewStaff() {
-        if (!requirePermission(VIEW_STAFF)) {
-            return;
-        }
-        showStaff();
+    public List<IStaff> actionViewStaff() {
+        requirePermission(Permission.VIEW_STAFF);
+        return showStaff();
     }
 
-    public void actionViewBookingSchedule() {
-        if (!requirePermission(VIEW_BOOKING_SCHEDULE)) {
-            return;
-        }
+    public List<String> actionViewBookingSchedule() {
+        requirePermission(Permission.VIEW_BOOKING_SCHEDULE);
         if (bookings.isEmpty()) {
-            System.out.println("No booking schedule available.");
-            return;
+            return new ArrayList<>();
         }
-        bookings.get(0).showBookingSchedule();
+        return bookings.get(0).bookingSchedule();
     }
 
     public String currentUserSignature() {
@@ -151,7 +141,6 @@ public class Hotel {
         return loggedInUser.getSignature();
     }
 
-    // ROOM METHODS
     public void addRoom(IRoom room) {
         rooms.add(room);
     }
@@ -160,21 +149,14 @@ public class Hotel {
         for (int i = 0; i < rooms.size(); i++) {
             if (rooms.get(i).getRoomId() == roomId) {
                 rooms.remove(i);
-                System.out.println("Room deleted.");
                 return;
             }
         }
-        System.out.println("Room not found.");
+        throw new EntityNotFoundException("Room not found.");
     }
-        
-    public void displayAllRooms() {
-        if (rooms.isEmpty()) {
-            System.out.println("No rooms available.");
-            return;
-        }
-        for (IRoom room : rooms) {
-            System.out.println(room);
-        }
+
+    public List<IRoom> displayAllRooms() {
+        return new ArrayList<>(rooms);
     }
 
     public IRoom getRoomByIndex(int index) {
@@ -184,59 +166,45 @@ public class Hotel {
         return null;
     }
 
-    public void findRoomsByType(String type) {
-        if (type == null) {
-            System.out.println("Please enter a room type.");
-            return;
+    public List<IRoom> findRoomsByType(String type) {
+        if (type == null || type.trim().isEmpty()) {
+            throw new ValidationException("Please enter a room type.");
         }
 
         String normalizedType = type.trim();
-        if (normalizedType.isEmpty()) {
-            System.out.println("Please enter a room type.");
-            return;
-        }
-
         if (normalizedType.equalsIgnoreCase("all") || normalizedType.equalsIgnoreCase("room")) {
-            displayAllRooms();
-            return;
+            return displayAllRooms();
         }
 
-        boolean found = false;
+        List<IRoom> results = new ArrayList<>();
         for (IRoom room : rooms) {
-            if (room.getRoomType().equalsIgnoreCase(normalizedType)) {
-                System.out.println(room);
-                found = true;
+            if (room.matchesType(normalizedType)) {
+                results.add(room);
             }
         }
-        if (!found) {
-            System.out.println("No rooms of type " + normalizedType + " found.");
+
+        if (results.isEmpty()) {
+            throw new EntityNotFoundException("No rooms of type " + normalizedType + " found.");
         }
+        return results;
     }
 
-    // GUEST METHODS
     public void addGuest(Guest guest) {
         guests.add(guest);
     }
 
     public void deleteGuest(String guestId) {
         for (int i = 0; i < guests.size(); i++) {
-            if (guests.get(i).getGuestID().equals(guestId)) { 
+            if (guests.get(i).getGuestID().equals(guestId)) {
                 guests.remove(i);
-                System.out.println("Guest deleted.");
                 return;
             }
         }
-        System.out.println("Guest not found.");
+        throw new EntityNotFoundException("Guest not found.");
     }
 
-    public void showGuests() {
-        if (guests.isEmpty()) {
-            System.out.println("No guests available.");
-            return;
-        }
-        for (Guest guest : guests) {
-            System.out.println(guest);
-        }
+    public List<Guest> showGuests() {
+        return new ArrayList<>(guests);
     }
 
     public Guest getGuestByIndex(int index) {
@@ -246,38 +214,27 @@ public class Hotel {
         return null;
     }
 
-
     public void deleteStaff(String staffId) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getId().equals(staffId)) {
                 users.remove(i);
-                System.out.println("Staff deleted.");
                 return;
             }
         }
-        System.out.println("Staff not found.");
+        throw new EntityNotFoundException("Staff not found.");
     }
 
     public void actionDeleteStaff(int index) {
-        if (!requirePermission(DELETE_STAFF)) {
-            return;
-        }
+        requirePermission(Permission.DELETE_STAFF);
         if (index >= 0 && index < users.size()) {
             users.remove(index);
-            System.out.println("Staff deleted.");
             return;
         }
-        System.out.println("Invalid staff index.");
+        throw new ValidationException("Invalid staff index.");
     }
 
-    public void showStaff() {
-        if (users.isEmpty()) {
-            System.out.println("No staff available.");
-            return;
-        }
-        for (IStaff user : users) {
-            System.out.println(user.toString()); 
-        }
+    public List<IStaff> showStaff() {
+        return new ArrayList<>(users);
     }
 
     public IStaff getStaffByIndex(int index) {
@@ -287,31 +244,28 @@ public class Hotel {
         return null;
     }
 
-    //  BOOKING METHODS
-    public void bookRoom(int guestIndex, int roomIndex, int nights,
-                         int staffIndex, double discount) {
-
+    public CheckIn bookRoom(int guestIndex, int roomIndex, int nights, int staffIndex, BigDecimal discountPercent) {
         Guest guest = getGuestByIndex(guestIndex);
         IRoom room = getRoomByIndex(roomIndex);
         IStaff staff = getStaffByIndex(staffIndex);
 
         if (guest == null || room == null || staff == null) {
-            System.out.println("Invalid booking information.");
-            return;
+            throw new ValidationException("Invalid booking information.");
         }
 
+        room.book();
+
         CheckIn booking = new CheckIn(
-                guest,
-                room,
-                "2024-10-01",
-                nights,
-                staff,
-                discount
+            guest,
+            room,
+            "2024-10-01",
+            nights,
+            staff,
+            discountPercent
         );
 
         bookings.add(booking);
-        System.out.println("Booking successful.");
-        System.out.println(booking);
+        return booking;
     }
 
     public void addBooking(CheckIn booking) {
@@ -322,19 +276,13 @@ public class Hotel {
         for (int i = 0; i < bookings.size(); i++) {
             if (bookings.get(i).getBookingID() == bookingId) {
                 bookings.remove(i);
-                System.out.println("Booking deleted.");
                 return;
             }
         }
-        System.out.println("Booking not found.");
+        throw new EntityNotFoundException("Booking not found.");
     }
 
-    public void showBookings() {
-        for (CheckIn booking : bookings) {
-            System.out.println(booking);
-        }
+    public List<CheckIn> showBookings() {
+        return new ArrayList<>(bookings);
     }
-    
 }
-
-    

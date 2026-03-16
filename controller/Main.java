@@ -1,10 +1,11 @@
 package controller;
 import hotel.CheckIn;
 import hotel.Guest;
-import room.NormalRoom;
-import room.Room;
-import room.VIPRoom;
+import java.math.BigDecimal;
 import java.util.Scanner;
+import room.IRoom;
+import room.NormalRoom;
+import room.VIPRoom;
 import user.ManagerUser;
 import user.ReceptionistUser;
 import user.Staff;
@@ -14,11 +15,11 @@ public class Main {
         
         Hotel hotel = new Hotel("Sunrise Hotel", "Phnom Penh", "012 345 678",10);
 
-        Room nRoom1 = new NormalRoom("A101","Single", 70.0);
-        Room vRoom1 = new VIPRoom("B202","Double", 150.0);
+        IRoom nRoom1 = new NormalRoom("A101", new BigDecimal("70.00"));
+        IRoom vRoom1 = new VIPRoom("B202", new BigDecimal("150.00"));
 
-        Staff staff1 = new ManagerUser("ST001", "Dara", 'M', "086 256 034", "pw123", 1200.0f);
-        Staff staff2 = new ReceptionistUser("ST002", "Sokha", 'F', "098 765 432", "pw456", 800.0f, "12:00 PM - 12:00 AM");
+        Staff staff1 = new ManagerUser("ST001", "Dara", 'M', "086 256 034", "pw123", new BigDecimal("1200.00"));
+        Staff staff2 = new ReceptionistUser("ST002", "Sokha", 'F', "098 765 432", "pw456", new BigDecimal("800.00"), "12:00 PM - 12:00 AM");
 
         hotel.addUser(staff1);
         hotel.addUser(staff2);
@@ -26,8 +27,8 @@ public class Main {
         Guest guest1 = new Guest( "Vanna", "098 777 666","vanna@gamil.com");
         Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
 
-        CheckIn booking1 = new CheckIn(guest1, nRoom1, "2024-07-01", 3, staff1, 10);
-        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2024-07-02", 2, staff2, 15);
+        CheckIn booking1 = new CheckIn(guest1, nRoom1, "2024-07-01", 3, staff1, new BigDecimal("10"));
+        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2024-07-02", 2, staff2, new BigDecimal("15"));
 
         // Add rooms, staff, guests, and bookings to the hotel
         hotel.addRoom(nRoom1);
@@ -44,12 +45,12 @@ public class Main {
 
         
 
-        Scanner scanner = new Scanner(System.in);
-        boolean exit = false;
-        boolean loggedIn = false;
+        try (Scanner scanner = new Scanner(System.in)) {
+            boolean exit = false;
+            boolean loggedIn = false;
 
-        while (!exit) {
-            if (!loggedIn) {
+            while (!exit) {
+                if (!loggedIn) {
                 // Login screen
                 System.out.println("\n========================================");
                 System.out.println("   HOTEL MANAGEMENT SYSTEM - LOGIN");
@@ -59,23 +60,25 @@ public class Main {
                 System.out.print("Enter your choice: ");
                     int loginChoice = scanner.nextInt();                    
                     switch (loginChoice) {
-                    case 1: {
+                    case 1 -> {
                             scanner.nextLine();
                             System.out.print("Username: ");
                             String username = scanner.nextLine();
                             System.out.print("Password: ");
                             String password = scanner.nextLine();
-                            if (hotel.login(username, password)) {
-                                loggedIn = true;
+                            try {
+                                if (hotel.login(username, password)) {
+                                    loggedIn = true;
+                                }
+                            } catch (RuntimeException ex) {
+                                System.out.println(ex.getMessage());
                             }
-                            break;
                         }
-                    case 2: {
+                    case 2 -> {
                         exit = true;
                         System.out.println("Exiting the system. Goodbye!");
-                        break;
                     }
-                    default: System.out.println("Invalid choice. Please try again.");
+                    default -> System.out.println("Invalid choice. Please try again.");
                     }
                 } else {
                     System.out.println("\n========================================");
@@ -93,57 +96,81 @@ public class Main {
 
                     int choice = scanner.nextInt();
                     switch (choice) {
-                    case 1: {
+                    case 1 -> {
                         System.out.println("\n======================================");
                         System.out.println("      ROOM DETAILS");
                         System.out.println("======================================");
-                        hotel.actionViewRooms();
-                        break;
+                        try {
+                            for (IRoom room : hotel.actionViewRooms()) {
+                                System.out.println(room);
+                            }
+                        } catch (RuntimeException ex) {
+                            System.out.println(ex.getMessage());
+                        }
                     }
-                    case 2: {
+                    case 2 -> {
                         System.out.println("\n======================================");
                         System.out.println("      GUEST INFORMATION");
                         System.out.println("======================================");
-                        hotel.actionViewGuests();
-                        break;
+                        try {
+                            for (Guest guest : hotel.actionViewGuests()) {
+                                System.out.println(guest);
+                            }
+                        } catch (RuntimeException ex) {
+                            System.out.println(ex.getMessage());
+                        }
                     }
-                    case 3: {
+                    case 3 -> {
                         System.out.println("\n======================================");
                         System.out.println("      BOOK A ROOM");
                         System.out.println("======================================");
                         scanner.nextLine();
                         System.out.print("Enter room type to search: ");
                         String type = scanner.nextLine();
-                        hotel.actionCreateBooking(type);
-                        break;
+                        try {
+                            for (IRoom room : hotel.actionCreateBooking(type)) {
+                                System.out.println(room);
+                            }
+                        } catch (RuntimeException ex) {
+                            System.out.println(ex.getMessage());
+                        }
                     }
-                    case 4: {
+                    case 4 -> {
                         System.out.println("\n======================================");
                         System.out.println("      STAFF INFORMATION");
                         System.out.println("======================================");
-                        hotel.actionViewStaff();
-                        break;
+                        try {
+                            for (user.IStaff staff : hotel.actionViewStaff()) {
+                                System.out.println(staff);
+                            }
+                        } catch (RuntimeException ex) {
+                            System.out.println(ex.getMessage());
+                        }
                     }
-                    case 5: {
+                    case 5 -> {
                         System.out.println("\n======================================");
                         System.out.println("      BOOKING SCHEDULE");
                         System.out.println("======================================");
-                        hotel.actionViewBookingSchedule();
-                        break;
+                        try {
+                            for (String line : hotel.actionViewBookingSchedule()) {
+                                System.out.println(line);
+                            }
+                        } catch (RuntimeException ex) {
+                            System.out.println(ex.getMessage());
+                        }
                     }
-                    case 6: {
+                    case 6 -> {
                         hotel.logout();
                         loggedIn = false;
-                        break;
                     }
-                    case 7: {
+                    case 7 -> {
                         exit = true;
                         System.out.println("\nExiting the system. Goodbye!");
-                        break;
                     }
-                    default: System.out.println("Invalid choice. Please try again.");
+                    default -> System.out.println("Invalid choice. Please try again.");
                 }
             }
+        }
         }
     }
 }

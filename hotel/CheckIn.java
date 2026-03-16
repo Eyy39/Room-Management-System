@@ -1,69 +1,70 @@
 package hotel;
-import controller.Hotel;
-import room.IRoom;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import common.BaseEntity;
+import pricing.DiscountStrategy;
+import pricing.PercentageDiscountStrategy;
+import room.IRoom;
 import user.IStaff;
 
-public class CheckIn {
-    private IRoom room;
-    private static int bookingCount = 0;
-    private int BookingID;
-    private String checkIn;
-    private int night;
-    private double originalPrice;
-    private double discountPrice;
-    private Guest guest;
-    private IStaff staff;
-    private String status;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-    public CheckIn(Guest guest, IRoom room, String checkIn, int night, IStaff staff, double discountPercent){
-        this.BookingID= ++bookingCount; // Increment booking count for unique ID
-        this.checkIn = checkIn;
-        this.night= night;
-        this.originalPrice = room.getPricePerNight();
-        this.discountPrice = originalPrice * (discountPercent / 100);
+public class CheckIn extends BaseEntity {
+    private static final int LIMIT_DAYS = 10;
+
+    private final IRoom room;
+    private final String checkInDate;
+    private final int night;
+    private final Guest guest;
+    private final IStaff staff;
+    private final DiscountStrategy discountStrategy;
+
+    private BookingStatus status;
+    private BigDecimal originalPrice;
+    private BigDecimal discountPrice;
+
+    public CheckIn(Guest guest, IRoom room, String checkInDate, int night, IStaff staff, BigDecimal discountPercent) {
+        this(guest, room, checkInDate, night, staff, discountPercent, new PercentageDiscountStrategy());
+    }
+
+    public CheckIn(Guest guest, IRoom room, String checkInDate, int night, IStaff staff, BigDecimal discountPercent,
+                   DiscountStrategy discountStrategy) {
+        super("B");
         this.guest = guest;
-        this.room = room;        
+        this.room = room;
+        this.checkInDate = checkInDate;
+        this.night = night;
         this.staff = staff;
-        this.status = "Available";
+        this.discountStrategy = discountStrategy;
+        this.status = BookingStatus.RESERVED;
+        recalculatePrice(discountPercent);
     }
 
-    // Login
-    public CheckIn(Guest guest, String checkInDate){
-        this.guest = guest;
-        this.checkIn = checkInDate;
-        this.status = "Checked In";
-    }
     public int getBookingID() {
-        return BookingID;
+        return getNumericId();
     }
+
+    public String getBookingCode() {
+        return getId();
+    }
+
     public String getCheckIn() {
-        return checkIn;
+        return checkInDate;
     }
+
     public int getNight() {
         return night;
     }
 
-    public double getOriginalPrice() {
+    public BigDecimal getOriginalPrice() {
         return originalPrice;
     }
 
-    public void setOriginalPrice(IStaff staff, double originalPrice) {
-        if (staff != null && staff.can(Hotel.UPDATE_ROOM_STATUS)) {
-            this.originalPrice = Math.max(0, originalPrice);
-        }
-    }
-
-    public double getDiscountPrice() {
+    public BigDecimal getDiscountPrice() {
         return discountPrice;
-    }
-
-    public void setDiscountPrice(IStaff staff, double discountPercent) {
-        if (staff != null && staff.can(Hotel.UPDATE_ROOM_STATUS)) {
-            this.discountPrice = originalPrice * (discountPercent / 100);
-        }
     }
 
     public Guest getGuest() {
@@ -78,59 +79,66 @@ public class CheckIn {
         return staff;
     }
 
-    public String getStatus(){
+    public BookingStatus getStatus() {
         return status;
     }
 
-    public void setStatus(IStaff staff, String status){
-        if (staff != null && staff.can(Hotel.UPDATE_ROOM_STATUS)) {
-             this.status = status;
-        }
+    public void checkIn() {
+        this.status = BookingStatus.CHECKED_IN;
     }
 
-    public double Total () {
-        return night* (originalPrice - discountPrice);
+    public void checkOut() {
+        this.status = BookingStatus.CHECKED_OUT;
+        room.release();
     }
 
-    static final int LIMIT_DAYS = 10; // Maximum booking days allowed
-    public static int getBookingCount() {
-        return bookingCount;
+    public void cancel() {
+        this.status = BookingStatus.CANCELLED;
+        room.release();
     }
-        
+
+    public BigDecimal getTotal() {
+        BigDecimal subtotal = originalPrice.multiply(BigDecimal.valueOf(night));
+        BigDecimal totalDiscount = discountPrice.multiply(BigDecimal.valueOf(night));
+        return subtotal.subtract(totalDiscount);
+    }
+
     public boolean isBookingDateValid(LocalDate bookingDate) {
-        LocalDate today = LocalDate.now(); // Current date
-        LocalDate maxBookingDate = today.plusDays(LIMIT_DAYS); // Maximum booking date allowed
-        return !bookingDate.isAfter(maxBookingDate); // Check if booking date is within limit
-    }
-    public void showBookingSchedule(){
         LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy"); // Date format
+        LocalDate maxBookingDate = today.plusDays(LIMIT_DAYS);
+        return !bookingDate.isAfter(maxBookingDate);
+    }
+
+    public List<String> bookingSchedule() {
+        List<String> schedule = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
 
         for (int i = 0; i < LIMIT_DAYS; i++) {
             LocalDate date = today.plusDays(i);
-            System.out.printf("%-3d | %s | Available%n", (i + 1), date.format(formatter));
+            schedule.add(String.format("%-3d | %s | Available", (i + 1), date.format(formatter)));
         }
-        System.out.println("======================================");
+        return schedule;
+    }
+
+    private void recalculatePrice(BigDecimal discountPercent) {
+        this.originalPrice = room.getPricePerNight();
+        this.discountPrice = discountStrategy.calculateDiscount(originalPrice, discountPercent);
     }
 
     @Override
-    public String toString(){
-        String duration;
-        if(night == 1){
-            duration = night + " night";
-        }else{
-            duration = night + " nights";
-        }
-         return "Customer Name: " + guest.getGuestName() +
-           "\nBooking ID: " + BookingID +
-           "\nRoom Type: " + room.getRoomType() +
-           "\nCheckIn Date: " + checkIn +
-           "\nDuration: " + duration +
-           "\nPrice per Night: $" + getOriginalPrice() +
-           "\nDiscount: $" + getDiscountPrice() +
-           "\nTotal: $" + Total() +
-           "\n======================================" +
-            "\nStaff Assigned: " + staff.getSignature() + "\n";
+    public String toString() {
+        String duration = night == 1 ? night + " night" : night + " nights";
+        return "Customer Name: " + guest.getGuestName()
+            + "\nBooking ID: " + getBookingCode()
+            + "\nRoom Type: " + room.getRoomType()
+            + "\nCheckIn Date: " + checkInDate
+            + "\nDuration: " + duration
+            + "\nPrice per Night: $" + getOriginalPrice()
+            + "\nDiscount: $" + getDiscountPrice()
+            + "\nTotal: $" + getTotal()
+            + "\nStatus: " + status
+            + "\n======================================"
+            + "\nStaff Assigned: " + staff.getSignature() + "\n";
     }
-    
 }

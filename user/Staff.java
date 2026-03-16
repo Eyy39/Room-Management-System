@@ -1,24 +1,16 @@
 package user;
 
+import common.BaseEntity;
 import java.util.Objects;
 
-public abstract class Staff implements IStaff {
-    private String staffId;
+public abstract class Staff extends BaseEntity implements IStaff {
     private String name;
     private char gender;
     private String phoneNubmer;
-    // private float salary;
     private String password;
-    private static int staffCounter = 0;
-
-    // public Staff(String name, char gender) {
-    //     this.staffId = generateStaffId(); // Generate a unique staff ID
-    //     this.setName(name);
-    //     this.setGender(gender);
-    // }
 
     public Staff(String name, char gender, String phoneNumber, String password) {
-        this.staffId = generateStaffId();
+        super("ST");
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Invalid name");
         }
@@ -36,24 +28,15 @@ public abstract class Staff implements IStaff {
     }
 
     public Staff(String id, String name, char gender, String phoneNumber, String password) {
-        this.staffId = id;
+        super("ST", id);
         this.name = name;
         this.gender = gender;
         this.phoneNubmer = phoneNumber;
         this.password = password;
     }
 
-    // public Staff(Staff staff, String position, float salary) {
-    //     this(staff.getStaffId(), staff.getName(), position, staff.getGender(), staff.getPassword());
-    //     this.setSalary(salary);
-    // }
-
-    // login constructor
-    // public Staff(String staffId, String name, String password){
-    //     this(staffId, name, "Staff", '?', password); 
-    // }
     public String getStaffId() {
-        return staffId;
+        return getId();
     }
     public String getName(){
         return name;
@@ -72,24 +55,6 @@ public abstract class Staff implements IStaff {
         this.gender = gender;
     }
 
-    // public float getSalary() {
-    //     return salary;
-    // }
-
-    // public void setSalary(float salary) {
-    //     if (salary < 0) {
-    //         System.out.println("Invalid salary. Salary not updated.");
-    //         return;
-    //     }
-    //     this.salary = salary;
-    // }
-
-    private String generateStaffId() {
-        return String.format("ST%03d", (++staffCounter));
-    }
-    public static int getStaffCounter() {
-        return staffCounter;
-    }
     public void setPassword(String password) {
         if (password == null || password.trim().isEmpty()) {
             System.out.println("Invalid password.");
@@ -110,7 +75,7 @@ public abstract class Staff implements IStaff {
 
     @Override
     public String getId() {
-        return staffId;
+        return super.getId();
     }
 
     @Override
@@ -124,9 +89,7 @@ public abstract class Staff implements IStaff {
     }
 
     @Override
-    public boolean can(String action) {
-        return false;
-    }
+    public abstract boolean can(Permission permission);
 
     @Override
     public String getSignature() {
@@ -149,8 +112,13 @@ public abstract class Staff implements IStaff {
         }
         Staff other = (Staff) obj;
         return gender == other.gender
-            && Objects.equals(staffId, other.staffId)
+            && Objects.equals(getStaffId(), other.getStaffId())
             && Objects.equals(name, other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getStaffId(), name, gender);
     }
 
     

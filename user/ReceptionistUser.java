@@ -1,26 +1,27 @@
 package user;
 
-import controller.Hotel;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 public class ReceptionistUser extends Staff {
-    private float salary;
+    private BigDecimal salary;
     private String workHours;
-    public ReceptionistUser(String staffId, String name, char gender, String phoneNumber, String password, float salary, String workHours) {
+    public ReceptionistUser(String staffId, String name, char gender, String phoneNumber, String password, BigDecimal salary, String workHours) {
         super(staffId, name, gender, phoneNumber, password);
-        this.setSalary(salary);
-        this.setWorkHours(workHours);
+        this.salary = sanitizeSalary(salary);
+        this.workHours = sanitizeWorkHours(workHours);
     }
 
     // public ReceptionistUser(String staffId, String name, String password) {
     //     super(staffId, name, '?', password);
     // }
     @Override
-    public boolean can(String action) {
-        return action.equals(Hotel.CREATE_BOOKING)
-            || action.equals(Hotel.VIEW_GUESTS)
-            || action.equals(Hotel.VIEW_ROOMS)
-            || action.equals(Hotel.VIEW_BOOKING_SCHEDULE)
-            || action.equals(Hotel.UPDATE_ROOM_STATUS);
+    public boolean can(Permission permission) {
+        return permission == Permission.CREATE_BOOKING
+            || permission == Permission.VIEW_GUESTS
+            || permission == Permission.VIEW_ROOMS
+            || permission == Permission.VIEW_BOOKING_SCHEDULE
+            || permission == Permission.UPDATE_ROOM_STATUS;
     }
 
     @Override
@@ -28,26 +29,18 @@ public class ReceptionistUser extends Staff {
         return "Receptionist: " + getUsername();
     }
 
-    public float getSalary() {
+    public BigDecimal getSalary() {
         return salary;
     }
     public String getWorkHours() {
         return workHours;
     }
     public void setWorkHours(String workHours) {
-        if (workHours == null || workHours.trim().isEmpty()) {
-            System.out.println("Invalid work hours. Work hours not updated.");
-            return;
-        }
-        this.workHours = workHours.trim();
+        this.workHours = sanitizeWorkHours(workHours);
     }
 
-    public void setSalary(float salary) {
-        if(salary < 0) {
-            System.out.println("Invalid salary. Salary not updated.");
-        } else {
-            this.salary = salary;
-        }
+    public void setSalary(BigDecimal salary) {
+        this.salary = sanitizeSalary(salary);
     }
 
     @Override
@@ -63,6 +56,25 @@ public class ReceptionistUser extends Staff {
             return false;
         }
         ReceptionistUser other = (ReceptionistUser) obj;
-        return Float.compare(this.salary, other.salary) == 0 && super.equals(other);
+        return this.salary.compareTo(other.salary) == 0 && super.equals(other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), salary, workHours);
+    }
+
+    private BigDecimal sanitizeSalary(BigDecimal salary) {
+        if (salary == null || salary.compareTo(BigDecimal.ZERO) < 0) {
+            return BigDecimal.ZERO;
+        }
+        return salary;
+    }
+
+    private String sanitizeWorkHours(String workHours) {
+        if (workHours == null || workHours.trim().isEmpty()) {
+            return "N/A";
+        }
+        return workHours.trim();
     }
 }

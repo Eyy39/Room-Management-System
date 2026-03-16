@@ -1,13 +1,21 @@
 package room;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+import pricing.VipServiceFeePricingStrategy;
+
 public class VIPRoom extends Room {
-    private static final double SERVICE_FEE = 50.0;
+    private static final BigDecimal DEFAULT_SERVICE_FEE = new BigDecimal("50.00");
     private boolean freeBreakfast;
-    private double basePricePerNight; // Base price without service fee
-    public VIPRoom(String roomNumber, String roomType, double basePricePerNight) {
-        super(roomNumber, roomType);
-        this.setBasePricePerNight(basePricePerNight);
-        this.freeBreakfast= true; // VIP rooms include free breakfast by default
+
+    public VIPRoom(String roomNumber, BigDecimal basePricePerNight) {
+        this(roomNumber, basePricePerNight, DEFAULT_SERVICE_FEE);
+    }
+
+    public VIPRoom(String roomNumber, BigDecimal basePricePerNight, BigDecimal serviceFee) {
+        super(roomNumber, basePricePerNight);
+        this.freeBreakfast = true;
+        setPricingStrategy(new VipServiceFeePricingStrategy(serviceFee));
     }
 
     @Override
@@ -15,21 +23,6 @@ public class VIPRoom extends Room {
         return "VIP";
     }
 
-    double getServiceFee() {
-        return SERVICE_FEE;
-    }
-    @Override
-    public double getPricePerNight() {
-        return basePricePerNight + getServiceFee();
-    }
-
-    void setBasePricePerNight(double basePricePerNight) {
-        if (basePricePerNight < 0) {
-            this.basePricePerNight = 0.0;
-        } else {
-            this.basePricePerNight = basePricePerNight;
-        }
-    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -37,12 +30,17 @@ public class VIPRoom extends Room {
         if (!(obj instanceof VIPRoom)) return false;
 
         VIPRoom other = (VIPRoom) obj;
-        return Double.compare(this.basePricePerNight, other.basePricePerNight) == 0;
+        return getPricePerNight().compareTo(other.getPricePerNight()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRoomId(), getPricePerNight());
     }
 
     @Override
     public String toString() {
-        return super.toString() + "Room Type: VIP \nPricePerNight: $" + getPricePerNight() + "\nFree Breakfast: " + freeBreakfast + "\n";
+        return super.toString() + "Free Breakfast: " + freeBreakfast + "\n";
     }
     
 }

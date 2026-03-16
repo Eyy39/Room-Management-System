@@ -1,11 +1,14 @@
 package user;
 
-public class ManagerUser extends Staff {
-    private float salary;
+import java.math.BigDecimal;
+import java.util.Objects;
 
-    public ManagerUser(String staffId, String name, char gender, String phoneNumber, String password, float salary) {
+public class ManagerUser extends Staff {
+    private BigDecimal salary;
+
+    public ManagerUser(String staffId, String name, char gender, String phoneNumber, String password, BigDecimal salary) {
         super(staffId, name, gender, phoneNumber, password);
-        this.setSalary(salary);
+        this.salary = sanitizeSalary(salary);
     }
 
     // login constructor used in Main
@@ -14,7 +17,7 @@ public class ManagerUser extends Staff {
     // }
     
     @Override
-    public boolean can(String action) {
+    public boolean can(Permission permission) {
         return true; // Manager has all permissions
     }
 
@@ -23,16 +26,12 @@ public class ManagerUser extends Staff {
         return "Manager: " + getUsername();
     }
 
-    public float getSalary() {
+    public BigDecimal getSalary() {
         return salary;
     }
 
-    public void setSalary(float salary) {
-        if(salary < 0) {
-            System.out.println("Invalid salary. Salary not updated.");
-        } else {
-            this.salary = salary;
-        }
+    public void setSalary(BigDecimal salary) {
+        this.salary = sanitizeSalary(salary);
     }
     @Override
     public String toString() {
@@ -49,8 +48,20 @@ public class ManagerUser extends Staff {
             return false;
         }
         ManagerUser other = (ManagerUser) obj;
-        return Float.compare(this.salary, other.salary) == 0
+        return this.salary.compareTo(other.salary) == 0
             && super.equals(other);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), salary);
+    }
+
+    private BigDecimal sanitizeSalary(BigDecimal salary) {
+        if (salary == null || salary.compareTo(BigDecimal.ZERO) < 0) {
+            return BigDecimal.ZERO;
+        }
+        return salary;
     }
     
 }

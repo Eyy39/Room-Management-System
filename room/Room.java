@@ -1,24 +1,24 @@
 package room;
 
+import common.BaseEntity;
+import exception.RoomNotAvailableException;
+import java.math.BigDecimal;
 import java.util.Objects;
+import pricing.PricingStrategy;
+import pricing.StandardPricingStrategy;
 
-public class Room implements IRoom {
+public abstract class Room extends BaseEntity implements IRoom {
     private String roomNumber;
-    private String roomType;
-    // private double pricePerNight;
-    private int roomID;
-    private static int roomCounter = 0;
+    private BigDecimal basePricePerNight;
+    private RoomStatus status;
+    private PricingStrategy pricingStrategy;
 
-    public Room(String roomNumber, String roomType) {
-
-        this.setRoomNumber(roomNumber);
-        this.setRoomType(roomType);
-        // this.setPricePerNight(pricePerNight);
-        this.roomID = ++roomCounter;
-    }
-    public Room(int roomID, String roomNumber) {
-        this.roomID = roomID;
-        this.roomNumber = roomNumber;
+    protected Room(String roomNumber, BigDecimal basePricePerNight) {
+        super("R");
+        this.roomNumber = sanitizeRoomNumber(roomNumber);
+        this.basePricePerNight = sanitizePrice(basePricePerNight);
+        this.status = RoomStatus.AVAILABLE;
+        this.pricingStrategy = new StandardPricingStrategy();
     }
 
     @Override
@@ -26,50 +26,69 @@ public class Room implements IRoom {
         return roomNumber;
     }
 
-    @Override
-    public String getRoomType() {
-        return roomType;
-    }
-    // Default price (can be overridden)
-    @Override
-    public double getPricePerNight() {
-        return 0;
-    }
     public void setRoomNumber(String roomNumber) {
-        if (roomNumber != null && !roomNumber.trim().isEmpty()) {
-            this.roomNumber = roomNumber;
-        }
+        this.roomNumber = sanitizeRoomNumber(roomNumber);
     }
-    public void setRoomType(String roomType){
-        if (roomType != null && !roomType.trim().isEmpty()) {
-            this.roomType = roomType;
-        }
-    }
-    // @Override
-    // public double getPricePerNight(){
-    //     return pricePerNight;
-    // }
-    // public void setPricePerNight(double pricePerNight) {
-    //     if(pricePerNight < 0){
-    //         this.pricePerNight = 0.0;
-    //     }else{
-    //         this.pricePerNight = pricePerNight;
-    //     }
-    // }
+
     @Override
     public int getRoomId() {
-        return roomID;
+        return getNumericId();
     }
-    public static int getRoomCounter() {
-        return roomCounter;
+
+    protected BigDecimal getBasePricePerNight() {
+        return basePricePerNight;
     }
-    public void setRoomId() {
-        this.roomID = ++roomCounter;
+
+    protected void setBasePricePerNight(BigDecimal basePricePerNight) {
+        this.basePricePerNight = sanitizePrice(basePricePerNight);
     }
-    
+
+    protected void setPricingStrategy(PricingStrategy pricingStrategy) {
+        if (pricingStrategy != null) {
+            this.pricingStrategy = pricingStrategy;
+        }
+    }
+
+    @Override
+    public BigDecimal getPricePerNight() {
+        return pricingStrategy.apply(basePricePerNight);
+    }
+
+    @Override
+    public RoomStatus getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(RoomStatus status) {
+        if (status != null) {
+            this.status = status;
+        }
+    }
+
+    @Override
+    public void book() {
+        if (status == RoomStatus.MAINTENANCE) {
+            throw new RoomNotAvailableException("Room is under maintenance.");
+        }
+        if (status == RoomStatus.OCCUPIED) {
+            throw new RoomNotAvailableException("Room is already occupied.");
+        }
+        status = RoomStatus.OCCUPIED;
+    }
+
+    @Override
+    public void release() {
+        status = RoomStatus.AVAILABLE;
+    }
+
     @Override
     public String toString() {
-        return "Room Number: " + roomNumber + "\nRoom ID: " + roomID + "\n";
+        return "Room Number: " + roomNumber
+                + "\nRoom ID: " + getId()
+                + "\nRoom Type: " + getRoomType()
+                + "\nPricePerNight: $" + getPricePerNight()
+                + "\nStatus: " + status + "\n";
     }
 
     @Override
@@ -78,7 +97,26 @@ public class Room implements IRoom {
         if (!(obj instanceof Room)) return false;
 
         Room other = (Room) obj;
-        return roomID == other.roomID &&
+        return getRoomId() == other.getRoomId() &&
                Objects.equals(roomNumber, other.roomNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRoomId(), roomNumber);
+    }
+
+    private String sanitizeRoomNumber(String roomNumber) {
+        if (roomNumber == null || roomNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("Room number cannot be empty");
+        }
+        return roomNumber.trim();
+    }
+
+    private BigDecimal sanitizePrice(BigDecimal value) {
+        if (value == null || value.compareTo(BigDecimal.ZERO) < 0) {
+            return BigDecimal.ZERO;
+        }
+        return value;
     }
 }
