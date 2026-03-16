@@ -1,24 +1,20 @@
 package room;
 
 import common.BaseEntity;
-import exception.RoomNotAvailableException;
+import exception.HotelException;
 import java.math.BigDecimal;
 import java.util.Objects;
-import pricing.PricingStrategy;
-import pricing.StandardPricingStrategy;
 
 public abstract class Room extends BaseEntity implements IRoom {
     private String roomNumber;
     private BigDecimal basePricePerNight;
     private RoomStatus status;
-    private PricingStrategy pricingStrategy;
 
     protected Room(String roomNumber, BigDecimal basePricePerNight) {
         super("R");
         this.roomNumber = sanitizeRoomNumber(roomNumber);
         this.basePricePerNight = sanitizePrice(basePricePerNight);
         this.status = RoomStatus.AVAILABLE;
-        this.pricingStrategy = new StandardPricingStrategy();
     }
 
     @Override
@@ -43,15 +39,9 @@ public abstract class Room extends BaseEntity implements IRoom {
         this.basePricePerNight = sanitizePrice(basePricePerNight);
     }
 
-    protected void setPricingStrategy(PricingStrategy pricingStrategy) {
-        if (pricingStrategy != null) {
-            this.pricingStrategy = pricingStrategy;
-        }
-    }
-
     @Override
     public BigDecimal getPricePerNight() {
-        return pricingStrategy.apply(basePricePerNight);
+        return basePricePerNight;
     }
 
     @Override
@@ -69,10 +59,10 @@ public abstract class Room extends BaseEntity implements IRoom {
     @Override
     public void book() {
         if (status == RoomStatus.MAINTENANCE) {
-            throw new RoomNotAvailableException("Room is under maintenance.");
+            throw new HotelException("Room is under maintenance.");
         }
         if (status == RoomStatus.OCCUPIED) {
-            throw new RoomNotAvailableException("Room is already occupied.");
+            throw new HotelException("Room is already occupied.");
         }
         status = RoomStatus.OCCUPIED;
     }

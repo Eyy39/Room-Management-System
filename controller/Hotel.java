@@ -1,18 +1,14 @@
 package controller;
 
-import exception.AuthenticationException;
-import exception.AuthorizationException;
-import exception.EntityNotFoundException;
-import exception.ValidationException;
+import exception.HotelException;
 import hotel.CheckIn;
 import hotel.Guest;
-import room.IRoom;
-import user.IStaff;
-import user.Permission;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import room.IRoom;
+import user.IStaff;
+import user.Permission;
 
 public class Hotel {
 
@@ -81,6 +77,7 @@ public class Hotel {
         users.add(user);
     }
 
+    // Login only checks credentials and stores who is using the system now.
     public boolean login(String username, String password) {
         for (IStaff user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
@@ -88,45 +85,46 @@ public class Hotel {
                 return true;
             }
         }
-        throw new AuthenticationException("Invalid username or password.");
+        throw new HotelException("Invalid username or password.");
     }
 
     public void logout() {
         loggedInUser = null;
     }
 
+    // Every protected action goes through this method first.
     private void requirePermission(Permission permission) {
         if (loggedInUser == null) {
-            throw new AuthorizationException("Access denied: login required.");
+            throw new HotelException("Access denied: login required.");
         }
         if (!loggedInUser.can(permission)) {
-            throw new AuthorizationException(
+            throw new HotelException(
                 "Access denied: " + loggedInUser.getSignature() + " cannot perform " + permission
             );
         }
     }
 
-    public List<IRoom> actionViewRooms() {
+    public List<IRoom> viewRooms() {
         requirePermission(Permission.VIEW_ROOMS);
-        return displayAllRooms();
+        return getAllRooms();
     }
 
-    public List<Guest> actionViewGuests() {
+    public List<Guest> viewGuests() {
         requirePermission(Permission.VIEW_GUESTS);
-        return showGuests();
+        return getGuestsList();
     }
 
-    public List<IRoom> actionCreateBooking(String roomType) {
+    public List<IRoom> findBookableRooms(String roomType) {
         requirePermission(Permission.CREATE_BOOKING);
-        return findRoomsByType(roomType);
+        return searchRoomsByType(roomType);
     }
 
-    public List<IStaff> actionViewStaff() {
+    public List<IStaff> viewStaff() {
         requirePermission(Permission.VIEW_STAFF);
-        return showStaff();
+        return getStaffList();
     }
 
-    public List<String> actionViewBookingSchedule() {
+    public List<String> viewBookingSchedule() {
         requirePermission(Permission.VIEW_BOOKING_SCHEDULE);
         if (bookings.isEmpty()) {
             return new ArrayList<>();
@@ -152,28 +150,28 @@ public class Hotel {
                 return;
             }
         }
-        throw new EntityNotFoundException("Room not found.");
+        throw new HotelException("Room not found.");
     }
 
-    public List<IRoom> displayAllRooms() {
+    public List<IRoom> getAllRooms() {
         return new ArrayList<>(rooms);
     }
 
-    public IRoom getRoomByIndex(int index) {
+    public IRoom findRoomByIndex(int index) {
         if (index >= 0 && index < rooms.size()) {
             return rooms.get(index);
         }
         return null;
     }
 
-    public List<IRoom> findRoomsByType(String type) {
+    public List<IRoom> searchRoomsByType(String type) {
         if (type == null || type.trim().isEmpty()) {
-            throw new ValidationException("Please enter a room type.");
+            throw new HotelException("Please enter a room type.");
         }
 
         String normalizedType = type.trim();
         if (normalizedType.equalsIgnoreCase("all") || normalizedType.equalsIgnoreCase("room")) {
-            return displayAllRooms();
+            return getAllRooms();
         }
 
         List<IRoom> results = new ArrayList<>();
@@ -184,7 +182,7 @@ public class Hotel {
         }
 
         if (results.isEmpty()) {
-            throw new EntityNotFoundException("No rooms of type " + normalizedType + " found.");
+            throw new HotelException("No rooms of type " + normalizedType + " found.");
         }
         return results;
     }
@@ -200,14 +198,14 @@ public class Hotel {
                 return;
             }
         }
-        throw new EntityNotFoundException("Guest not found.");
+        throw new HotelException("Guest not found.");
     }
 
-    public List<Guest> showGuests() {
+    public List<Guest> getGuestsList() {
         return new ArrayList<>(guests);
     }
 
-    public Guest getGuestByIndex(int index) {
+    public Guest findGuestByIndex(int index) {
         if (index >= 0 && index < guests.size()) {
             return guests.get(index);
         }
@@ -221,23 +219,23 @@ public class Hotel {
                 return;
             }
         }
-        throw new EntityNotFoundException("Staff not found.");
+        throw new HotelException("Staff not found.");
     }
 
-    public void actionDeleteStaff(int index) {
+    public void deleteStaffByIndex(int index) {
         requirePermission(Permission.DELETE_STAFF);
         if (index >= 0 && index < users.size()) {
             users.remove(index);
             return;
         }
-        throw new ValidationException("Invalid staff index.");
+        throw new HotelException("Invalid staff index.");
     }
 
-    public List<IStaff> showStaff() {
+    public List<IStaff> getStaffList() {
         return new ArrayList<>(users);
     }
 
-    public IStaff getStaffByIndex(int index) {
+    public IStaff findStaffByIndex(int index) {
         if (index >= 0 && index < users.size()) {
             return users.get(index);
         }
@@ -245,14 +243,15 @@ public class Hotel {
     }
 
     public CheckIn bookRoom(int guestIndex, int roomIndex, int nights, int staffIndex, BigDecimal discountPercent) {
-        Guest guest = getGuestByIndex(guestIndex);
-        IRoom room = getRoomByIndex(roomIndex);
-        IStaff staff = getStaffByIndex(staffIndex);
+        Guest guest = findGuestByIndex(guestIndex);
+        IRoom room = findRoomByIndex(roomIndex);
+        IStaff staff = findStaffByIndex(staffIndex);
 
         if (guest == null || room == null || staff == null) {
-            throw new ValidationException("Invalid booking information.");
+            throw new HotelException("Invalid booking information.");
         }
 
+        // Tell the room to update its own state.
         room.book();
 
         CheckIn booking = new CheckIn(
@@ -279,10 +278,10 @@ public class Hotel {
                 return;
             }
         }
-        throw new EntityNotFoundException("Booking not found.");
+        throw new HotelException("Booking not found.");
     }
 
-    public List<CheckIn> showBookings() {
+    public List<CheckIn> getBookingsList() {
         return new ArrayList<>(bookings);
     }
 }

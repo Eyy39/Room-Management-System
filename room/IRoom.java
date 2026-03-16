@@ -1,6 +1,5 @@
 package room;
 
-import exception.RoomNotAvailableException;
 import java.math.BigDecimal;
 
 public interface IRoom {
@@ -10,7 +9,7 @@ public interface IRoom {
     int getRoomId();
     RoomStatus getStatus();
     void setStatus(RoomStatus status);
-    void book() throws RoomNotAvailableException;
+    void book();
     void release();
 
     default boolean matchesType(String requestedType) {

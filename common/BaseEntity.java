@@ -1,10 +1,11 @@
 package common;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public abstract class BaseEntity {
-    private static final Map<String, Integer> COUNTERS = new HashMap<>();
+    private static int guestCounter = 0;
+    private static int roomCounter = 0;
+    private static int staffCounter = 0;
+    private static int bookingCounter = 0;
+
     private final String id;
 
     protected BaseEntity(String prefix) {
@@ -18,7 +19,6 @@ public abstract class BaseEntity {
         }
 
         this.id = existingId.trim();
-        syncCounter(prefix, this.id);
     }
 
     public String getId() {
@@ -34,21 +34,18 @@ public abstract class BaseEntity {
     }
 
     private static synchronized String generateId(String prefix) {
-        int next = COUNTERS.getOrDefault(prefix, 0) + 1;
-        COUNTERS.put(prefix, next);
+        int next;
+        if ("G".equals(prefix)) {
+            next = ++guestCounter;
+        } else if ("R".equals(prefix)) {
+            next = ++roomCounter;
+        } else if ("ST".equals(prefix)) {
+            next = ++staffCounter;
+        } else if ("B".equals(prefix)) {
+            next = ++bookingCounter;
+        } else {
+            next = 0;
+        }
         return prefix + String.format("%03d", next);
-    }
-
-    private static synchronized void syncCounter(String prefix, String id) {
-        String digits = id.replaceAll("\\D", "");
-        if (digits.isEmpty()) {
-            return;
-        }
-
-        int value = Integer.parseInt(digits);
-        int current = COUNTERS.getOrDefault(prefix, 0);
-        if (value > current) {
-            COUNTERS.put(prefix, value);
-        }
     }
 }

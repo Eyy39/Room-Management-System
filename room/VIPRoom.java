@@ -2,10 +2,10 @@ package room;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import pricing.VipServiceFeePricingStrategy;
 
 public class VIPRoom extends Room {
     private static final BigDecimal DEFAULT_SERVICE_FEE = new BigDecimal("50.00");
+    private BigDecimal serviceFee;
     private boolean freeBreakfast;
 
     public VIPRoom(String roomNumber, BigDecimal basePricePerNight) {
@@ -15,12 +15,21 @@ public class VIPRoom extends Room {
     public VIPRoom(String roomNumber, BigDecimal basePricePerNight, BigDecimal serviceFee) {
         super(roomNumber, basePricePerNight);
         this.freeBreakfast = true;
-        setPricingStrategy(new VipServiceFeePricingStrategy(serviceFee));
+        if (serviceFee == null || serviceFee.compareTo(BigDecimal.ZERO) < 0) {
+            this.serviceFee = BigDecimal.ZERO;
+        } else {
+            this.serviceFee = serviceFee;
+        }
     }
 
     @Override
     public String getRoomType() {
         return "VIP";
+    }
+
+    @Override
+    public BigDecimal getPricePerNight() {
+        return getBasePricePerNight().add(serviceFee);
     }
 
     @Override

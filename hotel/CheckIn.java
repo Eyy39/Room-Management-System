@@ -1,16 +1,13 @@
 package hotel;
 
 import common.BaseEntity;
-import pricing.DiscountStrategy;
-import pricing.PercentageDiscountStrategy;
-import room.IRoom;
-import user.IStaff;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import room.IRoom;
+import user.IStaff;
 
 public class CheckIn extends BaseEntity {
     private static final int LIMIT_DAYS = 10;
@@ -20,25 +17,18 @@ public class CheckIn extends BaseEntity {
     private final int night;
     private final Guest guest;
     private final IStaff staff;
-    private final DiscountStrategy discountStrategy;
 
     private BookingStatus status;
     private BigDecimal originalPrice;
     private BigDecimal discountPrice;
 
     public CheckIn(Guest guest, IRoom room, String checkInDate, int night, IStaff staff, BigDecimal discountPercent) {
-        this(guest, room, checkInDate, night, staff, discountPercent, new PercentageDiscountStrategy());
-    }
-
-    public CheckIn(Guest guest, IRoom room, String checkInDate, int night, IStaff staff, BigDecimal discountPercent,
-                   DiscountStrategy discountStrategy) {
         super("B");
         this.guest = guest;
         this.room = room;
         this.checkInDate = checkInDate;
         this.night = night;
         this.staff = staff;
-        this.discountStrategy = discountStrategy;
         this.status = BookingStatus.RESERVED;
         recalculatePrice(discountPercent);
     }
@@ -123,7 +113,11 @@ public class CheckIn extends BaseEntity {
 
     private void recalculatePrice(BigDecimal discountPercent) {
         this.originalPrice = room.getPricePerNight();
-        this.discountPrice = discountStrategy.calculateDiscount(originalPrice, discountPercent);
+        BigDecimal safePercent = BigDecimal.ZERO;
+        if (discountPercent != null && discountPercent.compareTo(BigDecimal.ZERO) > 0) {
+            safePercent = discountPercent.min(new BigDecimal("100"));
+        }
+        this.discountPrice = originalPrice.multiply(safePercent).divide(new BigDecimal("100"));
     }
 
     @Override
