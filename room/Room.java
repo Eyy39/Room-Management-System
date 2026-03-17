@@ -1,7 +1,6 @@
 package room;
 
 import common.BaseEntity;
-import exception.HotelException;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -59,10 +58,10 @@ public abstract class Room extends BaseEntity implements IRoom {
     @Override
     public void book() {
         if (status == RoomStatus.MAINTENANCE) {
-            throw new HotelException("Room is under maintenance.");
+            System.out.println("Room is under maintenance.");
         }
         if (status == RoomStatus.OCCUPIED) {
-            throw new HotelException("Room is already occupied.");
+            System.out.println("Room is already occupied.");
         }
         status = RoomStatus.OCCUPIED;
     }

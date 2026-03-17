@@ -1,6 +1,5 @@
 package controller;
 
-import exception.HotelException;
 import hotel.CheckIn;
 import hotel.Guest;
 import java.math.BigDecimal;
@@ -94,7 +93,7 @@ public class Hotel {
                 return true;
             }
         }
-        throw new HotelException("Invalid username or password.");
+        return false;
     }
 
     public void logout() {
