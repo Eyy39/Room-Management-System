@@ -10,19 +10,9 @@ public class Guest extends BaseEntity {
 
     public Guest(String guestName, String phoneNumber, String email){
         super("G");
-        if (guestName == null || guestName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Guest name cannot be empty");
-        }
-        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("Phone number cannot be empty");
-        }
-        if (!isEmailValid(email)) {
-            throw new IllegalArgumentException("Invalid email address");
-        }
-
-        this.guestName = guestName.trim();
-        this.phoneNumber = phoneNumber.trim();
-        this.email = email;
+        this.setGuestName(guestName);;
+        this.setPhoneNumber(phoneNumber);;
+        this.setEmail(email);;
     }
     public String Regex(){
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
@@ -90,10 +80,4 @@ public class Guest extends BaseEntity {
         return Objects.equals(guestName, other.guestName)
             && Objects.equals(getGuestID(), other.getGuestID());
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(guestName, getGuestID());
-    }
-    
 }

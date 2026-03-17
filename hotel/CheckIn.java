@@ -12,11 +12,11 @@ import user.IStaff;
 public class CheckIn extends BaseEntity {
     private static final int LIMIT_DAYS = 10;
 
-    private final IRoom room;
-    private final String checkInDate;
-    private final int night;
-    private final Guest guest;
-    private final IStaff staff;
+    private IRoom room;
+    private String checkInDate;
+    private int night;
+    private Guest guest;
+    private IStaff staff;
 
     private BookingStatus status;
     private BigDecimal originalPrice;

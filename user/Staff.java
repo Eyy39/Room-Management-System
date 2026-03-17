@@ -11,28 +11,18 @@ public abstract class Staff extends BaseEntity implements IStaff {
 
     public Staff(String name, char gender, String phoneNumber, String password) {
         super("ST");
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Invalid name");
-        }
-        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("Invalid phone number");
-        }
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Invalid password");
-        }
-
-        this.name = name.trim();
-        this.gender = gender;
-        this.phoneNubmer = phoneNumber.trim();
-        this.password = password;
+        this.setName(name);
+        this.setGender(gender);;
+        this.setPhoneNumber(phoneNumber);
+        this.setPassword(password);
     }
 
     public Staff(String id, String name, char gender, String phoneNumber, String password) {
         super("ST", id);
-        this.name = name;
-        this.gender = gender;
-        this.phoneNubmer = phoneNumber;
-        this.password = password;
+        this.setName(name);
+        this.setGender(gender);
+        this.setPhoneNumber(phoneNumber);
+        this.setPassword(password);
     }
 
     public String getStaffId() {
@@ -89,7 +79,7 @@ public abstract class Staff extends BaseEntity implements IStaff {
     }
 
     @Override
-    public abstract boolean can(Permission permission);
+    public abstract boolean can(String action);
 
     @Override
     public String getSignature() {
@@ -115,11 +105,5 @@ public abstract class Staff extends BaseEntity implements IStaff {
             && Objects.equals(getStaffId(), other.getStaffId())
             && Objects.equals(name, other.name);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getStaffId(), name, gender);
-    }
-
-    
+ 
 }

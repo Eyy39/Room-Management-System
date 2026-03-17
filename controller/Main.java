@@ -1,7 +1,7 @@
 package controller;
 import hotel.CheckIn;
 import hotel.Guest;
-import java.math.BigDecimal;
+import java.math.BigDecimal; // For handling money values accurately, we use BigDecimal instead of double or float.
 import java.util.Scanner;
 import room.IRoom;
 import room.NormalRoom;
@@ -19,8 +19,8 @@ public class Main {
         IRoom nRoom1 = new NormalRoom("A101", new BigDecimal("70.00"));
         IRoom vRoom1 = new VIPRoom("B202", new BigDecimal("150.00"));
 
-        Staff staff1 = new ManagerUser("ST001", "Dara", 'M', "086 256 034", "pw123", new BigDecimal("1200.00"));
-        Staff staff2 = new ReceptionistUser("ST002", "Sokha", 'F', "098 765 432", "pw456", new BigDecimal("800.00"), "12:00 PM - 12:00 AM");
+        Staff staff1 = new ManagerUser("ST001", "Dara", 'M', "086 256 034", "pw123", 1200.00);
+        Staff staff2 = new ReceptionistUser("ST002", "Sokha", 'F', "098 765 432", "pw456", 800.00, "12:00 PM - 12:00 AM");
 
         hotel.addUser(staff1);
         hotel.addUser(staff2);
@@ -44,7 +44,6 @@ public class Main {
         hotel.addBooking(booking1);
         hotel.addBooking(booking2);
 
-        
 
         // Main loop: login menu first, then system menu.
         try (Scanner scanner = new Scanner(System.in)) {
@@ -106,12 +105,8 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      ROOM DETAILS");
                         System.out.println("======================================");
-                        try {
-                            for (IRoom room : hotel.viewRooms()) {
-                                System.out.println(room);
-                            }
-                        } catch (RuntimeException ex) {
-                            System.out.println(ex.getMessage());
+                        for (IRoom room : hotel.viewRooms()) {
+                            System.out.println(room);
                         }
                         break;
                     }
@@ -119,12 +114,8 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      GUEST INFORMATION");
                         System.out.println("======================================");
-                        try {
-                            for (Guest guest : hotel.viewGuests()) {
-                                System.out.println(guest);
-                            }
-                        } catch (RuntimeException ex) {
-                            System.out.println(ex.getMessage());
+                        for (Guest guest : hotel.viewGuests()) {
+                            System.out.println(guest);
                         }
                         break;
                     }
@@ -135,12 +126,8 @@ public class Main {
                         scanner.nextLine();
                         System.out.print("Enter room type to search: ");
                         String type = scanner.nextLine();
-                        try {
-                            for (IRoom room : hotel.findBookableRooms(type)) {
-                                System.out.println(room);
-                            }
-                        } catch (RuntimeException ex) {
-                            System.out.println(ex.getMessage());
+                        for (IRoom room : hotel.findBookableRooms(type)) {
+                            System.out.println(room);
                         }
                         break;
                     }
@@ -148,12 +135,8 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      STAFF INFORMATION");
                         System.out.println("======================================");
-                        try {
-                            for (user.IStaff staff : hotel.viewStaff()) {
-                                System.out.println(staff);
-                            }
-                        } catch (RuntimeException ex) {
-                            System.out.println(ex.getMessage());
+                        for (user.IStaff staff : hotel.viewStaff()) {
+                            System.out.println(staff);
                         }
                         break;
                     }
@@ -161,12 +144,8 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      BOOKING SCHEDULE");
                         System.out.println("======================================");
-                        try {
-                            for (String line : hotel.viewBookingSchedule()) {
-                                System.out.println(line);
-                            }
-                        } catch (RuntimeException ex) {
-                            System.out.println(ex.getMessage());
+                        for (String line : hotel.viewBookingSchedule()) {
+                            System.out.println(line);
                         }
                         break;
                     }

@@ -1,7 +1,7 @@
 package room;
 
 import java.math.BigDecimal;
-import java.util.Objects;
+
 
 public class NormalRoom extends Room {
     public NormalRoom(String roomNumber, BigDecimal basePricePerNight) {
@@ -28,8 +28,4 @@ public class NormalRoom extends Room {
         return getPricePerNight().compareTo(other.getPricePerNight()) == 0;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getRoomId(), getPricePerNight());
-    }
 }

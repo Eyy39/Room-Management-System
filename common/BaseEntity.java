@@ -26,11 +26,11 @@ public abstract class BaseEntity {
     }
 
     public int getNumericId() {
-        String digits = id.replaceAll("\\D", "");
+        String digits = id.replaceAll("\\D", "");// Remove non-digit characters
         if (digits.isEmpty()) {
             return 0;
         }
-        return Integer.parseInt(digits);
+        return Integer.parseInt(digits);// Convert the remaining digits to an integer
     }
 
     private static synchronized String generateId(String prefix) {

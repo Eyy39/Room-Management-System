@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import room.IRoom;
 import user.IStaff;
-import user.Permission;
 
 public class Hotel {
 
@@ -32,6 +31,15 @@ public class Hotel {
         this.users = new ArrayList<>();
         this.loggedInUser = null;
     }
+
+    public static final String CREATE_STAFF = "CREATE_STAFF";
+    public static final String CREATE_BOOKING = "CREATE_BOOKING";
+    public static final String VIEW_GUESTS = "VIEW_GUESTS";
+    public static final String VIEW_STAFF = "VIEW_STAFF";
+    public static final String VIEW_ROOMS = "VIEW_ROOMS";
+    public static final String VIEW_BOOKING_SCHEDULE = "VIEW_BOOKING_SCHEDULE";
+    public static final String UPDATE_ROOM_STATUS = "UPDATE_ROOM_STATUS";
+    public static final String DELETE_STAFF = "DELETE_STAFF";
 
     public void setHotelName(String hotelName) {
         if (hotelName != null && !hotelName.trim().isEmpty()) {
@@ -93,39 +101,41 @@ public class Hotel {
     }
 
     // Every protected action goes through this method first.
-    private void requirePermission(Permission permission) {
+    private boolean requirePermission(String action) {
         if (loggedInUser == null) {
-            throw new HotelException("Access denied: login required.");
+            System.out.println("Access denied: login required.");
+            return false;
         }
-        if (!loggedInUser.can(permission)) {
-            throw new HotelException(
-                "Access denied: " + loggedInUser.getSignature() + " cannot perform " + permission
-            );
+        if (!loggedInUser.can( action)) {
+            System.out.println(
+                "Access denied: " + loggedInUser.getSignature() + " cannot perform " + action);
+                 return false;
         }
+        return true;
     }
 
     public List<IRoom> viewRooms() {
-        requirePermission(Permission.VIEW_ROOMS);
+        requirePermission(Hotel.VIEW_ROOMS);
         return getAllRooms();
     }
 
     public List<Guest> viewGuests() {
-        requirePermission(Permission.VIEW_GUESTS);
+        requirePermission(Hotel.VIEW_GUESTS);
         return getGuestsList();
     }
 
     public List<IRoom> findBookableRooms(String roomType) {
-        requirePermission(Permission.CREATE_BOOKING);
+        requirePermission(Hotel.CREATE_BOOKING);
         return searchRoomsByType(roomType);
     }
 
     public List<IStaff> viewStaff() {
-        requirePermission(Permission.VIEW_STAFF);
+        requirePermission(Hotel.VIEW_STAFF);
         return getStaffList();
     }
 
     public List<String> viewBookingSchedule() {
-        requirePermission(Permission.VIEW_BOOKING_SCHEDULE);
+        requirePermission(Hotel.VIEW_BOOKING_SCHEDULE);
         if (bookings.isEmpty()) {
             return new ArrayList<>();
         }
@@ -150,7 +160,7 @@ public class Hotel {
                 return;
             }
         }
-        throw new HotelException("Room not found.");
+        System.out.println("Room not found.");
     }
 
     public List<IRoom> getAllRooms() {
@@ -166,7 +176,8 @@ public class Hotel {
 
     public List<IRoom> searchRoomsByType(String type) {
         if (type == null || type.trim().isEmpty()) {
-            throw new HotelException("Please enter a room type.");
+            System.out.println("Please enter a room type.");
+            return new ArrayList<>();
         }
 
         String normalizedType = type.trim();
@@ -182,7 +193,8 @@ public class Hotel {
         }
 
         if (results.isEmpty()) {
-            throw new HotelException("No rooms of type " + normalizedType + " found.");
+            System.out.println("No rooms of type " + normalizedType + " found.");
+            return new ArrayList<>();
         }
         return results;
     }
@@ -198,7 +210,7 @@ public class Hotel {
                 return;
             }
         }
-        throw new HotelException("Guest not found.");
+        System.out.println("Guest not found.");
     }
 
     public List<Guest> getGuestsList() {
@@ -219,16 +231,16 @@ public class Hotel {
                 return;
             }
         }
-        throw new HotelException("Staff not found.");
+        System.out.println("Staff not found.");
     }
 
     public void deleteStaffByIndex(int index) {
-        requirePermission(Permission.DELETE_STAFF);
+        requirePermission(Hotel.DELETE_STAFF);
         if (index >= 0 && index < users.size()) {
             users.remove(index);
             return;
         }
-        throw new HotelException("Invalid staff index.");
+        System.out.println("Invalid staff index.");
     }
 
     public List<IStaff> getStaffList() {
@@ -248,7 +260,8 @@ public class Hotel {
         IStaff staff = findStaffByIndex(staffIndex);
 
         if (guest == null || room == null || staff == null) {
-            throw new HotelException("Invalid booking information.");
+            System.out.println("Invalid booking information.");
+            return null;
         }
 
         // Tell the room to update its own state.
@@ -278,7 +291,7 @@ public class Hotel {
                 return;
             }
         }
-        throw new HotelException("Booking not found.");
+        System.out.println("Booking not found.");
     }
 
     public List<CheckIn> getBookingsList() {

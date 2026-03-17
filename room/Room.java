@@ -12,8 +12,8 @@ public abstract class Room extends BaseEntity implements IRoom {
 
     protected Room(String roomNumber, BigDecimal basePricePerNight) {
         super("R");
-        this.roomNumber = sanitizeRoomNumber(roomNumber);
-        this.basePricePerNight = sanitizePrice(basePricePerNight);
+        this.roomNumber = RoomNumber(roomNumber);
+        this.basePricePerNight = Price(basePricePerNight);
         this.status = RoomStatus.AVAILABLE;
     }
 
@@ -23,7 +23,7 @@ public abstract class Room extends BaseEntity implements IRoom {
     }
 
     public void setRoomNumber(String roomNumber) {
-        this.roomNumber = sanitizeRoomNumber(roomNumber);
+        this.roomNumber = RoomNumber(roomNumber);
     }
 
     @Override
@@ -36,7 +36,7 @@ public abstract class Room extends BaseEntity implements IRoom {
     }
 
     protected void setBasePricePerNight(BigDecimal basePricePerNight) {
-        this.basePricePerNight = sanitizePrice(basePricePerNight);
+        this.basePricePerNight = Price(basePricePerNight);
     }
 
     @Override
@@ -96,15 +96,17 @@ public abstract class Room extends BaseEntity implements IRoom {
         return Objects.hash(getRoomId(), roomNumber);
     }
 
-    private String sanitizeRoomNumber(String roomNumber) {
+    private String RoomNumber(String roomNumber) {
         if (roomNumber == null || roomNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("Room number cannot be empty");
+            System.out.println("Room number cannot be empty");
+            return "";
         }
         return roomNumber.trim();
     }
 
-    private BigDecimal sanitizePrice(BigDecimal value) {
+    private BigDecimal Price(BigDecimal value) {
         if (value == null || value.compareTo(BigDecimal.ZERO) < 0) {
+            System.out.println("Invalid price. Setting to $0.00.");
             return BigDecimal.ZERO;
         }
         return value;
