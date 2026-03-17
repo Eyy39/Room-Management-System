@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Scanner;
 import room.IRoom;
 import room.NormalRoom;
+import room.RoomFilter;
+import room.RoomStatus;
 import room.VIPRoom;
 import user.ManagerUser;
 import user.ReceptionistUser;
@@ -97,6 +99,7 @@ public class Main {
                     System.out.println("5. Show Booking Schedule");
                     System.out.println("6. Logout");
                     System.out.println("7. Exit");
+                    System.out.println("8. Filter Demo (Anonymous Class vs Lambda)");
                     System.out.print("Enter your choice: ");
 
                     int choice = scanner.nextInt();
@@ -178,6 +181,40 @@ public class Main {
                     case 7: {
                         exit = true;
                         System.out.println("\nExiting the system. Goodbye!");
+                        break;
+                    }
+                    case 8: {
+                        // =========================================================
+                        // DEMO: Anonymous Inner Class  vs  Lambda Expression
+                        // Both do the exact same thing - filter available rooms.
+                        // The difference is only in how we write the code.
+                        // =========================================================
+                        System.out.println("\n======================================");
+                        System.out.println("      FILTER DEMO");
+                        System.out.println("======================================");
+
+                        // --- Step 1: Anonymous Inner Class (old, verbose way) ---
+                        // Before Java 8, to pass behaviour into a method, you had to
+                        // create a whole class inline with the 'new InterfaceName() { }' syntax.
+                        System.out.println("\n[1] Using Anonymous Inner Class (old way):");
+                        RoomFilter byAnonymousClass = new RoomFilter() {
+                            @Override
+                            public boolean test(IRoom room) {
+                                return room.getStatus() == RoomStatus.AVAILABLE;
+                            }
+                        };
+                        for (IRoom room : hotel.filterRooms(byAnonymousClass)) {
+                            System.out.println(room);
+                        }
+
+                        // --- Step 2: Lambda Expression (modern, concise way) ---
+                        // Since RoomFilter has only ONE method, Java 8+ lets you
+                        // write it as a lambda:  (parameter) -> expression
+                        // The compiler already knows the method shape from @FunctionalInterface.
+                        System.out.println("\n[2] Using Lambda Expression (modern way):");
+                        for (IRoom room : hotel.filterRooms(r -> r.getStatus() == RoomStatus.AVAILABLE)) {
+                            System.out.println(room);
+                        }
                         break;
                     }
                     default:

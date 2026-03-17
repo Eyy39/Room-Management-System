@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import room.IRoom;
+import room.RoomFilter;
 import user.IStaff;
 import user.Permission;
 
@@ -283,5 +284,17 @@ public class Hotel {
 
     public List<CheckIn> getBookingsList() {
         return new ArrayList<>(bookings);
+    }
+
+    // filterRooms - accepts a RoomFilter (lambda or anonymous class) and returns matching rooms.
+    // This method doesn't care HOW the filter decides - it just calls filter.test() for each room.
+    public List<IRoom> filterRooms(RoomFilter filter) {
+        List<IRoom> results = new ArrayList<>();
+        for (IRoom room : getAllRooms()) {
+            if (filter.test(room)) {
+                results.add(room);
+            }
+        }
+        return results;
     }
 }
