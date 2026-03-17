@@ -153,16 +153,6 @@ public class Main {
                         break;
                     }
                     case 6: {
-                        hotel.logout();
-                        loggedIn = false;
-                        break;
-                    }
-                    case 7: {
-                        exit = true;
-                        System.out.println("\nExiting the system. Goodbye!");
-                        break;
-                    }
-                    case 8: {
                         // =========================================================
                         // DEMO: Anonymous Inner Class  vs  Lambda Expression
                         // Both do the exact same thing - filter available rooms.
@@ -194,6 +184,16 @@ public class Main {
                         for (IRoom room : hotel.filterRooms(r -> r.getStatus() == RoomStatus.AVAILABLE)) {
                             System.out.println(room);
                         }
+                        break;
+                    }
+                    case 7: {
+                        hotel.logout();
+                        loggedIn = false;
+                        break;
+                    }
+                    case 8: {
+                        exit = true;
+                        System.out.println("\nExiting the system. Goodbye!");
                         break;
                     }
                     default:
