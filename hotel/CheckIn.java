@@ -1,11 +1,9 @@
 package hotel;
 
 import common.BaseEntity;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 import room.IRoom;
 import user.IStaff;
 
@@ -19,10 +17,10 @@ public class CheckIn extends BaseEntity {
     private IStaff staff;
 
     private BookingStatus status;
-    private BigDecimal originalPrice;
-    private BigDecimal discountPrice;
+    private double originalPrice;
+    private double discountPrice;
 
-    public CheckIn(Guest guest, IRoom room, String checkInDate, int night, IStaff staff, BigDecimal discountPercent) {
+    public CheckIn(Guest guest, IRoom room, String checkInDate, int night, IStaff staff, double discountPercent) {
         super("B");
         this.guest = guest;
         this.room = room;
@@ -49,11 +47,11 @@ public class CheckIn extends BaseEntity {
         return night;
     }
 
-    public BigDecimal getOriginalPrice() {
+    public double getOriginalPrice() {
         return originalPrice;
     }
 
-    public BigDecimal getDiscountPrice() {
+    public double getDiscountPrice() {
         return discountPrice;
     }
 
@@ -87,10 +85,10 @@ public class CheckIn extends BaseEntity {
         room.release();
     }
 
-    public BigDecimal getTotal() {
-        BigDecimal subtotal = originalPrice.multiply(BigDecimal.valueOf(night));
-        BigDecimal totalDiscount = discountPrice.multiply(BigDecimal.valueOf(night));
-        return subtotal.subtract(totalDiscount);
+    public double getTotal() {
+        double subtotal = originalPrice * night;
+        double totalDiscount = discountPrice * night;
+        return subtotal - totalDiscount;
     }
 
     public boolean isBookingDateValid(LocalDate bookingDate) {
@@ -99,8 +97,8 @@ public class CheckIn extends BaseEntity {
         return !bookingDate.isAfter(maxBookingDate);
     }
 
-    public List<String> bookingSchedule() {
-        List<String> schedule = new ArrayList<>();
+    public ArrayList<String> bookingSchedule() {
+        ArrayList<String> schedule = new ArrayList<>();
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
 
@@ -111,13 +109,13 @@ public class CheckIn extends BaseEntity {
         return schedule;
     }
 
-    private void recalculatePrice(BigDecimal discountPercent) {
+    private void recalculatePrice(double discountPercent) {
         this.originalPrice = room.getPricePerNight();
-        BigDecimal safePercent = BigDecimal.ZERO;
-        if (discountPercent != null && discountPercent.compareTo(BigDecimal.ZERO) > 0) {
-            safePercent = discountPercent.min(new BigDecimal("100"));
+        double safePercent = 0.0;
+        if (discountPercent > 0) {
+            safePercent = Math.min(discountPercent, 100.0);
         }
-        this.discountPrice = originalPrice.multiply(safePercent).divide(new BigDecimal("100"));
+        this.discountPrice = originalPrice * safePercent / 100.0;
     }
 
     @Override

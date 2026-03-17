@@ -1,10 +1,8 @@
 package room;
 
-import java.math.BigDecimal;
-
 
 public class NormalRoom extends Room {
-    public NormalRoom(String roomNumber, BigDecimal basePricePerNight) {
+    public NormalRoom(String roomNumber, double basePricePerNight) {
         super(roomNumber, basePricePerNight);
     }
 
@@ -25,7 +23,7 @@ public class NormalRoom extends Room {
         if (!(obj instanceof NormalRoom)) return false;
 
         NormalRoom other = (NormalRoom) obj;
-        return getPricePerNight().compareTo(other.getPricePerNight()) == 0;
+        return Double.compare(getPricePerNight(), other.getPricePerNight()) == 0;
     }
 
 }

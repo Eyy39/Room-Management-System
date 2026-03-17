@@ -1,6 +1,5 @@
 package room;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public class VIPRoom extends Room {
@@ -8,17 +7,17 @@ public class VIPRoom extends Room {
     private double serviceFee = 50.00;
     private boolean freeBreakfast;
 
-    public VIPRoom(String roomNumber, BigDecimal basePricePerNight) {
-        this(roomNumber, basePricePerNight, new BigDecimal("50.00"));
+    public VIPRoom(String roomNumber, double basePricePerNight) {
+        this(roomNumber, basePricePerNight, 50.00);
     }
 
-    public VIPRoom(String roomNumber, BigDecimal basePricePerNight, BigDecimal serviceFee) {
+    public VIPRoom(String roomNumber, double basePricePerNight, double serviceFee) {
         super(roomNumber, basePricePerNight);
         this.freeBreakfast = true;
-        if (serviceFee == null || serviceFee.compareTo(BigDecimal.ZERO) < 0) {
+        if (serviceFee < 0) {
             this.serviceFee = 50.00;
         } else {
-            this.serviceFee = serviceFee.doubleValue();
+            this.serviceFee = serviceFee;
         }
     }
 
@@ -28,8 +27,8 @@ public class VIPRoom extends Room {
     }
 
     @Override
-    public BigDecimal getPricePerNight() {
-        return getBasePricePerNight().add(new BigDecimal(serviceFee));
+    public double getPricePerNight() {
+        return getBasePricePerNight() + serviceFee;
     }
 
     @Override
@@ -39,7 +38,7 @@ public class VIPRoom extends Room {
         if (!(obj instanceof VIPRoom)) return false;
 
         VIPRoom other = (VIPRoom) obj;
-        return getPricePerNight().compareTo(other.getPricePerNight()) == 0;
+        return Double.compare(getPricePerNight(), other.getPricePerNight()) == 0;
     }
 
     @Override

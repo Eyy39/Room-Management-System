@@ -1,7 +1,6 @@
 package controller;
 import hotel.CheckIn;
 import hotel.Guest;
-import java.math.BigDecimal; // For handling money values accurately, we use BigDecimal instead of double or float.
 import java.util.Scanner;
 import room.IRoom;
 import room.NormalRoom;
@@ -13,13 +12,13 @@ import user.ReceptionistUser;
 import user.Staff;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String... args) {
         
         // Build sample data so the app can run immediately.
         Hotel hotel = new Hotel("Sunrise Hotel", "Phnom Penh", "012 345 678",10);
 
-        IRoom nRoom1 = new NormalRoom("A101", new BigDecimal("70.00"));
-        IRoom vRoom1 = new VIPRoom("B202", new BigDecimal("150.00"));
+        IRoom nRoom1 = new NormalRoom("A101", 70.00);
+        IRoom vRoom1 = new VIPRoom("B202", 150.00);
 
         Staff staff1 = new ManagerUser("ST001", "Dara", 'M', "086 256 034", "pw123", 1200.00);
         Staff staff2 = new ReceptionistUser("ST002", "Sokha", 'F', "098 765 432", "pw456", 800.00, "12:00 PM - 12:00 AM");
@@ -30,8 +29,8 @@ public class Main {
         Guest guest1 = new Guest( "Vanna", "098 777 666","vanna@gamil.com");
         Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
 
-        CheckIn booking1 = new CheckIn(guest1, nRoom1, "2024-07-01", 3, staff1, new BigDecimal("10"));
-        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2024-07-02", 2, staff2, new BigDecimal("15"));
+        CheckIn booking1 = new CheckIn(guest1, nRoom1, "2024-07-01", 3, staff1, 10.0);
+        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2024-07-02", 2, staff2, 15.0);
 
         // Add rooms, staff, guests, and bookings to the hotel
         hotel.addRoom(nRoom1);
@@ -96,9 +95,9 @@ public class Main {
                     System.out.println("3. Book a Room");
                     System.out.println("4. Show Staff Information");
                     System.out.println("5. Show Booking Schedule");
-                    System.out.println("6. Logout");
-                    System.out.println("7. Exit");
-                    System.out.println("8. Filter Demo (Anonymous Class vs Lambda)");
+                    System.out.println("6. Filter Demo (Anonymous Class vs Lambda)");
+                    System.out.println("7. logout");
+                    System.out.println("8. Exit)");
                     System.out.print("Enter your choice: ");
 
                     int choice = scanner.nextInt();

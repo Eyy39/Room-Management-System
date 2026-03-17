@@ -1,11 +1,9 @@
 package room;
 
-import java.math.BigDecimal;
-
 public interface IRoom {
     String getRoomNumber();
     String getRoomType();
-    BigDecimal getPricePerNight();
+    double getPricePerNight();
     int getRoomId();
     RoomStatus getStatus();
     void setStatus(RoomStatus status);

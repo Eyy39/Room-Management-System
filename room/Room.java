@@ -1,15 +1,14 @@
 package room;
 
 import common.BaseEntity;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public abstract class Room extends BaseEntity implements IRoom {
     private String roomNumber;
-    private BigDecimal basePricePerNight;
+    private double basePricePerNight;
     private RoomStatus status;
 
-    protected Room(String roomNumber, BigDecimal basePricePerNight) {
+    protected Room(String roomNumber, double basePricePerNight) {
         super("R");
         this.roomNumber = RoomNumber(roomNumber);
         this.basePricePerNight = Price(basePricePerNight);
@@ -30,16 +29,16 @@ public abstract class Room extends BaseEntity implements IRoom {
         return getNumericId();
     }
 
-    protected BigDecimal getBasePricePerNight() {
+    protected double getBasePricePerNight() {
         return basePricePerNight;
     }
 
-    protected void setBasePricePerNight(BigDecimal basePricePerNight) {
+    protected void setBasePricePerNight(double basePricePerNight) {
         this.basePricePerNight = Price(basePricePerNight);
     }
 
     @Override
-    public BigDecimal getPricePerNight() {
+    public double getPricePerNight() {
         return basePricePerNight;
     }
 
@@ -103,10 +102,10 @@ public abstract class Room extends BaseEntity implements IRoom {
         return roomNumber.trim();
     }
 
-    private BigDecimal Price(BigDecimal value) {
-        if (value == null || value.compareTo(BigDecimal.ZERO) < 0) {
+    private double Price(double value) {
+        if (value < 0) {
             System.out.println("Invalid price. Setting to $0.00.");
-            return BigDecimal.ZERO;
+            return 0.0;
         }
         return value;
     }

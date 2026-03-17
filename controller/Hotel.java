@@ -2,9 +2,7 @@ package controller;
 
 import hotel.CheckIn;
 import hotel.Guest;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 import room.IRoom;
 import room.RoomFilter;
 import user.IStaff;
@@ -20,12 +18,6 @@ public class Hotel {
     private ArrayList<CheckIn> bookings;
     private ArrayList<IStaff> users;
     private IStaff loggedInUser;
-
-    // private final List<IRoom> rooms;
-    // private final List<Guest> guests;
-    // private final List<CheckIn> bookings;
-    // private final List<IStaff> users;
-    // private IStaff loggedInUser;
 
     public Hotel(String hotelName, String hotelAddress, String hotelContact, int maxRooms) {
         this.hotelName = hotelName;
@@ -120,27 +112,27 @@ public class Hotel {
         return true;
     }
 
-    public List<IRoom> viewRooms() {
+    public ArrayList<IRoom> viewRooms() {
         requirePermission(Hotel.VIEW_ROOMS);
         return getAllRooms();
     }
 
-    public List<Guest> viewGuests() {
+    public ArrayList<Guest> viewGuests() {
         requirePermission(Hotel.VIEW_GUESTS);
         return getGuestsList();
     }
 
-    public List<IRoom> findBookableRooms(String roomType) {
+    public ArrayList<IRoom> findBookableRooms(String roomType) {
         requirePermission(Hotel.CREATE_BOOKING);
         return searchRoomsByType(roomType);
     }
 
-    public List<IStaff> viewStaff() {
+    public ArrayList<IStaff> viewStaff() {
         requirePermission(Hotel.VIEW_STAFF);
         return getStaffList();
     }
 
-    public List<String> viewBookingSchedule() {
+    public ArrayList<String> viewBookingSchedule() {
         requirePermission(Hotel.VIEW_BOOKING_SCHEDULE);
         if (bookings.isEmpty()) {
             return new ArrayList<>();
@@ -169,7 +161,7 @@ public class Hotel {
         System.out.println("Room not found.");
     }
 
-    public List<IRoom> getAllRooms() {
+    public ArrayList<IRoom> getAllRooms() {
         return new ArrayList<>(rooms);
     }
 
@@ -180,7 +172,7 @@ public class Hotel {
         return null;
     }
 
-    public List<IRoom> searchRoomsByType(String type) {
+    public ArrayList<IRoom> searchRoomsByType(String type) {
         if (type == null || type.trim().isEmpty()) {
             System.out.println("Please enter a room type.");
             return new ArrayList<>();
@@ -191,7 +183,7 @@ public class Hotel {
             return getAllRooms();
         }
 
-        List<IRoom> results = new ArrayList<>();
+        ArrayList<IRoom> results = new ArrayList<>();
         for (IRoom room : rooms) {
             if (room.matchesType(normalizedType)) {
                 results.add(room);
@@ -219,7 +211,7 @@ public class Hotel {
         System.out.println("Guest not found.");
     }
 
-    public List<Guest> getGuestsList() {
+    public ArrayList<Guest> getGuestsList() {
         return new ArrayList<>(guests);
     }
 
@@ -249,7 +241,7 @@ public class Hotel {
         System.out.println("Invalid staff index.");
     }
 
-    public List<IStaff> getStaffList() {
+    public ArrayList<IStaff> getStaffList() {
         return new ArrayList<>(users);
     }
 
@@ -260,7 +252,7 @@ public class Hotel {
         return null;
     }
 
-    public CheckIn bookRoom(int guestIndex, int roomIndex, int nights, int staffIndex, BigDecimal discountPercent) {
+    public CheckIn bookRoom(int guestIndex, int roomIndex, int nights, int staffIndex, double discountPercent) {
         Guest guest = findGuestByIndex(guestIndex);
         IRoom room = findRoomByIndex(roomIndex);
         IStaff staff = findStaffByIndex(staffIndex);
@@ -300,14 +292,14 @@ public class Hotel {
         System.out.println("Booking not found.");
     }
 
-    public List<CheckIn> getBookingsList() {
+    public ArrayList<CheckIn> getBookingsList() {
         return new ArrayList<>(bookings);
     }
 
     // filterRooms - accepts a RoomFilter (lambda or anonymous class) and returns matching rooms.
     // This method doesn't care HOW the filter decides - it just calls filter.test() for each room.
-    public List<IRoom> filterRooms(RoomFilter filter) {
-        List<IRoom> results = new ArrayList<>();
+    public ArrayList<IRoom> filterRooms(RoomFilter filter) {
+        ArrayList<IRoom> results = new ArrayList<>();
         for (IRoom room : getAllRooms()) {
             if (filter.test(room)) {
                 results.add(room);
