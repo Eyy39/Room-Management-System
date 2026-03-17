@@ -15,21 +15,27 @@ public class Hotel {
     private String hotelAddress;
     private String hotelContact;
 
-    private final List<IRoom> rooms;
-    private final List<Guest> guests;
-    private final List<CheckIn> bookings;
-    private final List<IStaff> users;
+    private ArrayList<IRoom> rooms;
+    private ArrayList<Guest> guests;
+    private ArrayList<CheckIn> bookings;
+    private ArrayList<IStaff> users;
     private IStaff loggedInUser;
+
+    // private final List<IRoom> rooms;
+    // private final List<Guest> guests;
+    // private final List<CheckIn> bookings;
+    // private final List<IStaff> users;
+    // private IStaff loggedInUser;
 
     public Hotel(String hotelName, String hotelAddress, String hotelContact, int maxRooms) {
         this.hotelName = hotelName;
         this.hotelAddress = hotelAddress;
         this.hotelContact = hotelContact;
-        this.rooms = new ArrayList<>();
-        this.guests = new ArrayList<>();
-        this.bookings = new ArrayList<>();
-        this.users = new ArrayList<>();
-        this.loggedInUser = null;
+        rooms = new ArrayList<>();
+        guests = new ArrayList<>();
+        bookings = new ArrayList<>();
+        users = new ArrayList<>(); 
+        loggedInUser = null;
     }
 
     public static final String CREATE_STAFF = "CREATE_STAFF";
