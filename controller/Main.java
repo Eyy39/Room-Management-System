@@ -137,9 +137,11 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      STAFF INFORMATION");
                         System.out.println("======================================");
+                        user.StaffAction action = (staff) -> System.out.println(staff);
                         for (user.IStaff staff : hotel.viewStaff()) {
-                            System.out.println(staff);
+                            action.execute(staff);
                         }
+
                         break;
                     }
                     case 5: {
