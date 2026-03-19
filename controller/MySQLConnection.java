@@ -10,9 +10,9 @@ import java.sql.ResultSet;
 public class MySQLConnection {
 
     private static Connection connection = null;
-    private static final String URL = "jdbc:mysql://localhost:3306/hr"; // Change to your database URL
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "Eyy123";
+    private static final String URL = System.getenv( "DB_URL");
+    private static final String USERNAME = System.getenv("DB_USERNAME");
+    private static final String PASSWORD = System.getenv("DB_PASSWORD");
 
     // Establish the connection
     public static Connection getConnection() {
@@ -21,9 +21,9 @@ public class MySQLConnection {
                 connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
                 System.out.println("Connected to MySQL successfully!");
             }catch (Exception e) {
-                e.printStackTrace();           
+                e.printStackTrace();
             }
-            
+
         }
         return connection;
     }
@@ -51,7 +51,6 @@ public class MySQLConnection {
         }
         return 0;
     }
-
     // Close the connection
     public static void closeConnection() {
         if (connection != null) {
@@ -67,9 +66,48 @@ public class MySQLConnection {
     }
 
     public static void main(String[] args) {
-        connection = getConnection();
-        closeConnection();
-    }
-    
-}
+        // Example usage
+        Connection conn = MySQLConnection.getConnection();
+//        ResultSet rs = MySQLConnection.executeQuery("SELECT * FROM employees limit 10"); // Change to your table name and query
+//        try {
+//            while (rs != null && rs.next()) {
+//                System.out.println("Employee ID: " + rs.getInt("employee_id") + ", Name: " + rs.getString("first_name"));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (rs != null) {
+//                try {
+//                    rs.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+        ResultSet rs = MySQLConnection.executeQuery("select * from users"); // Change to your table name and query
+        try {
+            while (rs != null && rs.next()) {
+                System.out.println("User name: " + rs.getString("username") + ", Email: " + rs.getString("email"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (conn != null) {
+            System.out.println("Connection established successfully!");
+            MySQLConnection.closeConnection();
+        } else {
+            System.out.println("Failed to establish connection.");
+        }
 
+
+    }
+
+}
