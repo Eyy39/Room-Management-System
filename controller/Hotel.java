@@ -3,8 +3,10 @@ package controller;
 import hotel.CheckIn;
 import hotel.Guest;
 import java.util.ArrayList;
+import java.time.LocalDate;
 import room.IRoom;
 import room.RoomFilter;
+import room.RoomStatus;
 import user.IStaff;
 
 public class Hotel {
@@ -104,7 +106,7 @@ public class Hotel {
             System.out.println("Access denied: login required.");
             return false;
         }
-        if (!loggedInUser.can( action)) {
+        if (!loggedInUser.can(action)) {
             System.out.println(
                 "Access denied: " + loggedInUser.getSignature() + " cannot perform " + action);
                  return false;
@@ -113,31 +115,53 @@ public class Hotel {
     }
 
     public ArrayList<IRoom> viewRooms() {
-        requirePermission(Hotel.VIEW_ROOMS);
+        if (!requirePermission(Hotel.VIEW_ROOMS)) {
+            return new ArrayList<>();
+        }
         return getAllRooms();
     }
 
     public ArrayList<Guest> viewGuests() {
-        requirePermission(Hotel.VIEW_GUESTS);
-        return getGuestsList();
+        if (!requirePermission(Hotel.VIEW_GUESTS)) {
+            throw new SecurityException("No permission to view guests.");
+        }
+        return new ArrayList<>(getGuestsList());
     }
 
     public ArrayList<IRoom> findBookableRooms(String roomType) {
-        requirePermission(Hotel.CREATE_BOOKING);
-        return searchRoomsByType(roomType);
+        if (!requirePermission(Hotel.CREATE_BOOKING)) {
+            throw new SecurityException("No permission to create booking.");
+        }
+
+        ArrayList<IRoom> typedRooms = searchRoomsByType(roomType);
+        ArrayList<IRoom> availableRooms = new ArrayList<>();
+        for (IRoom room : typedRooms) {
+            if (room.getStatus() == RoomStatus.AVAILABLE) {
+                availableRooms.add(room);
+            }
+        }
+        return availableRooms;
     }
 
     public ArrayList<IStaff> viewStaff() {
-        requirePermission(Hotel.VIEW_STAFF);
-        return getStaffList();
+        if (!requirePermission(Hotel.VIEW_STAFF)) {
+            throw new SecurityException("No permission to view staff.");
+        }
+        return new ArrayList<>(getStaffList());
     }
 
     public ArrayList<String> viewBookingSchedule() {
-        requirePermission(Hotel.VIEW_BOOKING_SCHEDULE);
+        if (!requirePermission(Hotel.VIEW_BOOKING_SCHEDULE)) {
+            return new ArrayList<>();
+        }
         if (bookings.isEmpty()) {
             return new ArrayList<>();
         }
         return bookings.get(0).bookingSchedule();
+    }
+
+    public ArrayList<CheckIn> GuestInfo(){
+        return new ArrayList<>(bookings);
     }
 
     public String currentUserSignature() {
@@ -179,7 +203,7 @@ public class Hotel {
         }
 
         String normalizedType = type.trim();
-        if (normalizedType.equalsIgnoreCase("all") || normalizedType.equalsIgnoreCase("room")) {
+        if (normalizedType.equals("all") || normalizedType.equalsIgnoreCase("room")) {
             return getAllRooms();
         }
 
@@ -233,7 +257,9 @@ public class Hotel {
     }
 
     public void deleteStaffByIndex(int index) {
-        requirePermission(Hotel.DELETE_STAFF);
+        if (!requirePermission(Hotel.DELETE_STAFF)) {
+            return;
+        }
         if (index >= 0 && index < users.size()) {
             users.remove(index);
             return;
@@ -278,6 +304,67 @@ public class Hotel {
         return booking;
     }
 
+    public CheckIn bookRoomByNumber(String roomNumber, String guestName) {
+        if (!requirePermission(Hotel.CREATE_BOOKING)) {
+            return null;
+        }
+
+        if (roomNumber == null || roomNumber.trim().isEmpty()) {
+            System.out.println("Room number is required.");
+            return null;
+        }
+
+        if (guestName == null || guestName.trim().isEmpty()) {
+            System.out.println("Guest name is required.");
+            return null;
+        }
+
+        IRoom selectedRoom = null;
+        for (IRoom room : rooms) {
+            if (room.getRoomNumber().equals(roomNumber.trim())) {
+                selectedRoom = room;
+                break;
+            }
+        }
+
+        if (selectedRoom == null) {
+            System.out.println("Room number not found.");
+            return null;
+        }
+
+        if (selectedRoom.getStatus() != RoomStatus.AVAILABLE) {
+            System.out.println("Room is not available for booking.");
+            return null;
+        }
+
+        Guest bookingGuest = null;
+        for (Guest guest : guests) {
+            if (guest.getGuestName().equals(guestName.trim())) {
+                bookingGuest = guest;
+                break;
+            }
+        }
+
+        if (bookingGuest == null) {
+            bookingGuest = new Guest(guestName.trim(), "N/A", guestName.trim());
+            guests.add(bookingGuest);
+        }
+
+        selectedRoom.book();
+
+        CheckIn booking = new CheckIn(
+            bookingGuest,
+            selectedRoom,
+            LocalDate.now().toString(),
+            1,
+            loggedInUser,
+            0.0
+        );
+
+        bookings.add(booking);
+        return booking;
+    }
+
     public void addBooking(CheckIn booking) {
         bookings.add(booking);
     }
@@ -307,4 +394,5 @@ public class Hotel {
         }
         return results;
     }
+
 }

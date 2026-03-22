@@ -18,7 +18,6 @@ public class ReceptionistUser extends Staff {
     public boolean can(String action) {
         return action.equals(Hotel.CREATE_BOOKING)||
              action.equals(Hotel.VIEW_GUESTS)||
-             action.equals(Hotel.VIEW_STAFF)||
              action.equals(Hotel.VIEW_ROOMS)||
              action.equals(Hotel.VIEW_BOOKING_SCHEDULE)||
              action.equals(Hotel.UPDATE_ROOM_STATUS);

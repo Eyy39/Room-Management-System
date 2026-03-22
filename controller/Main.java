@@ -29,8 +29,8 @@ public class Main {
         Guest guest1 = new Guest( "Vanna", "098 777 666","vanna@gamil.com");
         Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
 
-        CheckIn booking1 = new CheckIn(guest1, nRoom1, "2024-07-01", 3, staff1, 10.0);
-        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2024-07-02", 2, staff2, 15.0);
+        CheckIn booking1 = new CheckIn(guest1, nRoom1, "2026-03-28", 3, staff1, 10.0);
+        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-03-25", 2, staff2, 15.0);
 
         // Add rooms, staff, guests, and bookings to the hotel
         hotel.addRoom(nRoom1);
@@ -71,6 +71,8 @@ public class Main {
                             try {
                                 if (hotel.login(username, password)) {
                                     loggedIn = true;
+                                }else {
+                                    System.out.println("Invalid username or password. Please try again.");
                                 }
                             } catch (RuntimeException ex) {
                                 System.out.println(ex.getMessage());
@@ -97,7 +99,7 @@ public class Main {
                     System.out.println("5. Show Booking Schedule");
                     System.out.println("6. Filter Demo (Anonymous Class vs Lambda)");
                     System.out.println("7. logout");
-                    System.out.println("8. Exit)");
+                    System.out.println("8. Exit");
                     System.out.print("Enter your choice: ");
 
                     int choice = scanner.nextInt();
@@ -116,7 +118,7 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      GUEST INFORMATION");
                         System.out.println("======================================");
-                        for (Guest guest : hotel.viewGuests()) {
+                        for (CheckIn guest : hotel.GuestInfo()) {
                             System.out.println(guest);
                         }
                         break;
@@ -128,9 +130,24 @@ public class Main {
                         scanner.nextLine();
                         System.out.print("Enter room type to search: ");
                         String type = scanner.nextLine();
+                        System.out.println("Available rooms of type '" + type + "' are: ");
                         for (IRoom room : hotel.findBookableRooms(type)) {
                             System.out.println(room);
                         }
+
+                        System.out.print("Enter room number to book: ");
+                        String roomNumber = scanner.nextLine();
+                        System.out.print("Enter guest name: ");
+                        String guestName = scanner.nextLine();
+
+                        CheckIn booking = hotel.bookRoomByNumber(roomNumber, guestName);
+                        if (booking == null) {
+                            System.out.println("Booking failed.");
+                        } else {
+                            System.out.println("Room " + booking.getRoom().getRoomNumber() + " is booked.");
+                            System.out.println("Book is successful.");
+                        }
+                        
                         break;
                     }
                     case 4: {

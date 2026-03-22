@@ -52,7 +52,7 @@ public class CheckIn extends BaseEntity {
     }
 
     public double getDiscountPrice() {
-        return discountPrice;
+        return discountPrice * getNight();
     }
 
     public Guest getGuest() {
@@ -86,8 +86,8 @@ public class CheckIn extends BaseEntity {
     }
 
     public double getTotal() {
-        double subtotal = originalPrice * night;
-        double totalDiscount = discountPrice * night;
+        double subtotal = originalPrice * getNight();
+        double totalDiscount = discountPrice * getNight();
         return subtotal - totalDiscount;
     }
 
@@ -122,6 +122,9 @@ public class CheckIn extends BaseEntity {
     public String toString() {
         String duration = night == 1 ? night + " night" : night + " nights";
         return "Customer Name: " + guest.getGuestName()
+            + "\nPhone: " + guest.getPhoneNumber()
+            + "\nEmail: " + guest.getEmail()
+            + "\n-------- Room Booking Details --------"
             + "\nBooking ID: " + getBookingCode()
             + "\nRoom Type: " + room.getRoomType()
             + "\nCheckIn Date: " + checkInDate
