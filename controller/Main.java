@@ -1,4 +1,6 @@
 package controller;
+import exception.InputMismatchException;
+import exception.PermissionDeniedException;
 import hotel.CheckIn;
 import hotel.Guest;
 import java.time.LocalDate;
@@ -8,6 +10,7 @@ import room.NormalRoom;
 import room.RoomFilter;
 import room.RoomStatus;
 import room.VIPRoom;
+import util.InputHandler;
 import user.ManagerUser;
 import user.ReceptionistUser;
 import user.Staff;
@@ -60,23 +63,17 @@ public class Main {
                 System.out.println("========================================");
                 System.out.println("1. Login");
                 System.out.println("2. Exit");
-                System.out.print("Enter your choice: ");
-                    int loginChoice = scanner.nextInt();                    
+                    int loginChoice = InputHandler.readIntChoice(scanner, "Enter your choice: ");
                     switch (loginChoice) {
                         case 1: {
-                            scanner.nextLine();
                             System.out.print("Username: ");
                             String username = scanner.nextLine();
                             System.out.print("Password: ");
                             String password = scanner.nextLine();
-                            try {
-                                if (hotel.login(username, password)) {
-                                    loggedIn = true;
-                                }else {
-                                    System.out.println("Invalid username or password. Please try again.");
-                                }
-                            } catch (RuntimeException ex) {
-                                System.out.println(ex.getMessage());
+                            if (hotel.login(username, password)) {
+                                loggedIn = true;
+                            }else {
+                                System.out.println("Invalid username or password. Please try again.");
                             }
                             break;
                         }
@@ -101,9 +98,8 @@ public class Main {
                     System.out.println("6. Filter Demo (Anonymous Class vs Lambda)");
                     System.out.println("7. logout");
                     System.out.println("8. Exit");
-                    System.out.print("Enter your choice: ");
-
-                    int choice = scanner.nextInt();
+                    int choice = InputHandler.readIntChoice(scanner, "Enter your choice: ");
+                    try {
                     switch (choice) {
                     case 1: {
                         // View all rooms the current user is allowed to see.
@@ -128,7 +124,6 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      BOOK A ROOM");
                         System.out.println("======================================");
-                        scanner.nextLine();
                         System.out.print("Enter room type to search: ");
                         String type = scanner.nextLine();
                         System.out.println("Available rooms of type '" + type + "' are: ");
@@ -138,10 +133,26 @@ public class Main {
 
                         System.out.print("Enter room number to book: ");
                         String roomNumber = scanner.nextLine();
+                        try {
+                            roomNumber = InputHandler.parseRequiredText(roomNumber, "Room number");
+                        } catch (InputMismatchException ex) {
+                            System.out.println(ex.getMessage());
+                            System.out.println("Booking failed.");
+                            break;
+                        }
+
                         System.out.print("Enter guest name: ");
                         String guestName = scanner.nextLine();
 
-                        CheckIn booking = hotel.bookRoomByNumber(roomNumber, guestName);
+                        CheckIn booking;
+                        try {
+                            booking = hotel.bookRoomByNumber(roomNumber, guestName);
+                        } catch (InputMismatchException ex) {
+                            System.out.println(ex.getMessage());
+                            System.out.println("Booking failed.");
+                            break;
+                        }
+
                         if (booking == null) {
                             System.out.println("Booking failed.");
                         } else {
@@ -168,9 +179,7 @@ public class Main {
                         System.out.println("======================================");
                         System.out.println("1. View next 7 days schedule");
                         System.out.println("2. Search specific date");
-                        scanner.nextLine();
-                        System.out.print("Enter your choice: ");
-                        String scheduleChoice = scanner.nextLine().trim();
+                        String scheduleChoice = InputHandler.readScheduleChoice(scanner);
 
                         if (scheduleChoice.equals("1")) {
                             hotel.displayWeeklySchedule();
@@ -178,13 +187,7 @@ public class Main {
                             System.out.print("Enter date (yyyy-MM-dd): ");
                             String inputDate = scanner.nextLine();
 
-                            LocalDate selectedDate;
-                            try {
-                                selectedDate = LocalDate.parse(inputDate);
-                            } catch (RuntimeException ex) {
-                                System.out.println("Invalid date format. Please use yyyy-MM-dd.");
-                                break;
-                            }
+                            LocalDate selectedDate = InputHandler.parseDateInput(inputDate);
 
                             hotel.displayDaySchedule(selectedDate);
                         } else {
@@ -238,6 +241,11 @@ public class Main {
                     }
                     default:
                         System.out.println("Invalid choice. Please try again.");
+                }
+                } catch (InputMismatchException ex) {
+                    System.out.println(ex.getMessage());
+                } catch (PermissionDeniedException ex) {
+                    System.out.println(ex.getMessage());
                 }
             }
         }

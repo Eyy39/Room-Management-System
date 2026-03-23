@@ -1,10 +1,13 @@
 package controller;
 
+import exception.InputMismatchException;
+import exception.PermissionDeniedException;
 import hotel.BookingStatus;
 import hotel.CheckIn;
 import hotel.Guest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Locale;
 import room.IRoom;
@@ -124,16 +127,16 @@ public class Hotel {
         return getAllRooms();
     }
 
-    public ArrayList<Guest> viewGuests() {
+    public ArrayList<Guest> viewGuests() throws PermissionDeniedException {
         if (!requirePermission(Hotel.VIEW_GUESTS)) {
-            throw new SecurityException("No permission to view guests.");
+            throw new PermissionDeniedException("No permission to view guests.");
         }
         return new ArrayList<>(getGuestsList());
     }
 
-    public ArrayList<IRoom> findBookableRooms(String roomType) {
+    public ArrayList<IRoom> findBookableRooms(String roomType) throws PermissionDeniedException {
         if (!requirePermission(Hotel.CREATE_BOOKING)) {
-            throw new SecurityException("No permission to create booking.");
+            throw new PermissionDeniedException("No permission to create booking.");
         }
 
         ArrayList<IRoom> typedRooms = searchRoomsByType(roomType);
@@ -146,21 +149,11 @@ public class Hotel {
         return availableRooms;
     }
 
-    public ArrayList<IStaff> viewStaff() {
+    public ArrayList<IStaff> viewStaff() throws PermissionDeniedException {
         if (!requirePermission(Hotel.VIEW_STAFF)) {
-            throw new SecurityException("No permission to view staff.");
+            throw new PermissionDeniedException("No permission to view staff.");
         }
         return new ArrayList<>(getStaffList());
-    }
-
-    public ArrayList<String> viewBookingSchedule() {
-        if (!requirePermission(Hotel.VIEW_BOOKING_SCHEDULE)) {
-            return new ArrayList<>();
-        }
-        if (bookings.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return bookings.get(0).bookingSchedule();
     }
 
     public ArrayList<IRoom> getBookedRoomsByDate(LocalDate selectedDate) {
@@ -209,7 +202,7 @@ public class Hotel {
             LocalDate checkInDate;
             try {
                 checkInDate = LocalDate.parse(booking.getCheckIn());
-            } catch (RuntimeException ex) {
+            } catch (DateTimeParseException ex) {
                 continue;
             }
 
@@ -370,20 +363,12 @@ public class Hotel {
         return booking;
     }
 
-    public CheckIn bookRoomByNumber(String roomNumber, String guestName) {
+    public CheckIn bookRoomByNumber(String roomNumber, String guestName) throws InputMismatchException {
         if (!requirePermission(Hotel.CREATE_BOOKING)) {
             return null;
         }
 
-        if (roomNumber == null || roomNumber.trim().isEmpty()) {
-            System.out.println("Room number is required.");
-            return null;
-        }
-
-        if (guestName == null || guestName.trim().isEmpty()) {
-            System.out.println("Guest name is required.");
-            return null;
-        }
+        validateBookingInputs(roomNumber, guestName);
 
         IRoom selectedRoom = null;
         for (IRoom room : rooms) {
@@ -429,6 +414,16 @@ public class Hotel {
 
         bookings.add(booking);
         return booking;
+    }
+
+    private void validateBookingInputs(String roomNumber, String guestName) throws InputMismatchException {
+        if (roomNumber == null || roomNumber.trim().isEmpty()) {
+            throw new InputMismatchException("Room number cannot be empty.");
+        }else if (guestName == null || guestName.trim().isEmpty()) {
+            throw new InputMismatchException("Guest name cannot be empty.");
+        }else if (guestName.trim().matches("^-?\\d+$")) {
+            throw new InputMismatchException("Guest name cannot be integer only.");
+        }
     }
 
     public void addBooking(CheckIn booking) {
