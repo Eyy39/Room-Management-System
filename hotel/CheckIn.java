@@ -1,14 +1,14 @@
 package hotel;
 
 import common.BaseEntity;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+// import java.time.LocalDate;
+// import java.time.format.DateTimeFormatter;
+// import java.util.ArrayList;
 import room.IRoom;
 import user.IStaff;
 
 public class CheckIn extends BaseEntity {
-    private static final int LIMIT_DAYS = 10;
+    // private static final int LIMIT_DAYS = 10;
 
     private IRoom room;
     private String checkInDate;
@@ -91,23 +91,23 @@ public class CheckIn extends BaseEntity {
         return subtotal - totalDiscount;
     }
 
-    public boolean isBookingDateValid(LocalDate bookingDate) {
-        LocalDate today = LocalDate.now();
-        LocalDate maxBookingDate = today.plusDays(LIMIT_DAYS);
-        return !bookingDate.isAfter(maxBookingDate);
-    }
+    // public boolean isBookingDateValid(LocalDate bookingDate) {
+    //     LocalDate today = LocalDate.now();
+    //     LocalDate maxBookingDate = today.plusDays(LIMIT_DAYS);
+    //     return !bookingDate.isAfter(maxBookingDate);
+    // }
 
-    public ArrayList<String> bookingSchedule() {
-        ArrayList<String> schedule = new ArrayList<>();
-        LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+    // public ArrayList<String> bookingSchedule() {
+    //     ArrayList<String> schedule = new ArrayList<>();
+    //     LocalDate today = LocalDate.now();
+    //     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
 
-        for (int i = 0; i < LIMIT_DAYS; i++) {
-            LocalDate date = today.plusDays(i);
-            schedule.add(String.format("%-3d | %s | Available", (i + 1), date.format(formatter)));
-        }
-        return schedule;
-    }
+    //     for (int i = 0; i < LIMIT_DAYS; i++) {
+    //         LocalDate date = today.plusDays(i);
+    //         schedule.add(String.format("%-3d | %s | Available", (i + 1), date.format(formatter)));
+    //     }
+    //     return schedule;
+    // }
 
     private void recalculatePrice(double discountPercent) {
         this.originalPrice = room.getPricePerNight();

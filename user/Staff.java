@@ -6,7 +6,7 @@ import java.util.Objects;
 public abstract class Staff extends BaseEntity implements IStaff {
     private String name;
     private char gender;
-    private String phoneNubmer;
+    private String phoneNumber;
     private String password;
 
     public Staff(String name, char gender, String phoneNumber, String password) {
@@ -53,14 +53,14 @@ public abstract class Staff extends BaseEntity implements IStaff {
         this.password = password;
     }
     public String getPhoneNumber() {
-        return phoneNubmer;
+        return phoneNumber;
     }
     public void setPhoneNumber(String phoneNumber) {
         if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
             System.out.println("Invalid phone number. Phone number not updated.");
             return;
         }
-        this.phoneNubmer = phoneNumber.trim();
+        this.phoneNumber = phoneNumber.trim();
     }
 
     @Override

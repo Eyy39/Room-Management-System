@@ -14,14 +14,6 @@ public class Guest extends BaseEntity {
         this.setPhoneNumber(phoneNumber);;
         this.setEmail(email);;
     }
-    public String Regex(){
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        if(email.matches(emailRegex)){
-            return "Valid email address.";
-        }else{
-            return "Invalid email address.";
-        }
-    }
     public String getGuestName() {
         return guestName;
     }
