@@ -1,9 +1,10 @@
 package controller;
 
+import hotel.BookingStatus;
 import hotel.CheckIn;
 import hotel.Guest;
-import java.util.ArrayList;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import room.IRoom;
 import room.RoomFilter;
 import room.RoomStatus;
@@ -158,6 +159,69 @@ public class Hotel {
             return new ArrayList<>();
         }
         return bookings.get(0).bookingSchedule();
+    }
+
+    public ArrayList<IRoom> getBookedRoomsByDate(LocalDate selectedDate) {
+        if (!requirePermission(Hotel.VIEW_BOOKING_SCHEDULE)) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<IRoom> bookedRooms = new ArrayList<>();
+        for (IRoom room : rooms) {
+            if (isRoomBookedOnDate(room, selectedDate)) {
+                bookedRooms.add(room);
+            }
+        }
+        return bookedRooms;
+    }
+
+    public ArrayList<IRoom> getAvailableRoomsByDate(LocalDate selectedDate) {
+        if (!requirePermission(Hotel.VIEW_BOOKING_SCHEDULE)) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<IRoom> availableRooms = new ArrayList<>();
+        for (IRoom room : rooms) {
+            if (!isRoomBookedOnDate(room, selectedDate)) {
+                availableRooms.add(room);
+            }
+        }
+        return availableRooms;
+    }
+
+    private boolean isRoomBookedOnDate(IRoom room, LocalDate selectedDate) {
+        if (selectedDate == null) {
+            return false;
+        }
+
+        for (CheckIn booking : bookings) {
+            if (booking.getStatus() == BookingStatus.CANCELLED
+                || booking.getStatus() == BookingStatus.CHECKED_OUT) {
+                continue;
+            }
+
+            if (!booking.getRoom().equals(room)) {
+                continue;
+            }
+
+            LocalDate checkInDate;
+            try {
+                checkInDate = LocalDate.parse(booking.getCheckIn());
+            } catch (RuntimeException ex) {
+                continue;
+            }
+
+            int bookedNights = booking.getNight();
+            if (bookedNights <= 0) {
+                bookedNights = 1;
+            }
+
+            LocalDate checkOutDate = checkInDate.plusDays(bookedNights);
+            if (!selectedDate.isBefore(checkInDate) && selectedDate.isBefore(checkOutDate)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ArrayList<CheckIn> GuestInfo(){

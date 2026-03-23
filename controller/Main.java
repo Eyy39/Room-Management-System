@@ -1,6 +1,8 @@
 package controller;
 import hotel.CheckIn;
 import hotel.Guest;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
 import room.IRoom;
 import room.NormalRoom;
@@ -165,9 +167,23 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      BOOKING SCHEDULE");
                         System.out.println("======================================");
-                        for (String line : hotel.viewBookingSchedule()) {
-                            System.out.println(line);
+                        scanner.nextLine();
+                        System.out.print("Enter date (yyyy-MM-dd): ");
+                        String inputDate = scanner.nextLine();
+
+                        LocalDate selectedDate;
+                        try {
+                            selectedDate = LocalDate.parse(inputDate);
+                        } catch (RuntimeException ex) {
+                            System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+                            break;
                         }
+
+                        ArrayList<IRoom> bookedRooms = hotel.getBookedRoomsByDate(selectedDate);
+                        ArrayList<IRoom> availableRooms = hotel.getAvailableRoomsByDate(selectedDate);
+
+                        printRoomTable("Booked rooms on " + selectedDate, bookedRooms);
+                        printRoomTable("Available rooms on " + selectedDate, availableRooms);
                         break;
                     }
                     case 6: {
@@ -220,6 +236,31 @@ public class Main {
             }
         }
         }
+    }
+
+    private static void printRoomTable(String title, ArrayList<IRoom> rooms) {
+        System.out.println("\n" + title + ":");
+        if (rooms.isEmpty()) {
+            System.out.println("No rooms found.");
+            return;
+        }
+
+        System.out.println("----------------------------------------------------------------");
+        System.out.printf("%-4s %-12s %-12s %-12s %-12s%n", "No.", "Room No", "Type", "Price", "Status");
+        System.out.println("----------------------------------------------------------------");
+
+        for (int i = 0; i < rooms.size(); i++) {
+            IRoom room = rooms.get(i);
+            System.out.printf(
+                "%-4d %-12s %-12s $%-11.2f %-12s%n",
+                i + 1,
+                room.getRoomNumber(),
+                room.getRoomType(),
+                room.getPricePerNight(),
+                room.getStatus()
+            );
+        }
+        System.out.println("----------------------------------------------------------------");
     }
 }
     
