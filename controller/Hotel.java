@@ -4,7 +4,9 @@ import hotel.BookingStatus;
 import hotel.CheckIn;
 import hotel.Guest;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 import room.IRoom;
 import room.RoomFilter;
 import room.RoomStatus;
@@ -457,6 +459,77 @@ public class Hotel {
             }
         }
         return results;
+    }
+
+    // Schedule display methods
+    public void displayWeeklySchedule() {
+        System.out.println("\n=========================== WEEKLY ROOM AVAILABILITY SCHEDULE (Next 7 Days) ============================");
+        LocalDate today = LocalDate.now();
+        ArrayList<IRoom> allRooms = getAllRooms();
+        DateTimeFormatter headerFormatter = DateTimeFormatter.ofPattern("EEE dd-MMM", Locale.ENGLISH);
+
+        if (allRooms.isEmpty()) {
+            System.out.println("No rooms available.");
+            return;
+        }
+
+        // Print header with dates
+        System.out.print(String.format("%-12s", "Room No"));
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = today.plusDays(i);
+            String dateHeader = date.format(headerFormatter);
+            System.out.print(String.format("| %-10s ", dateHeader));
+        }
+        System.out.println("|");
+        System.out.println("========================================================================================================");
+
+        // Print each room's availability for 7 days
+        for (IRoom room : allRooms) {
+            System.out.print(String.format("%-12s", room.getRoomNumber()));
+            for (int i = 0; i < 7; i++) {
+                LocalDate date = today.plusDays(i);
+                boolean isBooked = !getBookedRoomsByDate(date).isEmpty() &&
+                                  getBookedRoomsByDate(date).contains(room);
+                String status = isBooked ? "BOOKED" : "FREE";
+                System.out.print(String.format("| %-10s ", status));
+            }
+            System.out.println("|");
+        }
+        System.out.println("========================================================================================================");
+        System.out.println("Legend: FREE = Available for booking | BOOKED = Room is reserved");
+    }
+
+    public void displayDaySchedule(LocalDate date) {
+        ArrayList<IRoom> bookedRooms = getBookedRoomsByDate(date);
+        ArrayList<IRoom> availableRooms = getAvailableRoomsByDate(date);
+
+        printRoomTable("Booked rooms on " + date, bookedRooms);
+        printRoomTable("Available rooms on " + date, availableRooms);
+    }
+
+    private void printRoomTable(String title, ArrayList<IRoom> rooms) {
+        System.out.println("\n" + title + ":");
+        if (rooms.isEmpty()) {
+            System.out.println("No rooms found.");
+            return;
+        }
+
+        System.out.println("----------------------------------------------------------------");
+        System.out.printf("%-4s %-12s %-12s %-12s %-12s%n", "No.", "Room No", "Type", "Price", "Status");
+        System.out.println("----------------------------------------------------------------");
+
+        for (int i = 0; i < rooms.size(); i++) {
+            IRoom room = rooms.get(i);
+            System.out.printf(
+                "%-4d %-12s %-12s $%-11.2f %-12s%n",
+                i + 1,
+                room.getRoomNumber(),
+                room.getRoomType(),
+                room.getPricePerNight(),
+                room.getStatus()
+            );
+        }
+        System.out.println("----------------------------------------------------------------");
     }
 
 }

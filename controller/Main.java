@@ -2,7 +2,6 @@ package controller;
 import hotel.CheckIn;
 import hotel.Guest;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Scanner;
 import room.IRoom;
 import room.NormalRoom;
@@ -32,7 +31,7 @@ public class Main {
         Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
 
         CheckIn booking1 = new CheckIn(guest1, nRoom1, "2026-03-28", 3, staff1, 10.0);
-        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-03-25", 2, staff2, 15.0);
+        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-03-23", 2, staff2, 15.0);
 
         // Add rooms, staff, guests, and bookings to the hotel
         hotel.addRoom(nRoom1);
@@ -167,23 +166,30 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      BOOKING SCHEDULE");
                         System.out.println("======================================");
+                        System.out.println("1. View next 7 days schedule");
+                        System.out.println("2. Search specific date");
                         scanner.nextLine();
-                        System.out.print("Enter date (yyyy-MM-dd): ");
-                        String inputDate = scanner.nextLine();
+                        System.out.print("Enter your choice: ");
+                        String scheduleChoice = scanner.nextLine().trim();
 
-                        LocalDate selectedDate;
-                        try {
-                            selectedDate = LocalDate.parse(inputDate);
-                        } catch (RuntimeException ex) {
-                            System.out.println("Invalid date format. Please use yyyy-MM-dd.");
-                            break;
+                        if (scheduleChoice.equals("1")) {
+                            hotel.displayWeeklySchedule();
+                        } else if (scheduleChoice.equals("2")) {
+                            System.out.print("Enter date (yyyy-MM-dd): ");
+                            String inputDate = scanner.nextLine();
+
+                            LocalDate selectedDate;
+                            try {
+                                selectedDate = LocalDate.parse(inputDate);
+                            } catch (RuntimeException ex) {
+                                System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+                                break;
+                            }
+
+                            hotel.displayDaySchedule(selectedDate);
+                        } else {
+                            System.out.println("Invalid choice.");
                         }
-
-                        ArrayList<IRoom> bookedRooms = hotel.getBookedRoomsByDate(selectedDate);
-                        ArrayList<IRoom> availableRooms = hotel.getAvailableRoomsByDate(selectedDate);
-
-                        printRoomTable("Booked rooms on " + selectedDate, bookedRooms);
-                        printRoomTable("Available rooms on " + selectedDate, availableRooms);
                         break;
                     }
                     case 6: {
@@ -236,31 +242,6 @@ public class Main {
             }
         }
         }
-    }
-
-    private static void printRoomTable(String title, ArrayList<IRoom> rooms) {
-        System.out.println("\n" + title + ":");
-        if (rooms.isEmpty()) {
-            System.out.println("No rooms found.");
-            return;
-        }
-
-        System.out.println("----------------------------------------------------------------");
-        System.out.printf("%-4s %-12s %-12s %-12s %-12s%n", "No.", "Room No", "Type", "Price", "Status");
-        System.out.println("----------------------------------------------------------------");
-
-        for (int i = 0; i < rooms.size(); i++) {
-            IRoom room = rooms.get(i);
-            System.out.printf(
-                "%-4d %-12s %-12s $%-11.2f %-12s%n",
-                i + 1,
-                room.getRoomNumber(),
-                room.getRoomType(),
-                room.getPricePerNight(),
-                room.getStatus()
-            );
-        }
-        System.out.println("----------------------------------------------------------------");
     }
 }
     
