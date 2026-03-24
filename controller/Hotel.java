@@ -431,7 +431,7 @@ public class Hotel {
         }else if (guestName == null || guestName.trim().isEmpty()) {
             throw new InputMismatchException("Guest name cannot be empty.");
         }else if (guestName.trim().matches("^-?\\d+$")) {
-            throw new InputMismatchException("Guest name cannot be integer only.");
+            throw new InputMismatchException("Guest name cannot be integer.");
         }
     }
 
@@ -507,11 +507,11 @@ public class Hotel {
         ArrayList<IRoom> bookedRooms = getBookedRoomsByDate(date);
         ArrayList<IRoom> availableRooms = getAvailableRoomsByDate(date);
 
-        printRoomTable("Booked rooms on " + date, bookedRooms);
-        printRoomTable("Available rooms on " + date, availableRooms);
+        printRoomTable("Booked rooms on " + date, bookedRooms, date);
+        printRoomTable("Available rooms on " + date, availableRooms, date);
     }
 
-    private void printRoomTable(String title, ArrayList<IRoom> rooms) {
+    private void printRoomTable(String title, ArrayList<IRoom> rooms, LocalDate selectedDate) {
         System.out.println("\n" + title + ":");
         if (rooms.isEmpty()) {
             System.out.println("No rooms found.");
@@ -524,13 +524,19 @@ public class Hotel {
 
         for (int i = 0; i < rooms.size(); i++) {
             IRoom room = rooms.get(i);
+            RoomStatus displayStatus = room.getStatus();
+            if (displayStatus != RoomStatus.MAINTENANCE) {
+                displayStatus = isRoomBookedOnDate(room, selectedDate)
+                    ? RoomStatus.OCCUPIED
+                    : RoomStatus.AVAILABLE;
+            }
             System.out.printf(
                 "%-4d %-12s %-12s $%-11.2f %-12s%n",
                 i + 1,
                 room.getRoomNumber(),
                 room.getRoomType(),
                 room.getPricePerNight(),
-                room.getStatus()
+                displayStatus
             );
         }
         System.out.println("----------------------------------------------------------------");

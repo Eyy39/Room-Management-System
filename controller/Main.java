@@ -4,6 +4,7 @@ import exception.PermissionDeniedException;
 import hotel.CheckIn;
 import hotel.Guest;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
 import room.IRoom;
 import room.NormalRoom;
@@ -34,7 +35,7 @@ public class Main {
         Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
 
         CheckIn booking1 = new CheckIn(guest1, nRoom1, "2026-03-28", 3, staff1, 10.0);
-        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-03-24", 2, staff2, 15.0);
+        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-03-25", 2, staff2, 15.0);
 
         // Add rooms, staff, guests, and bookings to the hotel
         hotel.addRoom(nRoom1);
@@ -68,8 +69,25 @@ public class Main {
                         case 1: {
                             System.out.print("Username: ");
                             String username = scanner.nextLine();
+                            try{
+                                username = InputHandler.parseRequiredText(username, "Username");
+                                if (username.matches("\\d+")) {
+                                    throw new InputMismatchException("Username cannot be integer. Please try again.");
+                                }
+                            } catch (InputMismatchException ex) {
+                                System.out.println(ex.getMessage());
+                                System.out.println("Login failed.");
+                                break;
+                            }
                             System.out.print("Password: ");
                             String password = scanner.nextLine();
+                            try{
+                                password = InputHandler.parseRequiredText(password, "Password");
+                            } catch (InputMismatchException ex) {
+                                System.out.println("Password cannot be empty.");
+                                System.out.println("Login failed.");
+                                break;
+                            }
                             if (hotel.login(username, password)) {
                                 loggedIn = true;
                             }else {
@@ -127,16 +145,30 @@ public class Main {
                         System.out.print("Enter room type that you want to book: ");
                         String type = scanner.nextLine();
                         LocalDate today = LocalDate.now();
+                        ArrayList<IRoom> bookableRooms;
 
-                        if(hotel.findBookableRoomsByDate(type, today).isEmpty()) {
-                            System.out.println("No available rooms of type '" + type + "' for today.");
-                            break;
-                        }else {
-                            System.out.println("Available rooms of type '" + type + "' on " + today + " are: \n");
-                            for (IRoom room : hotel.findBookableRoomsByDate(type, today)) {
-                                System.out.println(room);
+                        try{
+                            type = InputHandler.parseRequiredText(type, "Room type");
+                            if (type.matches("^-?\\d+$")) {
+                                throw new InputMismatchException("Room type cannot be integer. Please try again.");
                             }
+
+                            bookableRooms = hotel.findBookableRoomsByDate(type, today);
+                            if(bookableRooms.isEmpty()) {
+                                System.out.println("No available rooms of type '" + type + "' for today.");
+                                break;
+                            }else {
+                                System.out.println("Available rooms of type '" + type + "' on " + today + " are: \n");
+                                for (IRoom room : bookableRooms) {
+                                    System.out.println(room);
+                                }
+                            }
+                        }catch (InputMismatchException ex) {
+                            System.out.println(ex.getMessage());
+                            System.out.println("Booking failed.");
+                            break;
                         }
+                        
                         System.out.print("Enter room number to book: ");
                         String roomNumber = scanner.nextLine();
                         try {
@@ -144,7 +176,7 @@ public class Main {
                         } catch (InputMismatchException ex) {
                             System.out.println(ex.getMessage());
                             System.out.println("Booking failed.");
-                            break;
+                               break;
                         }
 
                         System.out.print("Enter guest name: ");
