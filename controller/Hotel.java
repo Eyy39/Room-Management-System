@@ -135,6 +135,10 @@ public class Hotel {
     }
 
     public ArrayList<IRoom> findBookableRooms(String roomType) throws PermissionDeniedException {
+        return findBookableRoomsByDate(roomType, LocalDate.now());
+    }
+
+    public ArrayList<IRoom> findBookableRoomsByDate(String roomType, LocalDate selectedDate) throws PermissionDeniedException {
         if (!requirePermission(Hotel.CREATE_BOOKING)) {
             throw new PermissionDeniedException("No permission to create booking.");
         }
@@ -142,7 +146,7 @@ public class Hotel {
         ArrayList<IRoom> typedRooms = searchRoomsByType(roomType);
         ArrayList<IRoom> availableRooms = new ArrayList<>();
         for (IRoom room : typedRooms) {
-            if (room.getStatus() == RoomStatus.AVAILABLE) {
+            if (room.getStatus() == RoomStatus.AVAILABLE && !isRoomBookedOnDate(room, selectedDate)) {
                 availableRooms.add(room);
             }
         }
@@ -385,6 +389,11 @@ public class Hotel {
 
         if (selectedRoom.getStatus() != RoomStatus.AVAILABLE) {
             System.out.println("Room is not available for booking.");
+            return null;
+        }
+
+        if (isRoomBookedOnDate(selectedRoom, LocalDate.now())) {
+            System.out.println("Room is already booked for today.");
             return null;
         }
 

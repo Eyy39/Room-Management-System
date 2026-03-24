@@ -9,25 +9,20 @@ public class InputHandler {
         // Utility class
     }
 
-    public static int parseMenuChoice(String input) throws InputMismatchException {
-        if (input == null || input.trim().isEmpty()) {
-            throw new InputMismatchException("Input cannot be empty. Please enter a number.");
-        }
-        try {
-            return Integer.parseInt(input.trim());
-        } catch (NumberFormatException ex) {
-            throw new InputMismatchException("Input should be integer. Please try again!");
-        }
-    }
-
     public static int readIntChoice(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine();
+            
+            if (input == null || input.trim().isEmpty()) {
+                System.out.println("Input cannot be empty. Please enter a number.");
+                continue;
+            }
+            
             try {
-                return parseMenuChoice(input);
-            } catch (InputMismatchException ex) {
-                System.out.println(ex.getMessage());
+                return Integer.parseInt(input.trim());
+            } catch (NumberFormatException ex) {
+                System.out.println("Input should be integer. Please try again!");
             }
         }
     }

@@ -34,7 +34,7 @@ public class Main {
         Guest guest2 = new Guest("Linda", "097 888 555","linda@gmail.com");
 
         CheckIn booking1 = new CheckIn(guest1, nRoom1, "2026-03-28", 3, staff1, 10.0);
-        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-03-23", 2, staff2, 15.0);
+        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-03-24", 2, staff2, 15.0);
 
         // Add rooms, staff, guests, and bookings to the hotel
         hotel.addRoom(nRoom1);
@@ -124,13 +124,19 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      BOOK A ROOM");
                         System.out.println("======================================");
-                        System.out.print("Enter room type to search: ");
+                        System.out.print("Enter room type that you want to book: ");
                         String type = scanner.nextLine();
-                        System.out.println("Available rooms of type '" + type + "' are: ");
-                        for (IRoom room : hotel.findBookableRooms(type)) {
-                            System.out.println(room);
-                        }
+                        LocalDate today = LocalDate.now();
 
+                        if(hotel.findBookableRoomsByDate(type, today).isEmpty()) {
+                            System.out.println("No available rooms of type '" + type + "' for today.");
+                            break;
+                        }else {
+                            System.out.println("Available rooms of type '" + type + "' on " + today + " are: \n");
+                            for (IRoom room : hotel.findBookableRoomsByDate(type, today)) {
+                                System.out.println(room);
+                            }
+                        }
                         System.out.print("Enter room number to book: ");
                         String roomNumber = scanner.nextLine();
                         try {
@@ -246,6 +252,9 @@ public class Main {
                     System.out.println(ex.getMessage());
                 } catch (PermissionDeniedException ex) {
                     System.out.println(ex.getMessage());
+                }
+                finally {
+                    System.out.println("\nThank you for using the hotel management system.");
                 }
             }
         }
