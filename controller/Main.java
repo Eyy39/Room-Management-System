@@ -9,10 +9,10 @@ import java.util.Scanner;
 import room.IRoom;
 import room.NormalRoom;
 import room.VIPRoom;
-import util.InputHandler;
 import user.ManagerUser;
 import user.ReceptionistUser;
 import user.Staff;
+import util.InputHandler;
 
 public class Main {
     public static void main(String... args) {
@@ -77,8 +77,7 @@ public class Main {
                                 System.out.println("Login failed.");
                                 break;
                             }
-                            System.out.print("Password: ");
-                            String password = scanner.nextLine();
+                            String password = InputHandler.readPassword(scanner, "Password: ");
                             try{
                                 password = InputHandler.parseRequiredText(password, "Password");
                             } catch (InputMismatchException ex) {

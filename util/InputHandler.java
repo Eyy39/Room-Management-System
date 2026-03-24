@@ -1,6 +1,7 @@
 package util;
 
 import exception.InputMismatchException;
+import java.io.Console;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -64,5 +65,29 @@ public class InputHandler {
                 System.out.println(ex.getMessage());
             }
         }
+    }
+
+    public static String readPassword(Scanner scanner, String prompt) {
+        Console console = System.console();
+        if (console != null) {
+            return readPasswordFromConsole(console, prompt);
+        }
+
+        return readPasswordFallback(scanner, prompt);
+    }
+
+    private static String readPasswordFromConsole(Console console, String prompt) {
+        char[] passwordChars = console.readPassword(prompt);
+        if (passwordChars == null) {
+            return "";
+        }
+        return new String(passwordChars).trim();
+    }
+
+    private static String readPasswordFallback(Scanner scanner, String prompt) {
+        // Fallback for IDE/debug consoles where System.console() is null.
+        System.out.println("Hidden password input is not available in this console.");
+        System.out.print(prompt);
+        return scanner.nextLine().trim();
     }
 }
