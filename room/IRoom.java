@@ -14,6 +14,6 @@ public interface IRoom {
         if (requestedType == null || requestedType.trim().isEmpty()) {
             return false;
         }
-        return getRoomType().equalsIgnoreCase(requestedType.trim());
+        return getRoomType().equals(requestedType.trim());
     }
 }

@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import room.IRoom;
 import room.NormalRoom;
-import room.RoomFilter;
-import room.RoomStatus;
 import room.VIPRoom;
 import util.InputHandler;
 import user.ManagerUser;
@@ -113,9 +111,8 @@ public class Main {
                     System.out.println("3. Book a Room");
                     System.out.println("4. Show Staff Information");
                     System.out.println("5. Show Booking Schedule");
-                    System.out.println("6. Filter Demo (Anonymous Class vs Lambda)");
-                    System.out.println("7. logout");
-                    System.out.println("8. Exit");
+                    System.out.println("6. logout");
+                    System.out.println("7. Exit");
                     int choice = InputHandler.readIntChoice(scanner, "Enter your choice: ");
                     try {
                     switch (choice) {
@@ -142,6 +139,26 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      BOOK A ROOM");
                         System.out.println("======================================");
+
+                        ArrayList<IRoom> allRooms = hotel.getAllRooms();
+                        ArrayList<String> availableTypes = new ArrayList<>();
+                        for (IRoom room : allRooms) {
+                            String roomType = room.getRoomType();
+                            if (roomType != null && !roomType.trim().isEmpty() && !availableTypes.contains(roomType)) {
+                                availableTypes.add(roomType);
+                            }
+                        }
+
+                        if (availableTypes.isEmpty()) {
+                            System.out.println("No room types available in the system.");
+                            break;
+                        }
+
+                        System.out.println("Available room types:");
+                        for (String roomType : availableTypes) {
+                            System.out.println("- " + roomType);
+                        }
+
                         System.out.print("Enter room type that you want to book: ");
                         String type = scanner.nextLine();
                         LocalDate today = LocalDate.now();
@@ -168,15 +185,32 @@ public class Main {
                             System.out.println("Booking failed.");
                             break;
                         }
-                        
-                        System.out.print("Enter room number to book: ");
-                        String roomNumber = scanner.nextLine();
-                        try {
-                            roomNumber = InputHandler.parseRequiredText(roomNumber, "Room number");
-                        } catch (InputMismatchException ex) {
-                            System.out.println(ex.getMessage());
-                            System.out.println("Booking failed.");
-                               break;
+
+                        String roomNumber;
+                        while (true) {
+                            System.out.print("Enter room number to book: ");
+                            roomNumber = scanner.nextLine();
+                            try {
+                                roomNumber = InputHandler.parseRequiredText(roomNumber, "Room number");
+                            } catch (InputMismatchException ex) {
+                                System.out.println(ex.getMessage());
+                                continue;
+                            }
+
+                            boolean validRoomNumber = false;
+                            for (IRoom room : bookableRooms) {
+                                if (room.getRoomNumber().equalsIgnoreCase(roomNumber.trim())) {
+                                    validRoomNumber = true;
+                                    roomNumber = room.getRoomNumber();
+                                    break;
+                                }
+                            }
+
+                            if (validRoomNumber) {
+                                break;
+                            }
+
+                            System.out.println("Invalid room number. Please choose from the listed available rooms.");
                         }
 
                         System.out.print("Enter guest name: ");
@@ -234,45 +268,11 @@ public class Main {
                         break;
                     }
                     case 6: {
-                        // =========================================================
-                        // DEMO: Anonymous Inner Class  vs  Lambda Expression
-                        // Both do the exact same thing - filter available rooms.
-                        // The difference is only in how we write the code.
-                        // =========================================================
-                        System.out.println("\n======================================");
-                        System.out.println("      FILTER DEMO");
-                        System.out.println("======================================");
-
-                        // --- Step 1: Anonymous Inner Class (old, verbose way) ---
-                        // Before Java 8, to pass behaviour into a method, you had to
-                        // create a whole class inline with the 'new InterfaceName() { }' syntax.
-                        System.out.println("\n[1] Using Anonymous Inner Class (old way):");
-                        RoomFilter byAnonymousClass = new RoomFilter() {
-                            @Override
-                            public boolean test(IRoom room) {
-                                return room.getStatus() == RoomStatus.AVAILABLE;
-                            }
-                        };
-                        for (IRoom room : hotel.filterRooms(byAnonymousClass)) {
-                            System.out.println(room);
-                        }
-
-                        // --- Step 2: Lambda Expression (modern, concise way) ---
-                        // Since RoomFilter has only ONE method, Java 8+ lets you
-                        // write it as a lambda:  (parameter) -> expression
-                        // The compiler already knows the method shape from @FunctionalInterface.
-                        System.out.println("\n[2] Using Lambda Expression (modern way):");
-                        for (IRoom room : hotel.filterRooms(r -> r.getStatus() == RoomStatus.AVAILABLE)) {
-                            System.out.println(room);
-                        }
-                        break;
-                    }
-                    case 7: {
                         hotel.logout();
                         loggedIn = false;
                         break;
                     }
-                    case 8: {
+                    case 7: {
                         exit = true;
                         System.out.println("\nExiting the system. Goodbye!");
                         break;

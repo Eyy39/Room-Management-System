@@ -266,7 +266,7 @@ public class Hotel {
         }
 
         String normalizedType = type.trim();
-        if (normalizedType.equals("all") || normalizedType.equalsIgnoreCase("room")) {
+        if (normalizedType.equals("all") || normalizedType.equals("room")) {
             return getAllRooms();
         }
 
