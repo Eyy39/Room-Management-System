@@ -237,7 +237,7 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      STAFF INFORMATION");
                         System.out.println("======================================");
-                        user.StaffAction action = (staff) -> System.out.println(staff);
+                        user.StaffAction action = (staff) -> System.out.println(staff);//lambda expression to print staff info
                         for (user.IStaff staff : hotel.viewStaff()) {
                             action.execute(staff);
                         }
