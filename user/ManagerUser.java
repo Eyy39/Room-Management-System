@@ -14,8 +14,8 @@ public class ManagerUser extends Staff {
     // }
     
     @Override
-    public boolean can(String action) {
-        return true; // Manager has all permissions
+    public boolean can(String action) {//polymorphism: Manager has all permissions, so always return true
+        return true;
     }
 
     @Override
