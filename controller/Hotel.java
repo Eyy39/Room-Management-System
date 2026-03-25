@@ -379,12 +379,12 @@ public class Hotel {
         return booking;
     }
 
-    public CheckIn bookRoomByNumber(String roomNumber, String guestName) throws InputMismatchException {
+    public CheckIn bookRoomByNumber(String roomNumber, String guestName, LocalDate bookingDate) throws InputMismatchException {
         if (!requirePermission(Hotel.CREATE_BOOKING)) {
             return null;
         }
 
-        validateBookingInputs(roomNumber, guestName);
+        validateBookingInputs(roomNumber, guestName, bookingDate);
 
         IRoom selectedRoom = null;
         for (IRoom room : rooms) {
@@ -404,8 +404,8 @@ public class Hotel {
             return null;
         }
 
-        if (isRoomBookedOnDate(selectedRoom, LocalDate.now())) {
-            System.out.println("Room is already booked for today.");
+        if (isRoomBookedOnDate(selectedRoom, bookingDate)) {
+            System.out.println("Room is already booked for " + bookingDate + ".");
             return null;
         }
 
@@ -427,7 +427,7 @@ public class Hotel {
         CheckIn booking = new CheckIn(
             bookingGuest,
             selectedRoom,
-            LocalDate.now().toString(),
+            bookingDate.toString(),
             1,
             loggedInUser,
             0.0
@@ -437,13 +437,17 @@ public class Hotel {
         return booking;
     }
 
-    private void validateBookingInputs(String roomNumber, String guestName) throws InputMismatchException {
+    private void validateBookingInputs(String roomNumber, String guestName, LocalDate bookingDate) throws InputMismatchException {
         if (roomNumber == null || roomNumber.trim().isEmpty()) {
             throw new InputMismatchException("Room number cannot be empty.");
         }else if (guestName == null || guestName.trim().isEmpty()) {
             throw new InputMismatchException("Guest name cannot be empty.");
         }else if (guestName.trim().matches("^-?\\d+$")) {
             throw new InputMismatchException("Guest name cannot be integer.");
+        }else if (bookingDate == null) {
+            throw new InputMismatchException("Booking date cannot be empty.");
+        }else if (bookingDate.isBefore(LocalDate.now())) {
+            throw new InputMismatchException("Booking date cannot be in the past.");
         }
     }
 

@@ -163,7 +163,7 @@ public class Main {
 
                         System.out.print("Enter room type that you want to book: ");
                         String type = scanner.nextLine();
-                        LocalDate today = LocalDate.now();
+                        LocalDate selectedBookingDate;
                         ArrayList<IRoom> bookableRooms;
 
                         try{
@@ -172,12 +172,19 @@ public class Main {
                                 throw new InputMismatchException("Room type cannot be integer. Please try again.");
                             }
 
-                            bookableRooms = hotel.findBookableRoomsByDate(type, today);
+                            System.out.print("Enter booking date (yyyy-MM-dd): ");
+                            String inputDate = scanner.nextLine();
+                            selectedBookingDate = InputHandler.parseDateInput(inputDate);
+                            if (selectedBookingDate.isBefore(LocalDate.now())) {
+                                throw new InputMismatchException("Booking date cannot be in the past.");
+                            }
+
+                            bookableRooms = hotel.findBookableRoomsByDate(type, selectedBookingDate);
                             if(bookableRooms.isEmpty()) {
-                                System.out.println("No available rooms of type '" + type + "' for today.");
+                                System.out.println("No available rooms of type '" + type + "' on " + selectedBookingDate + ".");
                                 break;
                             }else {
-                                System.out.println("Available rooms of type '" + type + "' on " + today + " are: \n");
+                                System.out.println("Available rooms of type '" + type + "' on " + selectedBookingDate + " are: \n");
                                 for (IRoom room : bookableRooms) {
                                     System.out.println(room);
                                 }
@@ -220,7 +227,7 @@ public class Main {
 
                         CheckIn booking;
                         try {
-                            booking = hotel.bookRoomByNumber(roomNumber, guestName);
+                            booking = hotel.bookRoomByNumber(roomNumber, guestName, selectedBookingDate);
                         } catch (InputMismatchException ex) {
                             System.out.println(ex.getMessage());
                             System.out.println("Booking failed.");
