@@ -418,7 +418,7 @@ public class Hotel {
         }
 
         if (bookingGuest == null) {
-            bookingGuest = new Guest(guestName.trim(), "N/A", guestName.trim());
+            bookingGuest = new Guest(guestName.trim(), "N/A", "unknown@email.com");
             guests.add(bookingGuest);
         }
 

@@ -157,42 +157,49 @@ public class Main {
                         }
 
                         System.out.println("Available room types:");
-                        for (String roomType : availableTypes) {
-                            System.out.println("- " + roomType);
+                        for (int i = 0; i < availableTypes.size(); i++) {
+                            System.out.println((i + 1) + ". " + availableTypes.get(i));
                         }
 
-                        System.out.print("Enter room type that you want to book: ");
-                        String type = scanner.nextLine();
+                        int roomTypeChoice;
+                        while (true) {
+                            roomTypeChoice = InputHandler.readIntChoice(
+                                scanner,
+                                "Enter room type that you want to book (1-" + availableTypes.size() + "): "
+                            );
+                            if (roomTypeChoice >= 1 && roomTypeChoice <= availableTypes.size()) {
+                                break;
+                            }
+                            System.out.println("Invalid choice. Please enter a number from 1 to " + availableTypes.size() + ".");
+                        }
+
+                        String type = availableTypes.get(roomTypeChoice - 1);
                         LocalDate selectedBookingDate;
                         ArrayList<IRoom> bookableRooms;
 
-                        try{
-                            type = InputHandler.parseRequiredText(type, "Room type");
-                            if (type.matches("^-?\\d+$")) {
-                                throw new InputMismatchException("Room type cannot be integer. Please try again.");
-                            }
+                        while (true) {
+                            try {
+                                System.out.print("Enter booking date (yyyy-MM-dd): ");
+                                String inputDate = scanner.nextLine();
+                                selectedBookingDate = InputHandler.parseDateInput(inputDate);
+                                if (selectedBookingDate.isBefore(LocalDate.now())) {
+                                    throw new InputMismatchException("Booking date cannot be in the past.");
+                                }
 
-                            System.out.print("Enter booking date (yyyy-MM-dd): ");
-                            String inputDate = scanner.nextLine();
-                            selectedBookingDate = InputHandler.parseDateInput(inputDate);
-                            if (selectedBookingDate.isBefore(LocalDate.now())) {
-                                throw new InputMismatchException("Booking date cannot be in the past.");
-                            }
+                                bookableRooms = hotel.findBookableRoomsByDate(type, selectedBookingDate);
+                                if (bookableRooms.isEmpty()) {
+                                    System.out.println("No available rooms of type '" + type + "' on " + selectedBookingDate + ".");
+                                    continue;
+                                }
 
-                            bookableRooms = hotel.findBookableRoomsByDate(type, selectedBookingDate);
-                            if(bookableRooms.isEmpty()) {
-                                System.out.println("No available rooms of type '" + type + "' on " + selectedBookingDate + ".");
-                                break;
-                            }else {
                                 System.out.println("Available rooms of type '" + type + "' on " + selectedBookingDate + " are: \n");
                                 for (IRoom room : bookableRooms) {
                                     System.out.println(room);
                                 }
+                                break;
+                            } catch (InputMismatchException ex) {
+                                System.out.println(ex.getMessage());
                             }
-                        }catch (InputMismatchException ex) {
-                            System.out.println(ex.getMessage());
-                            System.out.println("Booking failed.");
-                            break;
                         }
 
                         String roomNumber;
@@ -208,7 +215,7 @@ public class Main {
 
                             boolean validRoomNumber = false;
                             for (IRoom room : bookableRooms) {
-                                if (room.getRoomNumber().equalsIgnoreCase(roomNumber.trim())) {
+                                if (room.getRoomNumber().equals(roomNumber.trim())) {
                                     validRoomNumber = true;
                                     roomNumber = room.getRoomNumber();
                                     break;
@@ -258,22 +265,7 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      BOOKING SCHEDULE");
                         System.out.println("======================================");
-                        System.out.println("1. View next 7 days schedule");
-                        System.out.println("2. Search specific date");
-                        String scheduleChoice = InputHandler.readScheduleChoice(scanner);
-
-                        if (scheduleChoice.equals("1")) {
-                            hotel.displayWeeklySchedule();
-                        } else if (scheduleChoice.equals("2")) {
-                            System.out.print("Enter date (yyyy-MM-dd): ");
-                            String inputDate = scanner.nextLine();
-
-                            LocalDate selectedDate = InputHandler.parseDateInput(inputDate);
-
-                            hotel.displayDaySchedule(selectedDate);
-                        } else {
-                            System.out.println("Invalid choice.");
-                        }
+                        hotel.displayWeeklySchedule();
                         break;
                     }
                     case 6: {
@@ -289,8 +281,6 @@ public class Main {
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
-                } catch (InputMismatchException ex) {
-                    System.out.println(ex.getMessage());
                 } catch (PermissionDeniedException ex) {
                     System.out.println(ex.getMessage());
                 }
