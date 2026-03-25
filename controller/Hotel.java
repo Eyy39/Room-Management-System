@@ -91,6 +91,18 @@ public class Hotel {
         users.add(user);
     }
 
+    public boolean hasUsername(String username) {
+        if (username == null) {
+            return false;
+        }
+        for (IStaff user : users) {
+            if (user.getUsername().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Login only checks credentials and stores who is using the system now.
     public boolean login(String username, String password) {
         for (IStaff user : users) {

@@ -70,7 +70,10 @@ public class Main {
                             try{
                                 username = InputHandler.parseRequiredText(username, "Username");
                                 if (username.matches("\\d+")) {
-                                    throw new InputMismatchException("Username cannot be integer. Please try again.");
+                                    throw new InputMismatchException("Username cannot be numbers.");
+                                }
+                                if (!hotel.hasUsername(username)) {
+                                    throw new InputMismatchException("Username not found. Please enter correct username.");
                                 }
                             } catch (InputMismatchException ex) {
                                 System.out.println(ex.getMessage());
