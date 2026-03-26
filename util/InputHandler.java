@@ -23,7 +23,7 @@ public class InputHandler {
             try {
                 return Integer.parseInt(input.trim());
             } catch (NumberFormatException ex) {
-                System.out.println("Input should be integer. Please try again!");
+                System.out.println("Invalid choice. Please try again.");
             }
         }
     }

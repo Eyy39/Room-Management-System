@@ -97,13 +97,11 @@ public abstract class Staff extends BaseEntity implements IStaff {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof Staff)) {
             return false;
         }
         Staff other = (Staff) obj;
-        return gender == other.gender
-            && Objects.equals(getStaffId(), other.getStaffId())
-            && Objects.equals(name, other.name);
+        return Objects.equals(getStaffId(), other.getStaffId());
     }
  
 }

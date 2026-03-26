@@ -3,6 +3,7 @@ import exception.InputMismatchException;
 import exception.PermissionDeniedException;
 import hotel.CheckIn;
 import hotel.Guest;
+import hotel.Payment;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -65,34 +66,39 @@ public class Main {
                     int loginChoice = InputHandler.readIntChoice(scanner, "Enter your choice: ");
                     switch (loginChoice) {
                         case 1: {
-                            System.out.print("Username: ");
-                            String username = scanner.nextLine();
-                            try{
-                                username = InputHandler.parseRequiredText(username, "Username");
-                                if (username.matches("\\d+")) {
-                                    throw new InputMismatchException("Username cannot be numbers.");
+                            String username;
+                            while (true) {
+                                System.out.print("Username: ");
+                                username = scanner.nextLine();
+                                try {
+                                    username = InputHandler.parseRequiredText(username, "Username");
+                                    if (!hotel.hasUsername(username)) {
+                                        System.out.println("Username not found. Please enter correct username.");
+                                        continue;
+                                    }
+                                    break;
+                                } catch (InputMismatchException ex) {
+                                    System.out.println(ex.getMessage());
                                 }
-                                if (!hotel.hasUsername(username)) {
-                                    throw new InputMismatchException("Username not found. Please enter correct username.");
+                            }
+
+                            while (true) {
+                                String password = InputHandler.readPassword(scanner, "Password: ");
+                                try {
+                                    password = InputHandler.parseRequiredText(password, "Password");
+                                } catch (InputMismatchException ex) {
+                                    System.out.println("Password cannot be empty.");
+                                    continue;
                                 }
-                            } catch (InputMismatchException ex) {
-                                System.out.println(ex.getMessage());
-                                System.out.println("Login failed.");
-                                break;
+
+                                if (hotel.login(username, password)) {
+                                    loggedIn = true;
+                                    break;
+                                }
+
+                                System.out.println("Invalid password. Please try again.");
                             }
-                            String password = InputHandler.readPassword(scanner, "Password: ");
-                            try{
-                                password = InputHandler.parseRequiredText(password, "Password");
-                            } catch (InputMismatchException ex) {
-                                System.out.println("Password cannot be empty.");
-                                System.out.println("Login failed.");
-                                break;
-                            }
-                            if (hotel.login(username, password)) {
-                                loggedIn = true;
-                            }else {
-                                System.out.println("Invalid username or password. Please try again.");
-                            }
+                            
                             break;
                         }
                     case 2: {
@@ -113,8 +119,9 @@ public class Main {
                     System.out.println("3. Book a Room");
                     System.out.println("4. Show Staff Information");
                     System.out.println("5. Show Booking Schedule");
-                    System.out.println("6. logout");
-                    System.out.println("7. Exit");
+                    System.out.println("6. Payment");
+                    System.out.println("7. logout");
+                    System.out.println("8. Exit");
                     int choice = InputHandler.readIntChoice(scanner, "Enter your choice: ");
                     try {
                     switch (choice) {
@@ -132,8 +139,8 @@ public class Main {
                         System.out.println("\n======================================");
                         System.out.println("      GUEST INFORMATION");
                         System.out.println("======================================");
-                        for (CheckIn guest : hotel.GuestInfo()) {
-                            System.out.println(guest);
+                        for (String guestDetail : hotel.getGuestInfoWithPaymentStatus()) {
+                            System.out.println(guestDetail);
                         }
                         break;
                     }
@@ -246,6 +253,38 @@ public class Main {
                         } else {
                             System.out.println("Room " + booking.getRoom().getRoomNumber() + " is booked.");
                             System.out.println("Book is successful.");
+
+                            while (true) {
+                                int payNowChoice = InputHandler.readIntChoice(scanner, "Pay now? (1. Yes, 2. Later): ");
+                                if (payNowChoice == 1) {
+                                    int methodChoice;
+                                    while (true) {
+                                        methodChoice = InputHandler.readIntChoice(scanner, "Enter payment method (1. Cash, 2. Card): ");
+                                        if (methodChoice == 1 || methodChoice == 2) {
+                                            break;
+                                        }
+                                        System.out.println("Invalid payment method choice. Please enter 1 or 2.");
+                                    }
+
+                                    try {
+                                        if (hotel.payBooking(booking.getBookingCode(), methodChoice)) {
+                                            System.out.println("Payment successful for booking " + booking.getBookingCode() + ".");
+                                        } else {
+                                            System.out.println("Payment not completed.");
+                                        }
+                                    } catch (InputMismatchException ex) {
+                                        System.out.println(ex.getMessage());
+                                    }
+                                    break;
+                                }
+
+                                if (payNowChoice == 2) {
+                                    System.out.println("Payment is pending.");
+                                    break;
+                                }
+
+                                System.out.println("Invalid choice. Please enter 1 or 2.");
+                            }
                         }
                         
                         break;
@@ -269,11 +308,65 @@ public class Main {
                         break;
                     }
                     case 6: {
+                        System.out.println("\n======================================");
+                        System.out.println("      PAYMENT CENTER");
+                        System.out.println("======================================");
+
+                        ArrayList<Payment> pendingPayments = hotel.getPendingPayments();
+                        if (pendingPayments.isEmpty()) {
+                            System.out.println("No pending payments.");
+                            break;
+                        }
+
+                        System.out.println("Pending payments:");
+                        for (Payment payment : pendingPayments) {
+                            System.out.println(payment);
+                        }
+
+                        while (true) {
+                            String bookingCode;
+                            while (true) {
+                                System.out.print("Enter booking code to pay: ");
+                                bookingCode = scanner.nextLine();
+                                try {
+                                    bookingCode = InputHandler.parseRequiredText(bookingCode, "Booking code");
+                                    hotel.validatePayableBookingCode(bookingCode);
+                                    break;
+                                } catch (InputMismatchException ex) {
+                                    System.out.println(ex.getMessage());
+                                }
+                            }
+
+                            int methodChoice;
+                            while (true) {
+                                methodChoice = InputHandler.readIntChoice(scanner, "Enter payment method (1. Cash, 2. Card): ");
+                                if (methodChoice == 1 || methodChoice == 2) {
+                                    break;
+                                }
+                                System.out.println("Invalid payment method choice. Please enter 1 or 2.");
+                            }
+
+                            try {
+                                if (hotel.payBooking(bookingCode, methodChoice)) {
+                                    System.out.println("Payment successful.");
+                                } else {
+                                    System.out.println("Payment failed.");
+                                }
+                                break;
+                            } catch (InputMismatchException ex) {
+                                System.out.println(ex.getMessage());
+                                System.out.println("Please try again.");
+                            }
+                        }
+
+                        break;
+                    }
+                    case 7: {
                         hotel.logout();
                         loggedIn = false;
                         break;
                     }
-                    case 7: {
+                    case 8: {
                         exit = true;
                         System.out.println("\nExiting the system. Goodbye!");
                         break;

@@ -5,6 +5,7 @@ import exception.PermissionDeniedException;
 import hotel.BookingStatus;
 import hotel.CheckIn;
 import hotel.Guest;
+import hotel.Payment;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -24,6 +25,7 @@ public class Hotel {
     private ArrayList<IRoom> rooms;
     private ArrayList<Guest> guests;
     private ArrayList<CheckIn> bookings;
+    private ArrayList<Payment> payments;
     private ArrayList<IStaff> users;
     private IStaff loggedInUser;
 
@@ -34,6 +36,7 @@ public class Hotel {
         rooms = new ArrayList<>();
         guests = new ArrayList<>();
         bookings = new ArrayList<>();
+        payments = new ArrayList<>();
         users = new ArrayList<>(); 
         loggedInUser = null;
     }
@@ -46,6 +49,7 @@ public class Hotel {
     public static final String VIEW_BOOKING_SCHEDULE = "VIEW_BOOKING_SCHEDULE";
     public static final String UPDATE_ROOM_STATUS = "UPDATE_ROOM_STATUS";
     public static final String DELETE_STAFF = "DELETE_STAFF";
+    public static final String PAY_BOOKING = "PAY_BOOKING";
 
     public void setHotelName(String hotelName) {
         if (hotelName != null && !hotelName.trim().isEmpty()) {
@@ -158,7 +162,8 @@ public class Hotel {
         ArrayList<IRoom> typedRooms = searchRoomsByType(roomType);
         ArrayList<IRoom> availableRooms = new ArrayList<>();
         for (IRoom room : typedRooms) {
-            if (room.getStatus() == RoomStatus.AVAILABLE && !isRoomBookedOnDate(room, selectedDate)) {
+            // Date-based availability: allow rooms that are not under maintenance and not booked on selected date.
+            if (room.getStatus() != RoomStatus.MAINTENANCE && !isRoomBookedOnDate(room, selectedDate)) {
                 availableRooms.add(room);
             }
         }
@@ -237,6 +242,43 @@ public class Hotel {
 
     public ArrayList<CheckIn> GuestInfo(){
         return new ArrayList<>(bookings);
+    }
+
+    public ArrayList<String> getGuestInfoWithPaymentStatus() {
+        ArrayList<String> details = new ArrayList<>();
+        for (CheckIn booking : bookings) {
+            String paymentStatus = getPaymentStatusByBookingCode(booking.getBookingCode());
+            details.add(booking + "\nPayment Status: " + paymentStatus + "\n--------------------------------------");
+        }
+        return details;
+    }
+
+    public String getPaymentStatusByBookingCode(String bookingCode) {
+        Payment payment = findPaymentByBookingCode(bookingCode);
+        if (payment == null) {
+            return "No payment record";
+        }
+        return payment.isPaid() ? "Paid" : "Pending";
+    }
+
+    public void validatePayableBookingCode(String bookingCode) throws InputMismatchException {
+        if (bookingCode == null || bookingCode.trim().isEmpty()) {
+            throw new InputMismatchException("Booking code cannot be empty.");
+        }
+
+        String normalizedCode = bookingCode.trim();
+        if (!normalizedCode.matches("^B\\d{3}$")) {
+            throw new InputMismatchException("Invalid booking code format.");
+        }
+
+        Payment payment = findPaymentByBookingCode(normalizedCode);
+        if (payment == null) {
+            throw new InputMismatchException("Booking code not found: " + normalizedCode);
+        }
+
+        if (payment.isPaid()) {
+            throw new InputMismatchException("Booking " + normalizedCode + " is already paid.");
+        }
     }
 
     public String currentUserSignature() {
@@ -399,8 +441,9 @@ public class Hotel {
             return null;
         }
 
-        if (selectedRoom.getStatus() != RoomStatus.AVAILABLE) {
-            System.out.println("Room is not available for booking.");
+        // For future booking, block only maintenance rooms; date overlap is checked below.
+        if (selectedRoom.getStatus() == RoomStatus.MAINTENANCE) {
+            System.out.println("Room is under maintenance and cannot be booked.");
             return null;
         }
 
@@ -434,6 +477,7 @@ public class Hotel {
         );
 
         bookings.add(booking);
+        createPaymentForBooking(booking);
         return booking;
     }
 
@@ -453,6 +497,7 @@ public class Hotel {
 
     public void addBooking(CheckIn booking) {
         bookings.add(booking);
+        createPaymentForBooking(booking);
     }
 
     public void deleteBooking(int bookingId) {
@@ -469,6 +514,85 @@ public class Hotel {
         return new ArrayList<>(bookings);
     }
 
+    public Payment createPaymentForBooking(CheckIn booking) {
+        if (booking == null) {
+            return null;
+        }
+
+        Payment existing = findPaymentByBookingCode(booking.getBookingCode());
+        if (existing != null) {
+            return existing;
+        }
+
+        String paymentId = "P" + String.format("%03d", payments.size() + 1);
+        Payment payment = new Payment(paymentId, booking.getBookingCode(), booking.getTotal(), "Pending");
+        payments.add(payment);
+        return payment;
+    }
+
+    public Payment findPaymentByBookingCode(String bookingCode) {
+        if (bookingCode == null) {
+            return null;
+        }
+
+        for (Payment payment : payments) {
+            if (payment.getBookingId().equals(bookingCode.trim())) {
+                return payment;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Payment> getPendingPayments() {
+        if (!requirePermission(Hotel.PAY_BOOKING)) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<Payment> pending = new ArrayList<>();
+        for (Payment payment : payments) {
+            if (!payment.isPaid()) {
+                pending.add(payment);
+            }
+        }
+        return pending;
+    }
+
+    public boolean payBooking(String bookingCode, int methodChoice) throws InputMismatchException {
+        if (!requirePermission(Hotel.PAY_BOOKING)) {
+            return false;
+        }
+
+        validatePayableBookingCode(bookingCode);
+
+        String normalizedMethod = normalizePaymentMethod(methodChoice);
+        if (normalizedMethod == null) {
+            throw new InputMismatchException("Invalid payment method choice. Please enter 1 for Cash or 2 for Card.");
+        }
+
+        Payment payment = findPaymentByBookingCode(bookingCode);
+        if (payment == null) {
+            throw new InputMismatchException("Booking code not found: " + bookingCode.trim());
+        }
+
+        if (payment.isPaid()) {
+            throw new InputMismatchException("Booking " + bookingCode.trim() + " is already paid.");
+        }
+
+        payment.setMethod(normalizedMethod);
+        payment.markAsPaid();
+        return true;
+    }
+
+    private String normalizePaymentMethod(int methodChoice) {
+        if (methodChoice == 1) {
+            return "Cash";
+        }
+        if (methodChoice == 2) {
+            return "Card";
+        }
+        return null;
+    }
+
     // filterRooms - accepts a RoomFilter (lambda or anonymous class) and returns matching rooms.
     // This method doesn't care HOW the filter decides - it just calls filter.test() for each room.
     public ArrayList<IRoom> filterRooms(RoomFilter filter) {
@@ -478,7 +602,7 @@ public class Hotel {
                 results.add(room);
             }
         }
-        return results;
+        return results; 
     }
 
     // Schedule display methods
@@ -497,7 +621,7 @@ public class Hotel {
         System.out.print(String.format("%-12s", "Room No"));
         for (int i = 0; i < 7; i++) {
             LocalDate date = today.plusDays(i);
-            String dateHeader = date.format(headerFormatter);
+            String dateHeader = date.format(headerFormatter);// e.g., "Mon 01-Jan"
             System.out.print(String.format("| %-10s ", dateHeader));
         }
         System.out.println("|");
@@ -517,45 +641,6 @@ public class Hotel {
         }
         System.out.println("========================================================================================================");
         System.out.println("Legend: FREE = Available for booking | BOOKED = Room is reserved");
-    }
-
-    public void displayDaySchedule(LocalDate date) {
-        ArrayList<IRoom> bookedRooms = getBookedRoomsByDate(date);
-        ArrayList<IRoom> availableRooms = getAvailableRoomsByDate(date);
-
-        printRoomTable("Booked rooms on " + date, bookedRooms, date);
-        printRoomTable("Available rooms on " + date, availableRooms, date);
-    }
-
-    private void printRoomTable(String title, ArrayList<IRoom> rooms, LocalDate selectedDate) {
-        System.out.println("\n" + title + ":");
-        if (rooms.isEmpty()) {
-            System.out.println("No rooms found.");
-            return;
-        }
-
-        System.out.println("----------------------------------------------------------------");
-        System.out.printf("%-4s %-12s %-12s %-12s %-12s%n", "No.", "Room No", "Type", "Price", "Status");
-        System.out.println("----------------------------------------------------------------");
-
-        for (int i = 0; i < rooms.size(); i++) {
-            IRoom room = rooms.get(i);
-            RoomStatus displayStatus = room.getStatus();
-            if (displayStatus != RoomStatus.MAINTENANCE) {
-                displayStatus = isRoomBookedOnDate(room, selectedDate)
-                    ? RoomStatus.OCCUPIED
-                    : RoomStatus.AVAILABLE;
-            }
-            System.out.printf(
-                "%-4d %-12s %-12s $%-11.2f %-12s%n",
-                i + 1,
-                room.getRoomNumber(),
-                room.getRoomType(),
-                room.getPricePerNight(),
-                displayStatus
-            );
-        }
-        System.out.println("----------------------------------------------------------------");
     }
 
 }
