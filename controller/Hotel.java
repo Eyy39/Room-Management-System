@@ -140,6 +140,19 @@ public class Hotel {
         if (!requirePermission(Hotel.VIEW_ROOMS)) {
             return new ArrayList<>();
         }
+
+        LocalDate today = LocalDate.now();
+        for (IRoom room : rooms) {
+            if (room.getStatus() == RoomStatus.MAINTENANCE) {
+                continue;
+            }
+            if (isRoomBookedOnDate(room, today)) {
+                room.setStatus(RoomStatus.OCCUPIED);
+            } else {
+                room.setStatus(RoomStatus.AVAILABLE);
+            }
+        }
+
         return getAllRooms();
     }
 
