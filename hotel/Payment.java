@@ -1,14 +1,15 @@
 package hotel;
 
-public class Payment {
-    private String paymentId;
+import common.BaseEntity;
+
+public class Payment extends BaseEntity {
     private String bookingId;
     private double amount;
-    private String method;
+    private String method; // e.g., "Credit Card", "Cash"
     private boolean paid;
 
     public Payment(String paymentId, String bookingId, double amount, String method) {
-        this.setPaymentId(paymentId);
+        super("P", paymentId);
         this.setBookingId(bookingId);
         this.setAmount(amount);
         this.setMethod(method);
@@ -16,15 +17,7 @@ public class Payment {
     }
 
     public String getPaymentId() {
-        return paymentId;
-    }
-
-    public void setPaymentId(String paymentId) {
-        if (paymentId == null || paymentId.trim().isEmpty()) {
-            System.out.println("Invalid payment ID. Payment ID not updated.");
-            return;
-        }
-        this.paymentId = paymentId.trim();
+        return getId();
     }
 
     public String getBookingId() {
@@ -73,7 +66,7 @@ public class Payment {
 
     @Override
     public String toString() {
-        return "Payment ID: " + paymentId
+        return "Payment ID: " + getId()
             + "\nBooking ID: " + bookingId
             + "\nAmount: " + amount
             + "\nMethod: " + method

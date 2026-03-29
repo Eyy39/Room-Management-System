@@ -112,7 +112,6 @@ public class Main {
                 } else {
                     System.out.println("\n========================================");
                     System.out.println("   HOTEL MANAGEMENT SYSTEM");
-                    // System.out.println("   Role: " + hotel.currentUserRole());
                     System.out.println("========================================");
                     System.out.println("1. Display Room Details");
                     System.out.println("2. Display Guest Information");

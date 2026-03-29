@@ -5,6 +5,7 @@ public abstract class BaseEntity {
     private static int roomCounter = 0;
     private static int staffCounter = 0;
     private static int bookingCounter = 0;
+    private static int paymentCounter = 0;
 
     private final String id;
 
@@ -43,6 +44,8 @@ public abstract class BaseEntity {
             next = ++staffCounter;
         } else if ("B".equals(prefix)) {
             next = ++bookingCounter;
+        } else if ("P".equals(prefix)) {
+            next = ++paymentCounter;
         } else {
             next = 0;
         }

@@ -537,8 +537,7 @@ public class Hotel {
             return existing;
         }
 
-        String paymentId = "P" + String.format("%03d", payments.size() + 1);
-        Payment payment = new Payment(paymentId, booking.getBookingCode(), booking.getTotal(), "Pending");
+        Payment payment = new Payment(null, booking.getBookingCode(), booking.getTotal(), "Pending");
         payments.add(payment);
         return payment;
     }
