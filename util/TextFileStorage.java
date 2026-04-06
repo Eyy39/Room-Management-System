@@ -22,11 +22,11 @@ import user.ReceptionistUser;
 public class TextFileStorage {
 
 	private String folderName = "data";
-	private static final String ROOMS_FILE = "rooms.txt";
-	private static final String STAFF_FILE = "staff.txt";
-	private static final String GUESTS_FILE = "guests.txt";
-	private static final String BOOKINGS_FILE = "bookings.txt";
-	private static final String PAYMENTS_FILE = "payments.txt";
+	private static String ROOMS_FILE = "rooms.txt";
+	private static String STAFF_FILE = "staff.txt";
+	private static String GUESTS_FILE = "guests.txt";
+	private static String BOOKINGS_FILE = "bookings.txt";
+	private static String PAYMENTS_FILE = "payments.txt";
 
 	public boolean loadAll(Hotel hotel) {
 		boolean loadedRooms = loadRooms(hotel);
