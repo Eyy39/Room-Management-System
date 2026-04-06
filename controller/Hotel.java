@@ -11,10 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Scanner;
 import room.IRoom;
 import room.RoomFilter;
 import room.RoomStatus;
 import user.IStaff;
+import util.InputHandler;
 
 public class Hotel {
 
@@ -259,11 +261,41 @@ public class Hotel {
 
     public ArrayList<String> getGuestInfoWithPaymentStatus() {
         ArrayList<String> details = new ArrayList<>();
-        for (CheckIn booking : bookings) {
-            String paymentStatus = getPaymentStatusByBookingCode(booking.getBookingCode());
-            details.add(booking + "\nPayment Status: " + paymentStatus + "\n--------------------------------------");
+        for (Guest guest : guests) {
+            ArrayList<CheckIn> guestBookings = findBookingsByGuestId(guest.getGuestID());
+
+            if (guestBookings.isEmpty()) {
+                details.add(guest.toString() + "\nPayment Status: Pending\n--------------------------------------");
+                continue;
+            }
+
+            for (CheckIn booking : guestBookings) {
+                String paymentStatus = getPaymentStatusByBookingCode(booking.getBookingCode());
+                if ("No payment record".equals(paymentStatus)) {
+                    paymentStatus = "Pending";
+                }
+                details.add(booking + "\nPayment Status: " + paymentStatus + "\n--------------------------------------");
+            }
         }
+
         return details;
+    }
+
+    private ArrayList<CheckIn> findBookingsByGuestId(String guestId) {
+        ArrayList<CheckIn> results = new ArrayList<>();
+        if (guestId == null || guestId.trim().isEmpty()) {
+            return results;
+        }
+
+        for (CheckIn booking : bookings) {
+            if (booking.getGuest() == null) {
+                continue;
+            }
+            if (guestId.equals(booking.getGuest().getGuestID())) {
+                results.add(booking);
+            }
+        }
+        return results;
     }
 
     public String getPaymentStatusByBookingCode(String bookingCode) {
@@ -513,6 +545,10 @@ public class Hotel {
         createPaymentForBooking(booking);
     }
 
+    public void addBookingWithoutPayment(CheckIn booking) {
+        bookings.add(booking);
+    }
+
     public void deleteBooking(int bookingId) {
         for (int i = 0; i < bookings.size(); i++) {
             if (bookings.get(i).getBookingID() == bookingId) {
@@ -525,6 +561,16 @@ public class Hotel {
 
     public ArrayList<CheckIn> getBookingsList() {
         return new ArrayList<>(bookings);
+    }
+
+    public void addPayment(Payment payment) {
+        if (payment != null) {
+            payments.add(payment);
+        }
+    }
+
+    public ArrayList<Payment> getPaymentsList() {
+        return new ArrayList<>(payments);
     }
 
     public Payment createPaymentForBooking(CheckIn booking) {
@@ -555,12 +601,12 @@ public class Hotel {
         return null;
     }
 
-    public ArrayList<Payment> getPendingPayments() {
+    public ArrayList<Payment> getPendingPayments() {// return payments that are not paid yet
         if (!requirePermission(Hotel.PAY_BOOKING)) {
             return new ArrayList<>();
         }
 
-        ArrayList<Payment> pending = new ArrayList<>();
+        ArrayList<Payment> pending = new ArrayList<>();// filter payments to find pending ones
         for (Payment payment : payments) {
             if (!payment.isPaid()) {
                 pending.add(payment);
@@ -617,8 +663,47 @@ public class Hotel {
         return results; 
     }
 
+    
+    public boolean loginFlow(Scanner scanner) {
+        String username;
+        while (true) {
+            System.out.print("Username: ");
+            username = scanner.nextLine();
+            try {
+                username = InputHandler.parseRequiredText(username, "Username");
+                if (!hasUsername(username)) {
+                    System.out.println("Username not found. Please enter correct username.");
+                    continue;
+                }
+                break;
+            } catch (InputMismatchException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+        while (true) {
+            String password = InputHandler.readPassword(scanner, "Password: ");
+            try {
+                password = InputHandler.parseRequiredText(password, "Password");
+            } catch (InputMismatchException ex) {
+                System.out.println("Password cannot be empty.");
+                continue;
+            }
+
+            if (login(username, password)) {
+                return true;
+            }
+
+            System.out.println("Invalid password. Please try again.");
+        }
+    }
+
     // Schedule display methods
     public void displayWeeklySchedule() {
+        System.out.println("\n======================================");
+        System.out.println("      BOOKING SCHEDULE");
+        System.out.println("======================================");
+        
         System.out.println("\n=========================== WEEKLY ROOM AVAILABILITY SCHEDULE (Next 7 Days) ============================");
         LocalDate today = LocalDate.now();
         ArrayList<IRoom> allRooms = getAllRooms();
@@ -654,5 +739,206 @@ public class Hotel {
         System.out.println("========================================================================================================");
         System.out.println("Legend: FREE = Available for booking | BOOKED = Room is reserved");
     }
+
+    
+    public void bookRoomFlow(Scanner scanner) throws PermissionDeniedException {
+        System.out.println("\n======================================");
+        System.out.println("      BOOK A ROOM");
+        System.out.println("======================================");
+
+        ArrayList<String> availableTypes = new ArrayList<>();
+        for (IRoom room : getAllRooms()) {
+            String roomType = room.getRoomType();
+            if (roomType != null && !roomType.trim().isEmpty() && !availableTypes.contains(roomType)) {
+                availableTypes.add(roomType);
+            }
+        }
+
+        if (availableTypes.isEmpty()) {
+            System.out.println("No room types available in the system.");
+            return;
+        }
+
+        System.out.println("Available room types:");
+        for (int i = 0; i < availableTypes.size(); i++) {
+            System.out.println((i + 1) + ". " + availableTypes.get(i));
+        }
+
+        int roomTypeChoice;
+        while (true) {
+            roomTypeChoice = InputHandler.readIntChoice(
+                scanner,
+                "Enter room type that you want to book (1-" + availableTypes.size() + "): "
+            );
+            if (roomTypeChoice >= 1 && roomTypeChoice <= availableTypes.size()) {
+                break;
+            }
+            System.out.println("Invalid choice. Please enter a number from 1 to " + availableTypes.size() + ".");
+        }
+
+        String type = availableTypes.get(roomTypeChoice - 1);
+        LocalDate selectedBookingDate;
+        ArrayList<IRoom> bookableRooms;
+
+        while (true) {
+            try {
+                System.out.print("Enter booking date (yyyy-MM-dd): ");
+                String inputDate = scanner.nextLine();
+                selectedBookingDate = InputHandler.parseDateInput(inputDate);
+                if (selectedBookingDate.isBefore(LocalDate.now())) {
+                    throw new InputMismatchException("Booking date cannot be in the past.");
+                }
+
+                bookableRooms = findBookableRoomsByDate(type, selectedBookingDate);
+                if (bookableRooms.isEmpty()) {
+                    System.out.println("No available rooms of type '" + type + "' on " + selectedBookingDate + ".");
+                    continue;
+                }
+
+                System.out.println("Available rooms of type '" + type + "' on " + selectedBookingDate + " are: \n");
+                for (IRoom room : bookableRooms) {
+                    System.out.println(room);
+                }
+                break;
+            } catch (InputMismatchException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+        String roomNumber;
+        while (true) {
+            System.out.print("Enter room number to book: ");
+            roomNumber = scanner.nextLine();
+            try {
+                roomNumber = InputHandler.parseRequiredText(roomNumber, "Room number");
+            } catch (InputMismatchException ex) {
+                System.out.println(ex.getMessage());
+                continue;
+            }
+
+            boolean validRoomNumber = false;
+            for (IRoom room : bookableRooms) {
+                if (room.getRoomNumber().equals(roomNumber.trim())) {
+                    validRoomNumber = true;
+                    roomNumber = room.getRoomNumber();
+                    break;
+                }
+            }
+
+            if (validRoomNumber) {
+                break;
+            }
+
+            System.out.println("Invalid room number. Please choose from the listed available rooms.");
+        }
+
+        System.out.print("Enter guest name: ");
+        String guestName = scanner.nextLine();
+
+        CheckIn booking;
+        try {
+            booking = bookRoomByNumber(roomNumber, guestName, selectedBookingDate);
+        } catch (InputMismatchException ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("Booking failed.");
+            return;
+        }
+
+        if (booking == null) {
+            System.out.println("Booking failed.");
+            return;
+        }
+
+        System.out.println("\n======================================");
+        System.out.println("      BOOKING CONFIRMATION");
+        System.out.println("======================================");
+        System.out.println(booking);
+        String paymentStatus = getPaymentStatusByBookingCode(booking.getBookingCode());
+        if ("No payment record".equals(paymentStatus)) {
+            paymentStatus = "Pending";
+        }
+        System.out.println("Payment Status: " + paymentStatus);
+
+        while (true) {
+            int payNowChoice = InputHandler.readIntChoice(scanner, "Pay now? (1. Yes, 2. Later): ");
+            if (payNowChoice == 1) {
+                int methodChoice = promptPaymentMethod(scanner);
+                try {
+                    if (payBooking(booking.getBookingCode(), methodChoice)) {
+                        System.out.println("Payment successful for booking " + booking.getBookingCode() + ".");
+                    } else {
+                        System.out.println("Payment not completed.");
+                    }
+                } catch (InputMismatchException ex) {
+                    System.out.println(ex.getMessage());
+                }
+                break;
+            }
+
+            if (payNowChoice == 2) {
+                System.out.println("Payment is pending.");
+                break;
+            }
+
+            System.out.println("Invalid choice. Please enter 1 or 2.");
+        }
+    }
+
+    public void paymentFlow(Scanner scanner) throws PermissionDeniedException {
+        System.out.println("\n======================================");
+        System.out.println("      PAYMENT CENTER");
+        System.out.println("======================================");
+
+        ArrayList<Payment> pendingPayments = getPendingPayments();
+        if (pendingPayments.isEmpty()) {
+            System.out.println("No pending payments.");
+            return;
+        }
+
+        System.out.println("Pending payments:");
+        for (Payment payment : pendingPayments) {
+            System.out.println(payment);
+        }
+
+        while (true) {
+            String bookingCode;
+            while (true) {
+                System.out.print("Enter booking code to pay: ");
+                bookingCode = scanner.nextLine();
+                try {
+                    bookingCode = InputHandler.parseRequiredText(bookingCode, "Booking code");
+                    validatePayableBookingCode(bookingCode);
+                    break;
+                } catch (InputMismatchException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            int methodChoice = promptPaymentMethod(scanner);
+
+            try {
+                if (payBooking(bookingCode, methodChoice)) {
+                    System.out.println("Payment successful.");
+                } else {
+                    System.out.println("Payment failed.");
+                }
+                break;
+            } catch (InputMismatchException ex) {
+                System.out.println(ex.getMessage());
+                System.out.println("Please try again.");
+            }
+        }
+    }
+
+    private int promptPaymentMethod(Scanner scanner) {
+        while (true) {
+            int methodChoice = InputHandler.readIntChoice(scanner, "Enter payment method (1. Cash, 2. Card): ");
+            if (methodChoice == 1 || methodChoice == 2) {
+                return methodChoice;
+            }
+            System.out.println("Invalid payment method choice. Please enter 1 or 2.");
+        }
+    }
+
 
 }

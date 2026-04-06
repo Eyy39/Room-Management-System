@@ -20,6 +20,7 @@ public abstract class BaseEntity {
         }
 
         this.id = existingId.trim();
+        syncCounterWithExistingId(this.id);
     }
 
     public String getId() {
@@ -50,5 +51,36 @@ public abstract class BaseEntity {
             next = 0;
         }
         return prefix + String.format("%03d", next);
+    }
+
+    private static synchronized void syncCounterWithExistingId(String existingId) {
+        if (existingId == null || existingId.trim().isEmpty()) {
+            return;
+        }
+
+        String normalized = existingId.trim();
+        String digits = normalized.replaceAll("\\D", "");
+        if (digits.isEmpty()) {
+            return;
+        }
+
+        int value;
+        try {
+            value = Integer.parseInt(digits);
+        } catch (NumberFormatException ex) {
+            return;
+        }
+
+        if (normalized.startsWith("ST")) {
+            staffCounter = Math.max(staffCounter, value);
+        } else if (normalized.startsWith("G")) {
+            guestCounter = Math.max(guestCounter, value);
+        } else if (normalized.startsWith("R")) {
+            roomCounter = Math.max(roomCounter, value);
+        } else if (normalized.startsWith("B")) {
+            bookingCounter = Math.max(bookingCounter, value);
+        } else if (normalized.startsWith("P")) {
+            paymentCounter = Math.max(paymentCounter, value);
+        }
     }
 }

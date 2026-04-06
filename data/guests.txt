@@ -1,0 +1,5 @@
+GUEST ID,NAME,PHONE,EMAIL
+G001,Vanna,098 777 666,vanna@gamil.com
+G002,Linda,097 888 555,linda@gmail.com
+G004,Ling,N/A,unknown@email.com
+G005,Anna,N/A,unknown@email.com

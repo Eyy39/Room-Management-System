@@ -31,6 +31,17 @@ public class CheckIn extends BaseEntity {
         recalculatePrice(discountPercent);
     }
 
+    public CheckIn(String bookingId, Guest guest, IRoom room, String checkInDate, int night, IStaff staff, double discountPercent) {
+        super("B", bookingId);
+        this.guest = guest;
+        this.room = room;
+        this.checkInDate = checkInDate;
+        this.night = night;
+        this.staff = staff;
+        this.status = BookingStatus.RESERVED;
+        recalculatePrice(discountPercent);
+    }
+
     public int getBookingID() {
         return getNumericId();
     }
@@ -69,6 +80,12 @@ public class CheckIn extends BaseEntity {
 
     public BookingStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(BookingStatus status) {
+        if (status != null) {
+            this.status = status;
+        }
     }
 
     public void checkIn() {
@@ -126,6 +143,7 @@ public class CheckIn extends BaseEntity {
             + "\nEmail: " + guest.getEmail()
             + "\n-------- Room Booking Details --------"
             + "\nBooking ID: " + getBookingCode()
+            + "\nRoom Number: " + room.getRoomNumber()
             + "\nRoom Type: " + room.getRoomType()
             + "\nCheckIn Date: " + checkInDate
             + "\nDuration: " + duration

@@ -89,11 +89,6 @@ public abstract class Room extends BaseEntity implements IRoom {
                Objects.equals(roomNumber, other.roomNumber);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getRoomId(), roomNumber);
-    }
-
     private String RoomNumber(String roomNumber) {
         if (roomNumber == null || roomNumber.trim().isEmpty()) {
             System.out.println("Room number cannot be empty");

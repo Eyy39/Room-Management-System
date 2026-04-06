@@ -14,6 +14,13 @@ public class Guest extends BaseEntity {
         this.setPhoneNumber(phoneNumber);;
         this.setEmail(email);;
     }
+
+    public Guest(String guestId, String guestName, String phoneNumber, String email){
+        super("G", guestId);
+        this.setGuestName(guestName);
+        this.setPhoneNumber(phoneNumber);
+        this.setEmail(email);
+    }
     public String getGuestName() {
         return guestName;
     }
