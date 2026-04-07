@@ -1,7 +1,5 @@
 package room;
 
-import java.util.Objects;
-
 public class VIPRoom extends Room {
     // private double DEFAULT_SERVICE_FEE = 50.00;
     private double serviceFee = 50.00;
@@ -33,17 +31,7 @@ public class VIPRoom extends Room {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-
-        if (!(obj instanceof VIPRoom)) return false;
-
-        VIPRoom other = (VIPRoom) obj;
-        return Double.compare(getPricePerNight(), other.getPricePerNight()) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getRoomId(), getPricePerNight());
+        return super.equals(obj);
     }
 
     @Override

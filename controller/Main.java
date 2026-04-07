@@ -60,9 +60,9 @@ public class Main {
                     System.out.println("1. Display Room Details");
                     System.out.println("2. Display Guest Information");
                     System.out.println("3. Book a Room");
-                    System.out.println("4. Show Staff Information");
+                    System.out.println("4. Make Payment");
                     System.out.println("5. Show Booking Schedule");
-                    System.out.println("6. Payment");
+                    System.out.println("6. Show Staff Information");
                     System.out.println("7. logout");
                     System.out.println("8. Exit");
                     int choice = InputHandler.readIntChoice(scanner, "Enter your choice: ");
@@ -89,6 +89,13 @@ public class Main {
                                 storage.saveAll(hotel);
                                 break;
                             case 4:
+                                hotel.paymentFlow(scanner);
+                                storage.saveAll(hotel);
+                                break;
+                            case 5:
+                                hotel.displayWeeklySchedule();
+                                break;
+                            case 6:
                                 System.out.println("\n======================================");
                                 System.out.println("      STAFF INFORMATION");
                                 System.out.println("======================================");
@@ -96,13 +103,6 @@ public class Main {
                                 for (user.IStaff staff : hotel.viewStaff()) {
                                     action.execute(staff);
                                 }
-                                break;
-                            case 5:
-                                hotel.displayWeeklySchedule();
-                                break;
-                            case 6:
-                                hotel.paymentFlow(scanner);
-                                storage.saveAll(hotel);
                                 break;
                             case 7:
                                 hotel.logout();
@@ -127,8 +127,18 @@ public class Main {
     }
 
     private static void seedSampleData(Hotel hotel) {
+        // 10 rooms total: 6 normal and 4 VIP.
         IRoom nRoom1 = new NormalRoom("A101", 70.00);
-        IRoom vRoom1 = new VIPRoom("B202", 150.00);
+        IRoom nRoom2 = new NormalRoom("A102", 70.00);
+        IRoom nRoom3 = new NormalRoom("A103", 70.00);
+        IRoom nRoom4 = new NormalRoom("A104", 70.00);
+        IRoom nRoom5 = new NormalRoom("A105", 70.00);
+        IRoom nRoom6 = new NormalRoom("A106", 70.00);
+
+        IRoom vRoom1 = new VIPRoom("B201", 150.00);
+        IRoom vRoom2 = new VIPRoom("B202", 150.00);
+        IRoom vRoom3 = new VIPRoom("B203", 150.00);
+        IRoom vRoom4 = new VIPRoom("B204", 150.00);
 
         Staff staff1 = new ManagerUser("ST001", "Dara", 'M', "086 256 034", "pw123", 1200.00);
         Staff staff2 = new ReceptionistUser("ST002", "Sokha", 'F', "098 765 432", "pw456", 800.00, "12:00 PM - 12:00 AM");
@@ -143,7 +153,15 @@ public class Main {
         CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-03-25", 2, staff2, 15.0);
 
         hotel.addRoom(nRoom1);
+        hotel.addRoom(nRoom2);
+        hotel.addRoom(nRoom3);
+        hotel.addRoom(nRoom4);
+        hotel.addRoom(nRoom5);
+        hotel.addRoom(nRoom6);
         hotel.addRoom(vRoom1);
+        hotel.addRoom(vRoom2);
+        hotel.addRoom(vRoom3);
+        hotel.addRoom(vRoom4);
         hotel.addGuest(guest1);
         hotel.addGuest(guest2);
         hotel.addBooking(booking1);

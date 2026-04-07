@@ -53,6 +53,7 @@ public abstract class BaseEntity {
         return prefix + String.format("%03d", next);
     }
 
+    // This method ensures that if an entity is created with an existing ID, the corresponding counter is updated to avoid future ID collisions.
     private static synchronized void syncCounterWithExistingId(String existingId) {
         if (existingId == null || existingId.trim().isEmpty()) {
             return;

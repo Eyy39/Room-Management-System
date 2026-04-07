@@ -1,5 +1,4 @@
 PAYMENT ID,BOOKING ID,AMOUNT,METHOD,STATUS
 P001,B001,126.0,Card,Paid
 P002,B002,600.0,Pending,Pending
-P003,B003,70.0,Pending,Pending
-P004,B004,700.0,Pending,Pending
+P003,B003,210.0,Pending,Pending

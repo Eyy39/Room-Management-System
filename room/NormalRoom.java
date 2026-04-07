@@ -18,12 +18,7 @@ public class NormalRoom extends Room {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-
-        if (!(obj instanceof NormalRoom)) return false;
-
-        NormalRoom other = (NormalRoom) obj;
-        return Double.compare(getPricePerNight(), other.getPricePerNight()) == 0;
+        return super.equals(obj);
     }
 
 }

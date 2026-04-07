@@ -231,7 +231,11 @@ public class Hotel {
                 continue;
             }
 
-            if (!booking.getRoom().equals(room)) {
+            if (booking.getRoom() == null || room.getRoomNumber() == null) {
+                continue;
+            }
+
+            if (!room.getRoomNumber().equalsIgnoreCase(booking.getRoom().getRoomNumber())) {
                 continue;
             }
 
@@ -466,12 +470,12 @@ public class Hotel {
         return booking;
     }
 
-    public CheckIn bookRoomByNumber(String roomNumber, String guestName, LocalDate bookingDate) throws InputMismatchException {
+    public CheckIn bookRoomByNumber(String roomNumber, String guestName, LocalDate bookingDate, int numberOfNights) throws InputMismatchException {
         if (!requirePermission(Hotel.CREATE_BOOKING)) {
             return null;
         }
 
-        validateBookingInputs(roomNumber, guestName, bookingDate);
+        validateBookingInputs(roomNumber, guestName, bookingDate, numberOfNights);
 
         IRoom selectedRoom = null;
         for (IRoom room : rooms) {
@@ -516,7 +520,7 @@ public class Hotel {
             bookingGuest,
             selectedRoom,
             bookingDate.toString(),
-            1,
+            numberOfNights,
             loggedInUser,
             0.0
         );
@@ -526,7 +530,7 @@ public class Hotel {
         return booking;
     }
 
-    private void validateBookingInputs(String roomNumber, String guestName, LocalDate bookingDate) throws InputMismatchException {
+    private void validateBookingInputs(String roomNumber, String guestName, LocalDate bookingDate, int numberOfNights) throws InputMismatchException {
         if (roomNumber == null || roomNumber.trim().isEmpty()) {
             throw new InputMismatchException("Room number cannot be empty.");
         }else if (guestName == null || guestName.trim().isEmpty()) {
@@ -537,6 +541,8 @@ public class Hotel {
             throw new InputMismatchException("Booking date cannot be empty.");
         }else if (bookingDate.isBefore(LocalDate.now())) {
             throw new InputMismatchException("Booking date cannot be in the past.");
+        }else if (numberOfNights <= 0) {
+            throw new InputMismatchException("Number of nights must be greater than 0.");
         }
     }
 
@@ -729,8 +735,7 @@ public class Hotel {
             System.out.print(String.format("%-12s", room.getRoomNumber()));
             for (int i = 0; i < 7; i++) {
                 LocalDate date = today.plusDays(i);
-                boolean isBooked = !getBookedRoomsByDate(date).isEmpty() &&
-                                  getBookedRoomsByDate(date).contains(room);
+                boolean isBooked = isRoomBookedOnDate(room, date);
                 String status = isBooked ? "BOOKED" : "FREE";
                 System.out.print(String.format("| %-10s ", status));
             }
@@ -832,12 +837,24 @@ public class Hotel {
             System.out.println("Invalid room number. Please choose from the listed available rooms.");
         }
 
+        int numberOfNights = InputHandler.readIntChoice(scanner, "Enter number of nights to stay: ");
+
         System.out.print("Enter guest name: ");
         String guestName = scanner.nextLine();
+        try{
+            guestName = InputHandler.parseRequiredText(guestName, "Guest name");
+            if (guestName.matches("^-?\\d+$")) {
+                throw new InputMismatchException("Guest name cannot be integer.");
+            }
+        } catch (InputMismatchException ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("Booking failed.");
+            return;
+        }
 
         CheckIn booking;
         try {
-            booking = bookRoomByNumber(roomNumber, guestName, selectedBookingDate);
+            booking = bookRoomByNumber(roomNumber, guestName, selectedBookingDate, numberOfNights);
         } catch (InputMismatchException ex) {
             System.out.println(ex.getMessage());
             System.out.println("Booking failed.");
@@ -903,7 +920,7 @@ public class Hotel {
         while (true) {
             String bookingCode;
             while (true) {
-                System.out.print("Enter booking code to pay: ");
+                System.out.print("Enter booking id to pay: ");
                 bookingCode = scanner.nextLine();
                 try {
                     bookingCode = InputHandler.parseRequiredText(bookingCode, "Booking code");
