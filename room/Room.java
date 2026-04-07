@@ -33,10 +33,6 @@ public abstract class Room extends BaseEntity implements IRoom {
         return basePricePerNight;
     }
 
-    protected void setBasePricePerNight(double basePricePerNight) {
-        this.basePricePerNight = Price(basePricePerNight);
-    }
-
     @Override
     public double getPricePerNight() {
         return basePricePerNight;

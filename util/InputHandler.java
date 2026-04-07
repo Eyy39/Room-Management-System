@@ -28,15 +28,6 @@ public class InputHandler {
         }
     }
 
-    public static String readScheduleChoice(Scanner scanner) throws InputMismatchException {
-        System.out.print("Enter your choice: ");
-        String choice = scanner.nextLine().trim();
-        if (!choice.equals("1") && !choice.equals("2")) {
-            throw new InputMismatchException("Invalid choice. Please enter 1 or 2.");
-        }
-        return choice;
-    }
-
     public static LocalDate parseDateInput(String input) throws InputMismatchException {
         if (input == null || input.trim().isEmpty()) {
             throw new InputMismatchException("Date cannot be empty. Please use yyyy-MM-dd.");
@@ -53,18 +44,6 @@ public class InputHandler {
             throw new InputMismatchException(fieldName + " cannot be integer or empty. Please try again.");
         }
         return input.trim();
-    }
-
-    public static String readRequiredText(Scanner scanner, String prompt, String fieldName) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine();
-            try {
-                return parseRequiredText(input, fieldName);
-            } catch (InputMismatchException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
     }
 
     public static String readPassword(Scanner scanner, String prompt) {

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 import room.IRoom;
-import room.RoomFilter;
 import room.RoomStatus;
 import user.IStaff;
 import util.InputHandler;
@@ -206,20 +205,6 @@ public class Hotel {
         return bookedRooms;
     }
 
-    public ArrayList<IRoom> getAvailableRoomsByDate(LocalDate selectedDate) {
-        if (!requirePermission(Hotel.VIEW_BOOKING_SCHEDULE)) {
-            return new ArrayList<>();
-        }
-
-        ArrayList<IRoom> availableRooms = new ArrayList<>();
-        for (IRoom room : rooms) {
-            if (!isRoomBookedOnDate(room, selectedDate)) {
-                availableRooms.add(room);
-            }
-        }
-        return availableRooms;
-    }
-
     private boolean isRoomBookedOnDate(IRoom room, LocalDate selectedDate) {
         if (selectedDate == null) {
             return false;
@@ -235,7 +220,7 @@ public class Hotel {
                 continue;
             }
 
-            if (!room.getRoomNumber().equalsIgnoreCase(booking.getRoom().getRoomNumber())) {
+            if (!room.getRoomNumber().equals(booking.getRoom().getRoomNumber())) {
                 continue;
             }
 
@@ -257,10 +242,6 @@ public class Hotel {
             }
         }
         return false;
-    }
-
-    public ArrayList<CheckIn> GuestInfo(){
-        return new ArrayList<>(bookings);
     }
 
     public ArrayList<String> getGuestInfoWithPaymentStatus() {
@@ -330,26 +311,10 @@ public class Hotel {
         }
     }
 
-    public String currentUserSignature() {
-        if (loggedInUser == null) {
-            return "None";
-        }
-        return loggedInUser.getSignature();
-    }
-
     public void addRoom(IRoom room) {
         rooms.add(room);
     }
 
-    public void deleteRoom(int roomId) {
-        for (int i = 0; i < rooms.size(); i++) {
-            if (rooms.get(i).getRoomId() == roomId) {
-                rooms.remove(i);
-                return;
-            }
-        }
-        System.out.println("Room not found.");
-    }
 
     public ArrayList<IRoom> getAllRooms() {
         return new ArrayList<>(rooms);
@@ -391,15 +356,6 @@ public class Hotel {
         guests.add(guest);
     }
 
-    public void deleteGuest(String guestId) {
-        for (int i = 0; i < guests.size(); i++) {
-            if (guests.get(i).getGuestID().equals(guestId)) {
-                guests.remove(i);
-                return;
-            }
-        }
-        System.out.println("Guest not found.");
-    }
 
     public ArrayList<Guest> getGuestsList() {
         return new ArrayList<>(guests);
@@ -412,15 +368,6 @@ public class Hotel {
         return null;
     }
 
-    public void deleteStaff(String staffId) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getId().equals(staffId)) {
-                users.remove(i);
-                return;
-            }
-        }
-        System.out.println("Staff not found.");
-    }
 
     public void deleteStaffByIndex(int index) {
         if (!requirePermission(Hotel.DELETE_STAFF)) {
@@ -442,32 +389,6 @@ public class Hotel {
             return users.get(index);
         }
         return null;
-    }
-
-    public CheckIn bookRoom(int guestIndex, int roomIndex, int nights, int staffIndex, double discountPercent) {
-        Guest guest = findGuestByIndex(guestIndex);
-        IRoom room = findRoomByIndex(roomIndex);
-        IStaff staff = findStaffByIndex(staffIndex);
-
-        if (guest == null || room == null || staff == null) {
-            System.out.println("Invalid booking information.");
-            return null;
-        }
-
-        // Tell the room to update its own state.
-        room.book();
-
-        CheckIn booking = new CheckIn(
-            guest,
-            room,
-            "2024-10-01",
-            nights,
-            staff,
-            discountPercent
-        );
-
-        bookings.add(booking);
-        return booking;
     }
 
     public CheckIn bookRoomByNumber(String roomNumber, String guestName, LocalDate bookingDate, int numberOfNights) throws InputMismatchException {
@@ -533,15 +454,15 @@ public class Hotel {
     private void validateBookingInputs(String roomNumber, String guestName, LocalDate bookingDate, int numberOfNights) throws InputMismatchException {
         if (roomNumber == null || roomNumber.trim().isEmpty()) {
             throw new InputMismatchException("Room number cannot be empty.");
-        }else if (guestName == null || guestName.trim().isEmpty()) {
+        } else if (guestName == null || guestName.trim().isEmpty()) {
             throw new InputMismatchException("Guest name cannot be empty.");
-        }else if (guestName.trim().matches("^-?\\d+$")) {
+        } else if (guestName.trim().matches("^-?\\d+$")) {
             throw new InputMismatchException("Guest name cannot be integer.");
-        }else if (bookingDate == null) {
+        } else if (bookingDate == null) {
             throw new InputMismatchException("Booking date cannot be empty.");
-        }else if (bookingDate.isBefore(LocalDate.now())) {
+        } else if (bookingDate.isBefore(LocalDate.now())) {
             throw new InputMismatchException("Booking date cannot be in the past.");
-        }else if (numberOfNights <= 0) {
+        } else if (numberOfNights <= 0) {
             throw new InputMismatchException("Number of nights must be greater than 0.");
         }
     }
@@ -657,19 +578,6 @@ public class Hotel {
         return null;
     }
 
-    // filterRooms - accepts a RoomFilter (lambda or anonymous class) and returns matching rooms.
-    // This method doesn't care HOW the filter decides - it just calls filter.test() for each room.
-    public ArrayList<IRoom> filterRooms(RoomFilter filter) {
-        ArrayList<IRoom> results = new ArrayList<>();
-        for (IRoom room : getAllRooms()) {
-            if (filter.test(room)) {
-                results.add(room);
-            }
-        }
-        return results; 
-    }
-
-    
     public boolean loginFlow(Scanner scanner) {
         String username;
         while (true) {
