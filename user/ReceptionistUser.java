@@ -11,9 +11,6 @@ public class ReceptionistUser extends Staff {
         this.setWorkHours(workHours);
     }
 
-    // public ReceptionistUser(String staffId, String name, String password) {
-    //     super(staffId, name, '?', password);
-    // }
     @Override
     public boolean can(String action) {
         return action.equals(Hotel.CREATE_BOOKING)||

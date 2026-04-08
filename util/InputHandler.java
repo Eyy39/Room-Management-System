@@ -56,7 +56,7 @@ public class InputHandler {
     }
 
     private static String readPasswordFromConsole(Console console, String prompt) {
-        char[] passwordChars = console.readPassword(prompt);
+        char[] passwordChars = console.readPassword(prompt);// hide password input in console
         if (passwordChars == null) {
             return "";
         }

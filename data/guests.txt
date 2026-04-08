@@ -2,3 +2,4 @@ GUEST ID,NAME,PHONE,EMAIL
 G001,Vanna,098 777 666,vanna@gamil.com
 G002,Linda,097 888 555,linda@gmail.com
 G003,Jame,N/A,unknown@email.com
+G004,Horng,N/A,unknown@email.com

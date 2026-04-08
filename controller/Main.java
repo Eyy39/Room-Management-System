@@ -149,8 +149,8 @@ public class Main {
         Guest guest1 = new Guest("Vanna", "098 777 666", "vanna@gamil.com");
         Guest guest2 = new Guest("Linda", "097 888 555", "linda@gmail.com");
 
-        CheckIn booking1 = new CheckIn(guest1, nRoom1, "2026-03-28", 3, staff1, 10.0);
-        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-03-25", 2, staff2, 15.0);
+        CheckIn booking1 = new CheckIn(guest1, nRoom1, "2026-04-07", 2, staff1, 10.0);
+        CheckIn booking2 = new CheckIn(guest2, vRoom1, "2026-04-08", 1, staff2, 0.0);
 
         hotel.addRoom(nRoom1);
         hotel.addRoom(nRoom2);
@@ -183,10 +183,10 @@ public class Main {
         CheckIn booking1 = new CheckIn(
             guest1,
             room1,
-            LocalDate.now().plusDays(1).toString(),
+            LocalDate.now().plusDays(0).toString(),
             2,
             staff1,
-            0.0
+            10.0
         );
         hotel.addBooking(booking1);
 
@@ -194,10 +194,10 @@ public class Main {
             CheckIn booking2 = new CheckIn(
                 guest2,
                 room2,
-                LocalDate.now().plusDays(2).toString(),
-                3,
+                LocalDate.now().plusDays(1).toString(),
+                1,
                 staff2,
-                10.0
+                0.0
             );
             hotel.addBooking(booking2);
         }

@@ -19,10 +19,11 @@ public class CheckIn extends BaseEntity {
     private BookingStatus status;
     private double originalPrice;
     private double discountPrice;
-
+    // Constructor for creating new bookings
     public CheckIn(Guest guest, IRoom room, String checkInDate, int night, IStaff staff, double discountPercent) {
         super("B");
         this.guest = guest;
+        
         this.room = room;
         this.checkInDate = checkInDate;
         this.night = night;
@@ -30,7 +31,7 @@ public class CheckIn extends BaseEntity {
         this.status = BookingStatus.RESERVED;
         recalculatePrice(discountPercent);
     }
-
+    // Constructor for loading from storage with existing booking ID
     public CheckIn(String bookingId, Guest guest, IRoom room, String checkInDate, int night, IStaff staff, double discountPercent) {
         super("B", bookingId);
         this.guest = guest;
@@ -130,7 +131,7 @@ public class CheckIn extends BaseEntity {
         this.originalPrice = room.getPricePerNight();
         double safePercent = 0.0;
         if (discountPercent > 0) {
-            safePercent = Math.min(discountPercent, 100.0);
+            safePercent = Math.min(discountPercent, 100.0);// Ensure discount does not exceed 100%
         }
         this.discountPrice = originalPrice * safePercent / 100.0;
     }
